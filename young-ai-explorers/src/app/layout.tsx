@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Exploring the Future, One Idea at a Time. The ultimate educational ecosystem for the next generation of innovators.",
 };
 
+import AIAssistant from "@/components/AIAssistant";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -28,7 +30,10 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-slate-50 text-slate-900">{children}</body>
+      <body className="min-h-full flex flex-col font-sans bg-slate-50 text-slate-900">
+        {children}
+        <AIAssistant />
+      </body>
     </html>
   );
 }
