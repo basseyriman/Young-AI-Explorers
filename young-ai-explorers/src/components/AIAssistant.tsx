@@ -6,8 +6,22 @@ import { Bot, X, Send, User, Sparkles } from 'lucide-react';
 
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat();
+  const [input, setInput] = useState('');
+  const { messages, status, sendMessage } = useChat();
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const isLoading = status === 'submitted' || status === 'streaming';
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(e.target.value);
+  };
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!input.trim() || isLoading) return;
+    sendMessage({ role: 'user', content: input });
+    setInput('');
+  };
 
   useEffect(() => {
     if (messagesEndRef.current) {
