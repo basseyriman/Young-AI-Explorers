@@ -89,7 +89,7 @@ export default function AIAssistant() {
                     {m.role === 'user' ? <User className="h-5 w-5" /> : <Bot className="h-5 w-5" />}
                   </div>
                   <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed whitespace-pre-wrap ${m.role === 'user' ? 'bg-slate-900 text-white rounded-tr-none' : 'bg-white border border-slate-200 text-slate-800 shadow-sm rounded-tl-none'}`}>
-                    {m.content}
+                    {m.content || (m.parts && m.parts.map((p, i) => p.type === 'text' ? p.text : '').join(''))}
                   </div>
                 </div>
               </div>
