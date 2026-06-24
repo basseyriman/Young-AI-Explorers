@@ -188,7 +188,7 @@ export default async function LessonPage({
                 <img 
                   src={`/assets/${lessonImage}`} 
                   alt={lesson.title} 
-                  className="w-full h-full object-cover object-bottom transition-transform duration-1000 group-hover:scale-105" 
+                  className="w-full h-full object-cover object-[center_75%] transition-transform duration-1000 group-hover:scale-105" 
                 />
               </div>
             )}
