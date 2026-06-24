@@ -188,7 +188,7 @@ export default async function LessonPage({
                 <img 
                   src={`/assets/${lessonImage}`} 
                   alt={lesson.title} 
-                  className="w-full aspect-video md:aspect-[21/9] object-cover transition-transform duration-1000 group-hover:scale-105" 
+                  className="w-full h-auto object-contain transition-transform duration-1000 group-hover:scale-105" 
                 />
               </div>
             )}
