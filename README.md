@@ -1,99 +1,36 @@
-<div align="center">
-  <img src="https://raw.githubusercontent.com/basseyriman/LearnAI/main/assets/characters/robo_prime.png" alt="Young AI Explorers Logo" width="200"/>
-  
-  # ✨ Young AI Explorers
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-  **Helping the Next Generation Understand Artificial Intelligence**
+## Getting Started
 
-  [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
-  [![Frontend](https://img.shields.io/badge/Frontend-HTML%20%7C%20CSS%20%7C%20JS-FCE300)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-  [![AI Powered](https://img.shields.io/badge/AI_Powered-OpenAI_GPT--4o--mini-4AA08E)](https://openai.com/)
+First, run the development server:
 
-  [Try the Interactive Demo](http://localhost:3000/young-ai-explorers) | [View the Landing Page](landing.html)
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-  ---
-</div>
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 🚀 The Platform Goal
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
-**Young AI Explorers** is an interactive, voice-first educational web application built from the ground up to break complex artificial intelligence concepts into engaging, digestible adventures for children aged 8–14. 
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
-Built as a showcase of modern educational technology, it serves to demonstrate product innovation, scalable UI/UX architecture, and the intersection of Generative AI with structured learning pathways.
+## Learn More
 
-## ✨ Core Features & Technical Innovation
+To learn more about Next.js, take a look at the following resources:
 
-### 🧠 1. Dynamic AI-Generated Learning (OpenAI API)
-The platform uses the **OpenAI `gpt-4o-mini` API** to dynamically generate educational chapters in real-time. Instead of static, hardcoded lessons, the system dynamically spins up infinite learning pathways based on the child's curiosity—whether they want to learn about "Neural Networks", "AI in Robotics", or "AI in Space Exploration".
-* **Personalized Context:** Chapters intelligently weave the user's name right into the generated stories and praise mechanisms.
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-### 🗣️ 2. Voice-First Interaction (STT & TTS)
-* **Text-to-Speech (TTS):** Premium integration with OpenAI's Advanced Speech API pairs specific voices (Nova, Echo, Onyx) to different animated UI mascots.
-* **Speech-to-Text (STT):** Full browser microphone capability (via `webkitSpeechRecognition`) allowing children to answer questions and navigate totally hands-free.
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-### 🎮 3. Gamified & Persistent State
-Children earn points, unlock achievements, and gain titles (e.g., *Digital Archaeologist*, *Machine Learning Detective*) structured around a rigorous 5-step pedagogical model:
-1. **Storyline**
-2. **Core Lesson**
-3. **Interactive Mini-Game**
-4. **Mind-Blowing Fun Fact**
-5. **Knowledge Quiz**
+## Deploy on Vercel
 
-*(Progress is managed efficiently via robust `localStorage` state architectures)*
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-### 📱 4. Premium Modern Frontend Architecture
-* **Landing Page:** A world-class, responsive marketing landing page (`landing.html`) built with pure HTML/CSS/JS, featuring glassmorphism, intersecting scroll observers, custom CSS variables, and sophisticated gradient topography.
-* **Proxy Server:** A Node/Express CORS proxy server efficiently managing the secure handshakes between the frontend client and OpenAI's endpoints.
-
----
-
-## 🛠️ Architecture & Setup
-
-### Prerequisites
-- Node.js (v14+)
-- An OpenAI API Key
-
-### Quick Start
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/basseyriman/LearnAI.git
-   cd LearnAI
-   ```
-
-2. **Start the Proxy Server:**
-   The application requires a secure intermediary to interface with OpenAI (specifically for dynamic image generations).
-   ```bash
-   npm install
-   npm start
-   ```
-   *The proxy will spin up on `localhost:3001`.*
-
-3. **Launch the Application:**
-   Open the application in any modern web browser:
-   * **Landing Page Showcase:** `landing.html`
-   * **Main Application:** `index.html`
-
-*(Note: For the best experience, run the front-end via a live server like VS Code's "Live Server" extension).*
-
----
-
-## 🎨 Design Philosophy & UX
-
-The application is heavily inspired by modern AI startup aesthetics, heavily customized to maintain approachability for young learners:
-* **Typography:** `Outfit` (Headings) & `Inter` (Body)
-* **Visuals:** Deep dark-mode themes juxtaposed with vibrant neon cyan and pink accents.
-* **Interactions:** Buttery smooth CSS transitions, floating animations, and contextual sound waves representing active system listening.
-
----
-
-## 🌌 Future Expansion Roadmap
-
-1. **AI-Generated Assets:** Hooking directly into DALL-E 3 for live, session-specific illustration creation.
-2. **Classroom Integration:** Exportable progress analytics and dashboards for educators.
-3. **Multiplayer Capabilities:** Real-time group problem solving.
-
----
-
-<div align="center">
-  <i>Empowering the next generation of technologists and innovators.</i><br>
-  <b>Designed for the Global Talent Initiative</b>
-</div>
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
