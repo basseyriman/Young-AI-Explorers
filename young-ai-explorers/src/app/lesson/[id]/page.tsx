@@ -184,11 +184,21 @@ export default async function LessonPage({
 
             {/* Main Illustration Hero */}
             {lessonImage && (
-              <div className="relative w-full max-w-4xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-blue-900/10 border-4 border-white group bg-slate-100 aspect-[4/3] md:aspect-[3/2]">
+              <div className="relative w-full max-w-4xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-blue-900/10 border-4 border-white group bg-slate-900 aspect-[4/3] md:aspect-[16/10] flex justify-center items-center">
+                {/* Blurred Background to fill wide aspect */}
+                <div className="absolute inset-0 z-0">
+                  <img 
+                    src={`/assets/${lessonImage}`} 
+                    alt="" 
+                    className="w-full h-full object-cover blur-3xl opacity-50 scale-125" 
+                  />
+                  <div className="absolute inset-0 bg-slate-900/20"></div>
+                </div>
+                {/* Uncropped Full Image */}
                 <img 
                   src={`/assets/${lessonImage}`} 
                   alt={lesson.title} 
-                  className="w-full h-full object-cover object-[center_75%] transition-transform duration-1000 group-hover:scale-105" 
+                  className="w-full h-full object-contain relative z-10 transition-transform duration-1000 group-hover:scale-105 shadow-2xl" 
                 />
               </div>
             )}
