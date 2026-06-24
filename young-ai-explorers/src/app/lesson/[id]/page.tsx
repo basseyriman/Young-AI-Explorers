@@ -184,7 +184,7 @@ export default async function LessonPage({
 
             {/* Main Illustration Hero */}
             {lessonImage && (
-              <div className="relative w-full max-w-5xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-blue-900/10 border-4 border-white group bg-slate-100 aspect-[4/3] md:aspect-[3/2]">
+              <div className="relative w-full max-w-2xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-blue-900/10 border-4 border-white group bg-slate-100 aspect-square">
                 <img 
                   src={`/assets/${lessonImage}`} 
                   alt={lesson.title} 
