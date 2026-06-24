@@ -194,80 +194,42 @@ export default async function LessonPage({
             )}
 
             {/* Story Time */}
-            <section className="relative overflow-hidden rounded-[32px] border-l-8 border-l-blue-400 border-y-2 border-r-2 border-y-slate-100 border-r-slate-100 bg-white p-10 md:p-14 shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-blue-900/5 hover:-translate-y-1">
-              <div className="absolute top-0 right-0 p-10 opacity-5 transition-transform duration-700 group-hover:rotate-12 group-hover:scale-110">
-                <Star className="w-48 h-48 text-blue-500" />
-              </div>
-              <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-blue-50 rounded-full blur-[100px] opacity-80"></div>
-              <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-xl shadow-blue-500/30 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                    <Star className="w-7 h-7 fill-white/20" />
-                  </div>
-                  <h2 className="font-heading text-3xl font-bold text-slate-900 tracking-tight">Meet Vision Vee</h2>
-                </div>
-                <p className="text-xl md:text-2xl leading-relaxed text-slate-700 font-medium italic">
-                  "{lesson.introduction}"
-                </p>
-              </div>
+            <section className="bg-white p-8 md:p-12 rounded-[24px] border border-slate-200 shadow-sm transition-shadow hover:shadow-md">
+              <h2 className="text-2xl font-semibold text-slate-800 tracking-tight border-b border-slate-100 pb-4 mb-6">Introduction</h2>
+              <p className="text-lg leading-relaxed text-slate-700">
+                {lesson.introduction}
+              </p>
             </section>
 
             {/* Core Lesson */}
-            <section className="relative overflow-hidden rounded-[32px] border-l-8 border-l-purple-400 border-y-2 border-r-2 border-y-slate-100 border-r-slate-100 bg-white p-10 md:p-14 shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-purple-900/5 hover:-translate-y-1">
-              <div className="absolute top-0 right-0 p-10 opacity-5 transition-transform duration-700 group-hover:-rotate-12 group-hover:scale-110">
-                <BrainCircuit className="w-48 h-48 text-purple-500" />
-              </div>
-              <div className="absolute -bottom-32 -left-32 w-[500px] h-[500px] bg-purple-50 rounded-full blur-[100px] opacity-80"></div>
-              <div className="relative z-10">
-                <div className="flex items-center gap-4 mb-8">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-purple-500 to-fuchsia-600 text-white shadow-xl shadow-purple-500/30 transform transition-all duration-500 group-hover:scale-110 group-hover:-rotate-6">
-                    <BrainCircuit className="w-7 h-7" />
-                  </div>
-                  <h2 className="font-heading text-3xl font-bold text-slate-900 tracking-tight">The Lesson</h2>
-                </div>
-                <p className="text-lg md:text-xl leading-relaxed text-slate-700 font-medium">
-                  {lesson.main_lesson}
-                </p>
-              </div>
+            <section className="bg-white p-8 md:p-12 rounded-[24px] border border-slate-200 shadow-sm transition-shadow hover:shadow-md">
+              <h2 className="text-2xl font-semibold text-slate-800 tracking-tight border-b border-slate-100 pb-4 mb-6">The Lesson</h2>
+              <p className="text-lg leading-relaxed text-slate-700">
+                {lesson.main_lesson}
+              </p>
             </section>
 
             {/* Fun Fact */}
             {funFacts.length > 0 && (
-              <section className="relative overflow-hidden rounded-[32px] border-l-8 border-l-pink-400 border-y-2 border-r-2 border-y-slate-100 border-r-slate-100 bg-white p-10 md:p-14 shadow-xl transition-all duration-500 hover:shadow-2xl hover:shadow-pink-900/5 hover:-translate-y-1">
-                 <div className="absolute top-0 right-0 p-10 opacity-5 transition-transform duration-700 group-hover:scale-125">
-                  <Zap className="w-48 h-48 text-pink-500" />
-                </div>
-                <div className="absolute -top-32 -left-32 w-[500px] h-[500px] bg-pink-50 rounded-full blur-[100px] opacity-80"></div>
-                <div className="relative z-10">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-500 to-rose-600 text-white shadow-xl shadow-pink-500/30 transform transition-all duration-500 group-hover:scale-110 group-hover:rotate-6">
-                      <Zap className="w-7 h-7 fill-white/20" />
-                    </div>
-                    <h3 className="font-heading text-3xl font-bold text-slate-900 tracking-tight">Mind-Blowing Fact</h3>
-                  </div>
-                  <p className="text-lg md:text-xl leading-relaxed text-slate-700 font-medium">
-                    {funFacts[0]}
-                  </p>
-                </div>
+              <section className="bg-slate-50 p-8 md:p-12 rounded-[24px] border border-slate-200 shadow-sm transition-shadow hover:shadow-md">
+                <h3 className="text-xl font-semibold text-slate-800 tracking-tight border-b border-slate-200 pb-4 mb-6">Did You Know?</h3>
+                <p className="text-lg leading-relaxed text-slate-700">
+                  {funFacts[0]}
+                </p>
               </section>
             )}
 
             {/* Interactive Quiz CTA */}
-            <div className="relative overflow-hidden rounded-[32px] border-4 border-emerald-100 bg-emerald-50 p-10 md:p-16 shadow-xl text-center transition-all duration-500 hover:shadow-2xl hover:shadow-emerald-900/10 hover:-translate-y-2">
-               <div className="relative z-10 flex flex-col items-center">
-                  <div className="p-4 rounded-3xl bg-emerald-500 shadow-lg shadow-emerald-500/30 text-white mb-8 transition-transform duration-500 hover:scale-110">
-                    <Activity className="w-10 h-10" />
-                  </div>
-                  <h3 className="font-heading text-3xl md:text-4xl font-black text-slate-900 mb-4 tracking-tight">Ready to test your knowledge?</h3>
-                  <p className="text-lg md:text-xl text-slate-600 mb-10 max-w-lg font-medium leading-relaxed">
-                    Show what you've learned and earn a shiny new badge for your collection!
-                  </p>
-                  <Link href={`/quiz/${lesson.id}`} className="w-full sm:w-auto">
-                    <Button size="lg" className="w-full sm:w-auto bg-emerald-500 text-white hover:bg-emerald-600 shadow-xl shadow-emerald-500/20 transition-all duration-300 hover:shadow-2xl hover:shadow-emerald-500/30 hover:-translate-y-1 h-16 px-12 text-xl rounded-full font-bold border-2 border-transparent">
-                      Take the Quiz & Earn a Badge! <ArrowRight className="ml-3 h-6 w-6" />
-                    </Button>
-                  </Link>
-               </div>
+            <div className="bg-white border border-slate-200 p-10 md:p-14 rounded-[24px] shadow-sm text-center">
+               <h3 className="text-2xl font-semibold text-slate-800 mb-4 tracking-tight">Ready to test your knowledge?</h3>
+               <p className="text-slate-600 mb-8 max-w-lg mx-auto text-lg">
+                 Show what you've learned and earn a new badge for your collection.
+               </p>
+               <Link href={`/quiz/${lesson.id}`}>
+                 <Button size="lg" className="bg-slate-900 text-white hover:bg-slate-800 h-14 px-10 text-lg rounded-xl font-medium transition-colors">
+                   Take the Quiz <ArrowRight className="ml-2 h-5 w-5" />
+                 </Button>
+               </Link>
             </div>
           </div>
         )}
