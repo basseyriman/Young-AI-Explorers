@@ -1,180 +1,363 @@
-import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ArrowRight, BookOpen, Brain, Trophy, Sparkles, Star } from "lucide-react"
+"use client";
 
-import { Logo } from "@/components/Logo"
+import { motion } from "framer-motion";
+import { Sparkles, ArrowRight, Brain, Rocket, Bot, Globe, Shield, Activity, MonitorPlay, CheckCircle2, Medal, Trophy, Download, GraduationCap, ArrowUpRight } from "lucide-react";
+import Link from "next/link";
+import Image from "next/image";
+import { InnovationMap } from "@/components/InnovationMap";
+import { Book3D } from "@/components/Book3D";
+import { AssistantTriggerCard } from "@/components/AssistantTriggerCard";
 
-export default function LandingPage() {
+export default function Home() {
   return (
-    <div className="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-900 selection:bg-blue-500/30 overflow-hidden">
-      {/* Premium Light Background setup */}
-      <div className="fixed inset-0 z-0 bg-slate-50">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(219,234,254,0.7),rgba(255,255,255,0))]" />
-        {/* Soft dot pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wNSkiLz48L3N2Zz4=')] opacity-50" />
+    <main className="min-h-screen bg-transparent relative selection:bg-cyan-500/30">
+      {/* GLOBAL CINEMATIC BACKGROUND */}
+      <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
+        {/* Stars */}
+        {Array.from({ length: 50 }).map((_, i) => (
+          <div
+            key={`star-${i}`}
+            className="absolute bg-white rounded-full animate-twinkle"
+            style={{
+              width: Math.random() * 3 + "px",
+              height: Math.random() * 3 + "px",
+              top: Math.random() * 100 + "%",
+              left: Math.random() * 100 + "%",
+              animationDelay: Math.random() * 5 + "s",
+              opacity: Math.random(),
+            }}
+          />
+        ))}
+        {/* Glowing Orbs */}
+        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen animate-float-slow" />
+        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
       </div>
-      
-      <header className="relative z-50 w-full border-b border-slate-200 bg-white/80 backdrop-blur-xl">
-        <div className="container mx-auto flex h-20 items-center justify-between px-6 md:px-12">
-          <div className="flex items-center gap-3 group cursor-pointer">
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl overflow-hidden shadow-md shadow-blue-500/10 transition-transform duration-500 group-hover:scale-105 bg-white border border-slate-200 group-hover:border-blue-300">
-              <Logo className="h-6 w-6 text-blue-600" />
-            </div>
-            <span className="font-heading text-xl font-bold tracking-tight text-slate-800 group-hover:text-blue-600 transition-colors">
-              Young AI Explorers
-            </span>
-          </div>
-          <nav className="flex items-center gap-6">
-            <Link href="/login" className="text-sm font-semibold text-slate-500 transition-colors hover:text-blue-600">
-              Sign In
-            </Link>
-            <Link href="/login">
-              <Button className="bg-blue-600 text-white hover:bg-blue-700 shadow-lg shadow-blue-600/20 transition-all duration-300 hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 rounded-full px-6 font-bold h-10">
-                Get Started
-              </Button>
-            </Link>
-          </nav>
-        </div>
-      </header>
 
-      <main className="relative z-10 flex-1">
-        {/* Hero Section */}
-        <section className="container mx-auto px-6 py-20 md:py-32 lg:py-40 relative">
-          {/* Decorative blur blobs */}
-          <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[600px] h-[600px] bg-blue-400/30 rounded-full blur-[120px] pointer-events-none opacity-60"></div>
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-purple-400/30 rounded-full blur-[120px] pointer-events-none opacity-60"></div>
-          <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-indigo-400/30 rounded-full blur-[120px] pointer-events-none opacity-60"></div>
+      {/* SECTION 1: HERO EXPERIENCE */}
+      <section className="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden">
+        <div className="container mx-auto px-6 relative z-10 flex flex-col md:flex-row items-center justify-between gap-12">
           
-          <div className="relative z-10 grid lg:grid-cols-2 gap-16 items-center max-w-7xl mx-auto">
-            {/* Left Content */}
-            <div className="flex flex-col items-start text-left space-y-8">
-              <div className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50/80 backdrop-blur-sm px-5 py-2.5 text-sm font-bold text-indigo-700 shadow-sm transition-transform hover:scale-105">
-                <Sparkles className="mr-2 h-4 w-4 text-indigo-500" />
-                The Official Companion Platform
-              </div>
-              
-              <h1 className="font-heading text-5xl font-black tracking-tight sm:text-6xl lg:text-7xl text-slate-900 leading-[1.1]">
-                Adventures in the <br/>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 drop-shadow-sm">
-                  Galaxy of Intelligence.
-                </span>
-              </h1>
-              
-              <p className="max-w-xl text-lg text-slate-600 sm:text-2xl font-medium leading-relaxed">
-                The ultimate educational ecosystem for the next generation of innovators. Master AI, Robotics, and STEM in an immersive environment.
-              </p>
-              
-              <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto pt-6">
-                <Link href="/login" className="w-full sm:w-auto group">
-                  <Button size="lg" className="w-full sm:w-auto bg-blue-600 text-white hover:bg-blue-700 shadow-xl shadow-blue-600/20 transition-all duration-300 hover:shadow-2xl hover:shadow-blue-600/40 hover:-translate-y-1 h-16 px-10 text-lg rounded-full font-bold border-2 border-transparent">
-                    Start Learning Now <ArrowRight className="ml-2 h-6 w-6 group-hover:translate-x-1 transition-transform" />
-                  </Button>
+          <motion.div 
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="flex-1 text-center md:text-left"
+          >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 backdrop-blur-md mb-8">
+              <Sparkles className="h-4 w-4 text-cyan-400" />
+              <span className="text-sm font-medium text-slate-300">Welcome to the future of learning</span>
+            </div>
+            
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-heading font-bold tracking-tight text-white mb-6 leading-[1.1]">
+              Young AI <br/>
+              <span className="text-gradient">Explorers</span>
+            </h1>
+            
+            <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl font-light leading-relaxed">
+              Discover Artificial Intelligence, Robotics, Space, Healthcare Innovation and the Technology shaping tomorrow.
+            </p>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start mb-16">
+              <Link href="/signup" className="w-full sm:w-auto px-8 py-4 bg-white text-slate-900 rounded-full font-semibold hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                Start Learning <ArrowRight className="h-5 w-5" />
+              </Link>
+              <Link href="#map" className="w-full sm:w-auto px-8 py-4 bg-white/5 border border-white/10 text-white rounded-full font-semibold hover:bg-white/10 transition-colors flex items-center justify-center backdrop-blur-md">
+                Explore 37 Topics
+              </Link>
+            </div>
+
+            {/* Statistics */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-white/10">
+              {[
+                { label: "Interactive Lessons", value: "37" },
+                { label: "Quiz Questions", value: "200+" },
+                { label: "Learning Assistant", value: "AI" },
+                { label: "Earn Rewards", value: "Certificates" },
+              ].map((stat, i) => (
+                <div key={i}>
+                  <div className="text-2xl font-bold text-white mb-1">{stat.value}</div>
+                  <div className="text-xs text-slate-400 uppercase tracking-wider">{stat.label}</div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.5, ease: "easeOut" }}
+            className="flex-1 relative w-full aspect-square max-w-lg hidden md:block"
+          >
+            {/* 3D Rotating Earth representation */}
+            <div className="absolute inset-0 rounded-full border border-white/5 animate-rotate-slow shadow-[0_0_100px_rgba(0,100,255,0.2)]">
+              <div className="absolute top-0 left-1/2 w-4 h-4 bg-cyan-400 rounded-full blur-sm" />
+              <div className="absolute bottom-1/4 right-0 w-2 h-2 bg-purple-400 rounded-full blur-sm" />
+            </div>
+            
+            {/* The Mascot */}
+            <div className="absolute inset-0 flex items-center justify-center animate-float">
+              <Image 
+                src="/assets/vision_vee.png" 
+                alt="Vision Vee Robot" 
+                width={300} 
+                height={300} 
+                className="drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
+                priority
+              />
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* SECTION: INNOVATION MAP (Signature Feature) */}
+      <section id="map" className="py-32 relative z-10">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">The Innovation Map</h2>
+            <p className="text-slate-400 text-lg max-w-2xl mx-auto">Click an island to begin your adventure. Explore the interconnected world of future technologies.</p>
+          </div>
+          <InnovationMap />
+        </div>
+      </section>
+
+      {/* SECTION 2: EXPLORE THE FUTURE (Cards) */}
+      <section className="py-24 relative z-10">
+        <div className="container mx-auto px-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Brain, title: "Artificial Intelligence", color: "text-purple-400", bg: "hover:shadow-purple-500/20" },
+              { icon: Bot, title: "Robotics", color: "text-cyan-400", bg: "hover:shadow-cyan-500/20" },
+              { icon: Rocket, title: "Space", color: "text-orange-400", bg: "hover:shadow-orange-500/20" },
+              { icon: Activity, title: "Healthcare AI", color: "text-emerald-400", bg: "hover:shadow-emerald-500/20" },
+              { icon: Globe, title: "Climate Tech", color: "text-blue-400", bg: "hover:shadow-blue-500/20" },
+              { icon: Shield, title: "Cybersecurity", color: "text-rose-400", bg: "hover:shadow-rose-500/20" },
+              { icon: MonitorPlay, title: "Gaming AI", color: "text-yellow-400", bg: "hover:shadow-yellow-500/20" },
+              { icon: Brain, title: "Self Driving Cars", color: "text-indigo-400", bg: "hover:shadow-indigo-500/20" },
+            ].map((topic, i) => {
+              const Icon = topic.icon;
+              return (
+                <Link href={`/dashboard/student`} key={i}>
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.1 }}
+                    className={`p-6 rounded-3xl bg-glass border border-white/5 hover:-translate-y-2 transition-all duration-300 group ${topic.bg}`}
+                  >
+                    <Icon className={`h-10 w-10 ${topic.color} mb-6`} />
+                    <h3 className="text-xl font-medium text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-slate-400 transition-all">{topic.title}</h3>
+                  </motion.div>
                 </Link>
-                <a href="https://www.amazon.com/dp/B0H4KGNW3B?ref_=pe_123509780_1038749300_t_fed_asin_title" target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                  <Button size="lg" variant="outline" className="w-full sm:w-auto border-2 border-slate-200 bg-white/80 backdrop-blur-sm text-slate-700 hover:bg-slate-50 hover:border-indigo-300 hover:text-indigo-700 h-16 px-8 text-lg rounded-full font-bold shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-indigo-900/5">
-                    <BookOpen className="mr-3 h-6 w-6" /> Discover the Book
-                  </Button>
-                </a>
-              </div>
-              
-              {/* Trust badges or mini stats */}
-              <div className="pt-8 flex items-center gap-6 opacity-70">
-                <div className="flex -space-x-4">
-                  <div className="h-12 w-12 rounded-full border-4 border-slate-50 bg-blue-100 flex items-center justify-center text-blue-600 font-bold shadow-sm z-30">AI</div>
-                  <div className="h-12 w-12 rounded-full border-4 border-slate-50 bg-purple-100 flex items-center justify-center text-purple-600 font-bold shadow-sm z-20">ML</div>
-                  <div className="h-12 w-12 rounded-full border-4 border-slate-50 bg-indigo-100 flex items-center justify-center text-indigo-600 font-bold shadow-sm z-10">NLP</div>
-                </div>
-                <p className="text-sm font-bold text-slate-600">Explore 37+ amazing topics <br/> alongside your AI Assistant.</p>
-              </div>
-            </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
 
-            {/* Right Content - Book Cover */}
-            <div className="relative w-full max-w-xl mx-auto lg:ml-auto">
-              {/* Glowing backplate */}
-              <div className="absolute inset-0 bg-gradient-to-tr from-blue-600 to-purple-600 rounded-[40px] blur-2xl opacity-40 scale-95 transition-all duration-700 hover:scale-105 hover:opacity-60"></div>
-              
-              {/* Book Cover Image Container */}
-              <div className="relative group rounded-[32px] overflow-hidden border-4 border-white/80 shadow-2xl transition-transform duration-700 hover:-translate-y-4 hover:shadow-[0_40px_80px_-20px_rgba(79,70,229,0.3)] bg-slate-100">
-                <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/10 to-purple-600/10 mix-blend-multiply opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10 pointer-events-none"></div>
-                <img 
-                  src="/assets/cover.png" 
-                  alt="Young AI Explorers Book Cover" 
-                  className="w-full h-auto object-cover transform transition-transform duration-1000 group-hover:scale-105"
-                />
-              </div>
-              
-              {/* Floating elements */}
-              <div className="absolute -top-10 -right-10 animate-[bounce_6s_ease-in-out_infinite]">
-                <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md shadow-xl border border-white/50 text-indigo-600 transform rotate-12">
-                  <Star className="w-8 h-8 fill-indigo-100" />
-                </div>
-              </div>
-              <div className="absolute -bottom-6 -left-10 animate-[bounce_8s_ease-in-out_infinite]">
-                <div className="p-4 rounded-2xl bg-white/90 backdrop-blur-md shadow-xl border border-white/50 text-blue-600 transform -rotate-6">
-                  <Brain className="w-8 h-8 fill-blue-50" />
-                </div>
-              </div>
+      {/* SECTION 3: THE 3D BOOK */}
+      <section className="py-32 relative z-10 border-y border-white/5 bg-slate-900/50">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
+          <div className="flex-1 w-full flex justify-center">
+            <Book3D />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">The Physical Book</h2>
+            <p className="text-xl text-slate-400 mb-8 font-light">
+              Start the journey off-screen. The perfect companion to the online platform, available worldwide.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
+              <Link href="https://amazon.com" target="_blank" className="w-full sm:w-auto px-8 py-4 bg-[#ff9900] text-black rounded-full font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2">
+                Available on Amazon <ArrowUpRight className="h-5 w-5" />
+              </Link>
+              <Link href="/dashboard/student" className="w-full sm:w-auto px-8 py-4 text-white hover:text-cyan-400 transition-colors flex items-center justify-center gap-2">
+                Continue learning online <ArrowRight className="h-5 w-5" />
+              </Link>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* Features Section */}
-        <section className="relative py-32 border-t border-slate-200/50 bg-white/80 backdrop-blur-xl relative z-10">
-          <div className="container mx-auto px-6">
-            <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
-              
-              <div className="group flex flex-col space-y-6 rounded-[32px] border-2 border-slate-100 bg-white p-10 transition-all duration-500 hover:-translate-y-2 hover:border-blue-200 hover:shadow-2xl hover:shadow-blue-900/5">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-50 border border-blue-100 text-blue-600 group-hover:scale-110 transition-transform duration-500 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-blue-600/20 group-hover:border-blue-600">
-                  <BookOpen className="h-8 w-8" />
-                </div>
-                <div>
-                  <h3 className="font-heading text-2xl font-bold text-slate-900 mb-3">Comprehensive Curriculum</h3>
-                  <p className="text-slate-600 text-base leading-relaxed font-medium">
-                    37 detailed core topics covering everything from Neural Networks to Digital Archaeology, structured perfectly for optimal learning.
-                  </p>
+      {/* SECTION 4: MEET VISION VEE */}
+      <section className="py-32 relative z-10 overflow-hidden">
+        <div className="container mx-auto px-6 flex flex-col-reverse md:flex-row items-center gap-16">
+          <div className="flex-1 w-full max-w-md mx-auto relative">
+            <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 blur-3xl -z-10 rounded-full"></div>
+            <AssistantTriggerCard />
+          </div>
+          <div className="flex-1 text-center md:text-left">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 mb-8 shadow-lg shadow-cyan-500/30">
+              <Bot className="h-8 w-8 text-white" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">Meet Vision Vee</h2>
+            <p className="text-xl text-slate-400 mb-8 font-light">
+              Not just an AI. A friendly companion that answers questions, explains complex ideas with simple analogies, and guides children through their learning journey.
+            </p>
+            <div className="p-6 rounded-2xl bg-glass border border-white/10 relative">
+              <div className="flex gap-4 mb-4">
+                <div className="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center shrink-0">👦</div>
+                <div className="bg-slate-800 rounded-2xl rounded-tl-none px-4 py-2 text-sm text-slate-300">How do robots see?</div>
+              </div>
+              <div className="flex gap-4 flex-row-reverse">
+                <div className="w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center shrink-0">🤖</div>
+                <div className="bg-cyan-500/10 border border-cyan-500/20 rounded-2xl rounded-tr-none px-4 py-3 text-sm text-cyan-100">
+                  Imagine your eyes are like little cameras! Robots have special cameras and sensors too. They use a brain called "Computer Vision" to understand the pictures they take!
                 </div>
               </div>
-
-              <div className="group flex flex-col space-y-6 rounded-[32px] border-2 border-slate-100 bg-white p-10 transition-all duration-500 hover:-translate-y-2 hover:border-purple-200 hover:shadow-2xl hover:shadow-purple-900/5">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-50 border border-purple-100 text-purple-600 group-hover:scale-110 transition-transform duration-500 group-hover:bg-purple-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-purple-600/20 group-hover:border-purple-600">
-                  <Brain className="h-8 w-8" />
-                </div>
-                <div>
-                  <h3 className="font-heading text-2xl font-bold text-slate-900 mb-3">AI Assistant</h3>
-                  <p className="text-slate-600 text-base leading-relaxed font-medium">
-                    A companion AI Explorer Assistant to explain concepts, generate examples, and powerfully enhance the learning journey.
-                  </p>
-                </div>
-              </div>
-
-              <div className="group flex flex-col space-y-6 rounded-[32px] border-2 border-slate-100 bg-white p-10 transition-all duration-500 hover:-translate-y-2 hover:border-emerald-200 hover:shadow-2xl hover:shadow-emerald-900/5">
-                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-emerald-50 border border-emerald-100 text-emerald-600 group-hover:scale-110 transition-transform duration-500 group-hover:bg-emerald-600 group-hover:text-white group-hover:shadow-lg group-hover:shadow-emerald-600/20 group-hover:border-emerald-600">
-                  <Trophy className="h-8 w-8" />
-                </div>
-                <div>
-                  <h3 className="font-heading text-2xl font-bold text-slate-900 mb-3">Earn Badges</h3>
-                  <p className="text-slate-600 text-base leading-relaxed font-medium">
-                    Unlock achievements like 'Robotics Explorer' and generate beautifully crafted official PDF certificates for your progress.
-                  </p>
-                </div>
-              </div>
-
             </div>
           </div>
-        </section>
-      </main>
+        </div>
+      </section>
 
-      <footer className="border-t border-slate-200 py-12 bg-slate-50 relative z-10">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center justify-between">
-          <div className="flex items-center gap-3 mb-4 md:mb-0">
-            <Logo className="h-6 w-6 text-slate-400" />
-            <span className="font-heading text-base font-bold text-slate-500">Young AI Explorers</span>
+      {/* SECTION 5: LEARNING JOURNEY */}
+      <section className="py-32 relative z-10 bg-slate-900/30 border-y border-white/5">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-5xl font-heading font-bold text-white mb-4">The Learning Journey</h2>
+            <p className="text-slate-400 text-lg">A rewarding, step-by-step path to mastering the future.</p>
           </div>
-          <div className="text-slate-500 text-sm font-medium">
-            <p>Founded by Bassey Riman. © {new Date().getFullYear()} All rights reserved.</p>
+          
+          <div className="max-w-3xl mx-auto relative">
+            {/* Vertical Line */}
+            <div className="absolute left-1/2 top-0 bottom-0 w-1 bg-white/10 -translate-x-1/2"></div>
+            
+            {[
+              { title: "Explore a Topic", desc: "Read engaging, illustrated lessons.", icon: Rocket, color: "bg-purple-500" },
+              { title: "Test Your Knowledge", desc: "Take fun, interactive quizzes.", icon: CheckCircle2, color: "bg-blue-500" },
+              { title: "Earn a Badge", desc: "Collect 3D medals for your achievements.", icon: Medal, color: "bg-orange-500" },
+              { title: "Get Certified", desc: "Download your official Explorer Certificate.", icon: GraduationCap, color: "bg-emerald-500" },
+            ].map((step, i) => (
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-100px" }}
+                key={i} 
+                className={`relative flex items-center gap-8 mb-16 ${i % 2 === 0 ? "flex-row" : "flex-row-reverse"}`}
+              >
+                <div className={`flex-1 ${i % 2 === 0 ? "text-right" : "text-left"}`}>
+                  <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
+                  <p className="text-slate-400">{step.desc}</p>
+                </div>
+                <div className={`w-14 h-14 rounded-full ${step.color} flex items-center justify-center shrink-0 z-10 shadow-[0_0_20px_rgba(0,0,0,0.5)] border-4 border-[#0d1b2a]`}>
+                  <step.icon className="h-6 w-6 text-white" />
+                </div>
+                <div className="flex-1"></div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6 & 7: BADGES & LEADERBOARD */}
+      <section className="py-32 relative z-10">
+        <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
+          <div>
+            <h2 className="text-3xl font-heading font-bold text-white mb-8">Earn 3D Badges</h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                { name: "AI Explorer", color: "from-amber-400 to-orange-600" },
+                { name: "Robotics Pro", color: "from-slate-300 to-slate-500" },
+                { name: "Future Scientist", color: "from-cyan-400 to-blue-600" },
+                { name: "Innovation Champ", color: "from-purple-400 to-pink-600" }
+              ].map((badge, i) => (
+                <div key={i} className="bg-glass border border-white/10 p-6 rounded-3xl text-center flex flex-col items-center justify-center hover:bg-white/5 transition-colors">
+                  <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${badge.color} flex items-center justify-center mb-4 shadow-lg border-2 border-white/20 relative overflow-hidden`}>
+                    <div className="absolute inset-0 bg-white/20 mix-blend-overlay w-1/2" />
+                    <Medal className="h-10 w-10 text-white drop-shadow-md" />
+                  </div>
+                  <div className="font-medium text-slate-200">{badge.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          <div>
+            <h2 className="text-3xl font-heading font-bold text-white mb-8 flex items-center gap-3">
+              <Trophy className="h-8 w-8 text-yellow-400" /> Top Explorers
+            </h2>
+            <div className="bg-glass border border-white/10 rounded-3xl p-6">
+              {[
+                { name: "Alex M.", pts: "2,450", rank: 1 },
+                { name: "Sarah K.", pts: "2,100", rank: 2 },
+                { name: "Leo T.", pts: "1,950", rank: 3 },
+                { name: "Emma J.", pts: "1,800", rank: 4 },
+              ].map((user, i) => (
+                <div key={i} className="flex items-center justify-between p-4 border-b border-white/5 last:border-0 hover:bg-white/5 rounded-xl transition-colors">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-slate-300 text-black' : i === 2 ? 'bg-amber-700 text-white' : 'bg-white/10 text-slate-400'}`}>
+                      {user.rank}
+                    </div>
+                    <span className="font-medium text-slate-200">{user.name}</span>
+                  </div>
+                  <span className="text-cyan-400 font-mono">{user.pts} pts</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 8 & 9: PARENTS & SCHOOLS */}
+      <section className="py-32 relative z-10 border-y border-white/5 bg-slate-900/50">
+        <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
+          <div className="p-10 rounded-3xl bg-glass border border-white/10">
+            <h2 className="text-2xl font-bold text-white mb-4">For Parents</h2>
+            <p className="text-slate-400 mb-6 leading-relaxed">
+              Equip your child with essential AI literacy. Our platform ensures screen time is highly educational, completely safe, and aligned with future career outcomes.
+            </p>
+            <ul className="space-y-3 mb-8 text-slate-300">
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-400" /> Safe, moderated AI interactions</li>
+              <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-400" /> Detailed progress tracking</li>
+            </ul>
+            <Link href="#" className="text-cyan-400 font-medium hover:text-cyan-300 flex items-center gap-1">Learn more <ArrowRight className="h-4 w-4" /></Link>
+          </div>
+          
+          <div className="p-10 rounded-3xl bg-glass border border-white/10">
+            <h2 className="text-2xl font-bold text-white mb-4">For Schools</h2>
+            <p className="text-slate-400 mb-6 leading-relaxed">
+              Partner with Young AI Explorers. Download our comprehensive classroom resources, book interactive workshops, and integrate AI literacy into your curriculum.
+            </p>
+            <ul className="space-y-3 mb-8 text-slate-300">
+              <li className="flex items-center gap-2"><Download className="h-5 w-5 text-purple-400" /> Free Teacher Resource Packs</li>
+              <li className="flex items-center gap-2"><Globe className="h-5 w-5 text-purple-400" /> Virtual & In-person Workshops</li>
+            </ul>
+            <Link href="#" className="text-purple-400 font-medium hover:text-purple-300 flex items-center gap-1">View resources <ArrowRight className="h-4 w-4" /></Link>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 10: FOUNDER & FOOTER */}
+      <footer className="pt-32 pb-12 relative z-10">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center mb-24">
+            <div className="w-24 h-24 rounded-full bg-slate-800 mx-auto mb-6 overflow-hidden border-2 border-white/10">
+              {/* Optional: Add Founder Photo here */}
+              <div className="w-full h-full bg-gradient-to-tr from-cyan-900 to-purple-900" />
+            </div>
+            <p className="text-2xl font-light text-slate-300 italic mb-6">
+              "My mission is to make Artificial Intelligence accessible to every child, regardless of their background. The future belongs to those who understand the technology shaping it."
+            </p>
+            <div className="font-medium text-white tracking-wider uppercase text-sm">Founder, Young AI Explorers</div>
+          </div>
+          
+          <div className="border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5 text-cyan-400" />
+              <span className="font-heading font-bold text-xl text-white">Young AI Explorers</span>
+            </div>
+            <div className="flex flex-wrap justify-center gap-8 text-sm text-slate-400">
+              <Link href="#" className="hover:text-white transition-colors">Schools</Link>
+              <Link href="#" className="hover:text-white transition-colors">Parents</Link>
+              <Link href="#" className="hover:text-white transition-colors">Teachers</Link>
+              <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
+              <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+            </div>
+            <div className="text-sm text-slate-500">
+              © {new Date().getFullYear()} Young AI Explorers.
+            </div>
           </div>
         </div>
       </footer>
-    </div>
-  )
+    </main>
+  );
 }
