@@ -85,21 +85,6 @@
   -webkit-text-fill-color: transparent;
 }
 
-/* 3D Utilities */
-.preserve-3d {
-  transform-style: preserve-3d;
-}
-.transform-style-3d {
-  transform-style: preserve-3d;
-}
-.backface-hidden {
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-}
-.perspective-1000 {
-  perspective: 1000px;
-}
-
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

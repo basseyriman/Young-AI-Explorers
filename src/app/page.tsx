@@ -15,20 +15,24 @@ export default function Home() {
       <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 brightness-100 contrast-150 mix-blend-overlay"></div>
         {/* Stars */}
-        {Array.from({ length: 50 }).map((_, i) => (
-          <div
-            key={`star-${i}`}
-            className="absolute bg-white rounded-full animate-twinkle"
-            style={{
-              width: Math.random() * 3 + "px",
-              height: Math.random() * 3 + "px",
-              top: Math.random() * 100 + "%",
-              left: Math.random() * 100 + "%",
-              animationDelay: Math.random() * 5 + "s",
-              opacity: Math.random(),
-            }}
-          />
-        ))}
+        {Array.from({ length: 50 }).map((_, i) => {
+          const pseudoRand = (i * 137) % 100;
+          const pseudoRand2 = (i * 93) % 100;
+          return (
+            <div
+              key={`star-${i}`}
+              className="absolute bg-white rounded-full animate-twinkle"
+              style={{
+                width: (pseudoRand % 3) + 1 + "px",
+                height: (pseudoRand % 3) + 1 + "px",
+                top: pseudoRand + "%",
+                left: pseudoRand2 + "%",
+                animationDelay: (pseudoRand % 5) + "s",
+                opacity: (pseudoRand2 / 100) * 0.8 + 0.2,
+              }}
+            />
+          );
+        })}
         {/* Glowing Orbs */}
         <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen animate-float-slow" />
         <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
