@@ -101,14 +101,16 @@ export default function Home() {
             
             {/* The Mascot */}
             <div className="absolute inset-0 flex items-center justify-center animate-float">
-              <Image 
-                src="/assets/vision_vee.png" 
-                alt="Vision Vee Robot" 
-                width={300} 
-                height={300} 
-                className="drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)]"
-                priority
-              />
+              <div className="relative w-[280px] h-[280px] rounded-full overflow-hidden border-[6px] border-slate-900/50 shadow-[0_0_60px_rgba(0,200,255,0.3)] ring-4 ring-cyan-500/20">
+                <Image 
+                  src="/assets/new_mascot.png" 
+                  alt="Vision Vee Robot" 
+                  fill
+                  className="object-cover scale-[1.15]"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 280px"
+                />
+              </div>
             </div>
           </motion.div>
         </div>
