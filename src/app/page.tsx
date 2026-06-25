@@ -197,16 +197,26 @@ export default function Home() {
             <Book3D />
           </div>
           <div className="flex-1 text-center md:text-left">
+            <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+              <div className="flex text-amber-400 text-sm">★★★★★</div>
+              <span className="text-slate-400 text-sm font-medium">100+ Amazon Reviews</span>
+            </div>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-white mb-6">The Physical Book</h2>
-            <p className="text-xl text-slate-400 mb-8 font-light">
+            <p className="text-xl text-slate-400 mb-6 font-light">
               Start the journey off-screen. The perfect companion to the online platform, available worldwide.
             </p>
+            <div className="flex flex-wrap gap-3 justify-center md:justify-start mb-8">
+              <span className="bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold text-white tracking-widest uppercase">Ages 9-12</span>
+              <span className="bg-white/10 border border-white/20 rounded-full px-4 py-1.5 text-xs font-bold text-white tracking-widest uppercase">Worldwide Shipping</span>
+              <span className="bg-purple-500/20 border border-purple-500/50 rounded-full px-4 py-1.5 text-xs font-bold text-purple-300 tracking-widest uppercase">Paperback</span>
+              <span className="bg-cyan-500/20 border border-cyan-500/50 rounded-full px-4 py-1.5 text-xs font-bold text-cyan-300 tracking-widest uppercase">Future eBook</span>
+            </div>
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-              <Link href="https://www.amazon.com/Young-AI-Explorers-Guide-Future/dp/B0H4KGNW3B/ref=sr_1_1?crid=1B47QDACN97ZG&dib=eyJ2IjoiMSJ9.yXspQGnrKSKPF9NWQY0CSsiGBl6_7uWc422KOGdLjpnJy1vSiLR9g8VkWRK52_edLmhaT4dKyLYjkzFH0UlmedOd6KOC1p0QqPFjiZDxHr3UpyZvuRHKEWlbj5ZBaLlqzGj2xdU16HmDq6s1d0RiSU8q-9Wr62BmwtUsqe11Kz5LlpkSq5HPnSMm3pjJZ5mG_Skq6WiZDEmmiesYlDNdmyB16-KDK087gRhf3PEPUXM.gULxLo1HgyynT2lOmFzFar6FStXYNo321SBTppBQRj4&dib_tag=se&keywords=young+AI+EXPLORER&qid=1782348015&sprefix=young+ai+explorer%2Caps%2C231&sr=8-1" target="_blank" className="w-full sm:w-auto px-8 py-4 bg-[#ff9900] text-black rounded-full font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2">
-                Available on Amazon <ArrowUpRight className="h-5 w-5" />
+              <Link href="https://www.amazon.com/Young-AI-Explorers-Guide-Future/dp/B0H4KGNW3B/ref=sr_1_1?crid=1B47QDACN97ZG&dib=eyJ2IjoiMSJ9.yXspQGnrKSKPF9NWQY0CSsiGBl6_7uWc422KOGdLjpnJy1vSiLR9g8VkWRK52_edLmhaT4dKyLYjkzFH0UlmedOd6KOC1p0QqPFjiZDxHr3UpyZvuRHKEWlbj5ZBaLlqzGj2xdU16HmDq6s1d0RiSU8q-9Wr62BmwtUsqe11Kz5LlpkSq5HPnSMm3pjJZ5mG_Skq6WiZDEmmiesYlDNdmyB16-KDK087gRhf3PEPUXM.gULxLo1HgyynT2lOmFzFar6FStXYNo321SBTppBQRj4&dib_tag=se&keywords=young+AI+EXPLORER&qid=1782348015&sprefix=young+ai+explorer%2Caps%2C231&sr=8-1" target="_blank" className="w-full sm:w-auto px-8 py-4 bg-[#ff9900] text-black rounded-full font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(255,153,0,0.3)]">
+                Buy on Amazon <ArrowUpRight className="h-5 w-5" />
               </Link>
-              <Link href="/dashboard/student" className="w-full sm:w-auto px-8 py-4 text-white hover:text-cyan-400 transition-colors flex items-center justify-center gap-2">
-                Continue learning online <ArrowRight className="h-5 w-5" />
+              <Link href="#" className="w-full sm:w-auto px-8 py-4 text-white border border-white/20 rounded-full hover:bg-white/5 transition-colors flex items-center justify-center gap-2">
+                Read Sample
               </Link>
             </div>
           </div>
@@ -288,19 +298,19 @@ export default function Home() {
         <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
             <h2 className="text-3xl font-heading font-bold text-white mb-8">Earn 3D Badges</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-6">
               {[
-                { name: "AI Explorer", color: "from-amber-400 to-orange-600" },
-                { name: "Robotics Pro", color: "from-slate-300 to-slate-500" },
-                { name: "Future Scientist", color: "from-cyan-400 to-blue-600" },
-                { name: "Innovation Champ", color: "from-purple-400 to-pink-600" }
+                { name: "Gold Explorer", color: "from-yellow-300 to-amber-600", shadow: "shadow-[0_10px_30px_rgba(251,191,36,0.3)]", border: "border-yellow-400/50" },
+                { name: "Silver Inventor", color: "from-slate-200 to-slate-500", shadow: "shadow-[0_10px_30px_rgba(148,163,184,0.3)]", border: "border-slate-300/50" },
+                { name: "Diamond Coder", color: "from-cyan-200 to-blue-600", shadow: "shadow-[0_10px_30px_rgba(6,182,212,0.4)]", border: "border-cyan-300/50" },
+                { name: "Legendary Pioneer", color: "from-fuchsia-300 to-purple-700", shadow: "shadow-[0_10px_30px_rgba(168,85,247,0.5)]", border: "border-fuchsia-400/50" }
               ].map((badge, i) => (
-                <div key={i} className="bg-glass border border-white/10 p-6 rounded-3xl text-center flex flex-col items-center justify-center hover:bg-white/5 transition-colors">
-                  <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${badge.color} flex items-center justify-center mb-4 shadow-lg border-2 border-white/20 relative overflow-hidden`}>
-                    <div className="absolute inset-0 bg-white/20 mix-blend-overlay w-1/2" />
-                    <Medal className="h-10 w-10 text-white drop-shadow-md" />
+                <div key={i} className="group bg-glass border border-white/10 p-6 rounded-[32px] text-center flex flex-col items-center justify-center hover:bg-white/5 transition-colors">
+                  <div className={`w-24 h-24 rounded-full bg-gradient-to-br ${badge.color} flex items-center justify-center mb-6 border-[3px] ${badge.border} ${badge.shadow} transform-style-3d group-hover:scale-110 group-hover:rotate-12 transition-transform duration-500`}>
+                    <div className="absolute inset-0 rounded-full bg-white/20 mix-blend-overlay rotate-45 transform origin-top-left translate-x-4" />
+                    <Medal className="h-10 w-10 text-white drop-shadow-xl" style={{ transform: "translateZ(20px)" }} />
                   </div>
-                  <div className="font-medium text-slate-200">{badge.name}</div>
+                  <div className="font-bold text-slate-200 text-lg tracking-wide">{badge.name}</div>
                 </div>
               ))}
             </div>
@@ -308,23 +318,33 @@ export default function Home() {
           
           <div>
             <h2 className="text-3xl font-heading font-bold text-white mb-8 flex items-center gap-3">
-              <Trophy className="h-8 w-8 text-yellow-400" /> Top Explorers
+              <Trophy className="h-8 w-8 text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.5)]" /> Top Explorers
             </h2>
-            <div className="bg-glass border border-white/10 rounded-3xl p-6">
+            <div className="bg-glass border border-white/10 rounded-[32px] p-6 shadow-2xl">
               {[
-                { name: "Alex M.", pts: "2,450", rank: 1 },
-                { name: "Sarah K.", pts: "2,100", rank: 2 },
-                { name: "Leo T.", pts: "1,950", rank: 3 },
-                { name: "Emma J.", pts: "1,800", rank: 4 },
+                { name: "Alex M.", pts: "2,450 XP", rank: 1, streak: "12🔥", level: "Lv 8", avatar: "👦" },
+                { name: "Sarah K.", pts: "2,100 XP", rank: 2, streak: "8🔥", level: "Lv 7", avatar: "👧" },
+                { name: "Leo T.", pts: "1,950 XP", rank: 3, streak: "5🔥", level: "Lv 6", avatar: "👦🏽" },
+                { name: "Emma J.", pts: "1,800 XP", rank: 4, streak: "3🔥", level: "Lv 5", avatar: "👧🏼" },
               ].map((user, i) => (
-                <div key={i} className="flex items-center justify-between p-4 border-b border-white/5 last:border-0 hover:bg-white/5 rounded-xl transition-colors">
+                <div key={i} className="flex items-center justify-between p-4 border-b border-white/5 last:border-0 hover:bg-white/5 rounded-2xl transition-colors group">
                   <div className="flex items-center gap-4">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${i === 0 ? 'bg-yellow-500 text-black' : i === 1 ? 'bg-slate-300 text-black' : i === 2 ? 'bg-amber-700 text-white' : 'bg-white/10 text-slate-400'}`}>
+                    <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-lg ${i === 0 ? 'bg-gradient-to-br from-yellow-300 to-amber-600 text-white shadow-lg shadow-yellow-500/30' : i === 1 ? 'bg-gradient-to-br from-slate-300 to-slate-500 text-white' : i === 2 ? 'bg-gradient-to-br from-amber-600 to-amber-800 text-white' : 'bg-white/10 text-slate-400'}`}>
                       {user.rank}
                     </div>
-                    <span className="font-medium text-slate-200">{user.name}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-slate-800 border border-white/10 flex items-center justify-center text-xl shadow-inner group-hover:scale-110 transition-transform">
+                        {user.avatar}
+                      </div>
+                      <div>
+                        <div className="font-bold text-slate-200">{user.name} <span className="text-xs font-mono bg-white/10 px-2 py-0.5 rounded text-cyan-300 ml-2">{user.level}</span></div>
+                        <div className="text-xs text-slate-400 mt-0.5 flex items-center gap-2">
+                          <span className="text-orange-400 font-medium">{user.streak} Streak</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <span className="text-cyan-400 font-mono">{user.pts} pts</span>
+                  <span className="text-cyan-400 font-bold tracking-wider">{user.pts}</span>
                 </div>
               ))}
             </div>
@@ -333,63 +353,113 @@ export default function Home() {
       </section>
 
       {/* SECTION 8 & 9: PARENTS & SCHOOLS */}
-      <section className="py-32 relative z-10 border-y border-white/5 bg-slate-900/50">
+      <section id="parents" className="py-32 relative z-10 border-y border-white/5 bg-slate-900/50">
         <div className="container mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-12">
-          <div className="p-10 rounded-3xl bg-glass border border-white/10">
-            <h2 className="text-2xl font-bold text-white mb-4">For Parents</h2>
-            <p className="text-slate-400 mb-6 leading-relaxed">
-              Equip your child with essential AI literacy. Our platform ensures screen time is highly educational, completely safe, and aligned with future career outcomes.
-            </p>
-            <ul className="space-y-3 mb-8 text-slate-300">
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-400" /> Safe, moderated AI interactions</li>
-              <li className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-emerald-400" /> Detailed progress tracking</li>
-            </ul>
-            <Link href="#" className="text-cyan-400 font-medium hover:text-cyan-300 flex items-center gap-1">Learn more <ArrowRight className="h-4 w-4" /></Link>
+          
+          {/* Parents Card */}
+          <div className="p-1 rounded-3xl bg-gradient-to-br from-white/10 to-transparent">
+            <div className="h-full p-8 md:p-10 rounded-[22px] bg-[#020617] border border-white/5 flex flex-col">
+              <div className="w-full h-48 bg-slate-800 rounded-2xl mb-8 overflow-hidden relative">
+                <Image src="https://images.unsplash.com/photo-1543269865-cbf427effbad?q=80&w=800&auto=format&fit=crop" alt="Parent and child" fill className="object-cover opacity-60 mix-blend-luminosity hover:mix-blend-normal hover:opacity-100 transition-all duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] to-transparent"></div>
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-4">For Parents</h2>
+              <p className="text-slate-400 mb-6 leading-relaxed flex-grow">
+                Equip your child with essential AI literacy. Our platform ensures screen time is highly educational, completely safe, and aligned with future career outcomes.
+              </p>
+              <div className="p-4 rounded-xl bg-white/5 border border-white/10 mb-8">
+                <p className="text-sm text-slate-300 italic">"The only educational platform my daughter actually begs to use. She's learning Python and AI concepts at age 10!"</p>
+                <p className="text-xs font-bold text-cyan-400 mt-2">— Sarah T., Parent</p>
+              </div>
+              <Link href="#" className="w-full py-4 text-center text-slate-900 bg-white rounded-full font-bold hover:scale-105 transition-transform">Explore Parent Dashboard</Link>
+            </div>
           </div>
           
-          <div className="p-10 rounded-3xl bg-glass border border-white/10">
-            <h2 className="text-2xl font-bold text-white mb-4">For Schools</h2>
-            <p className="text-slate-400 mb-6 leading-relaxed">
-              Partner with Young AI Explorers. Download our comprehensive classroom resources, book interactive workshops, and integrate AI literacy into your curriculum.
-            </p>
-            <ul className="space-y-3 mb-8 text-slate-300">
-              <li className="flex items-center gap-2"><Download className="h-5 w-5 text-purple-400" /> Free Teacher Resource Packs</li>
-              <li className="flex items-center gap-2"><Globe className="h-5 w-5 text-purple-400" /> Virtual & In-person Workshops</li>
-            </ul>
-            <Link href="#" className="text-purple-400 font-medium hover:text-purple-300 flex items-center gap-1">View resources <ArrowRight className="h-4 w-4" /></Link>
+          {/* Schools Card */}
+          <div id="schools" className="p-1 rounded-3xl bg-gradient-to-br from-purple-500/30 to-transparent">
+            <div className="h-full p-8 md:p-10 rounded-[22px] bg-[#020617] border border-white/5 flex flex-col">
+              <div className="w-full h-48 bg-slate-800 rounded-2xl mb-8 overflow-hidden relative">
+                <Image src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=800&auto=format&fit=crop" alt="Classroom" fill className="object-cover opacity-60 mix-blend-luminosity hover:mix-blend-normal hover:opacity-100 transition-all duration-700" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#020617] to-transparent"></div>
+              </div>
+              <h2 className="text-3xl font-bold text-white mb-4">For Schools & Teachers</h2>
+              <p className="text-slate-400 mb-6 leading-relaxed flex-grow">
+                Partner with Young AI Explorers. Download our comprehensive classroom resources, book interactive workshops, and integrate AI literacy into your curriculum.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <Link href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-purple-500/20 text-purple-300 font-medium hover:bg-purple-500/30 transition-colors border border-purple-500/30">
+                  <Download className="h-4 w-4" /> Curriculum PDF
+                </Link>
+                <Link href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-cyan-500/20 text-cyan-300 font-medium hover:bg-cyan-500/30 transition-colors border border-cyan-500/30">
+                  <Globe className="h-4 w-4" /> Book Workshop
+                </Link>
+              </div>
+              <Link href="#" className="w-full py-4 text-center text-white bg-white/10 rounded-full font-bold hover:bg-white/20 transition-colors border border-white/20">Request School Demo</Link>
+            </div>
           </div>
+          
         </div>
       </section>
 
       {/* SECTION 10: FOUNDER & FOOTER */}
-      <footer className="pt-32 pb-12 relative z-10">
+      <footer className="pt-32 pb-12 relative z-10 bg-gradient-to-b from-transparent to-[#020617]">
         <div className="container mx-auto px-6">
-          <div className="max-w-3xl mx-auto text-center mb-24">
-            <div className="w-24 h-24 rounded-full bg-slate-800 mx-auto mb-6 overflow-hidden border-2 border-white/10">
-              {/* Optional: Add Founder Photo here */}
-              <div className="w-full h-full bg-gradient-to-tr from-cyan-900 to-purple-900" />
+          <div className="max-w-4xl mx-auto text-center mb-24">
+            <div className="w-28 h-28 rounded-full bg-slate-800 mx-auto mb-6 overflow-hidden border-4 border-cyan-500/30 relative">
+              <Image src="/assets/author.jpg" alt="Bassey Riman" fill className="object-cover" />
             </div>
-            <p className="text-2xl font-light text-slate-300 italic mb-6">
-              "My mission is to make Artificial Intelligence accessible to every child, regardless of their background. The future belongs to those who understand the technology shaping it."
+            <p className="text-2xl md:text-3xl font-light text-slate-300 italic mb-8 leading-relaxed">
+              "My mission is to make Artificial Intelligence accessible to every child. The future belongs to those who understand the technology shaping it."
             </p>
-            <div className="font-medium text-white tracking-wider uppercase text-sm">Founder, Young AI Explorers</div>
+            <div className="flex flex-col items-center">
+              <h3 className="font-heading text-xl font-bold text-white mb-2">Bassey Riman</h3>
+              <p className="text-sm font-bold text-cyan-400 tracking-widest uppercase">Founder, Young AI Explorers</p>
+              <p className="text-sm text-slate-500 mt-2">AI Engineer • Author • AI in Education</p>
+            </div>
           </div>
           
-          <div className="border-t border-white/10 pt-12 flex flex-col md:flex-row justify-between items-center gap-6">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-5 w-5 text-cyan-400" />
-              <span className="font-heading font-bold text-xl text-white">Young AI Explorers</span>
+          <div className="border-t border-white/10 pt-16 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
+            <div className="flex flex-col gap-4">
+              <Link href="/" className="flex items-center gap-2 group">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-cyan-400 to-blue-600 flex items-center justify-center shadow-lg">
+                  <Sparkles className="h-4 w-4 text-white" />
+                </div>
+                <span className="font-heading font-bold text-xl text-white">Young AI Explorers</span>
+              </Link>
+              <p className="text-sm text-slate-500">Inspiring the next generation of innovators.</p>
             </div>
-            <div className="flex flex-wrap justify-center gap-8 text-sm text-slate-400">
-              <Link href="#" className="hover:text-white transition-colors">Schools</Link>
-              <Link href="#" className="hover:text-white transition-colors">Parents</Link>
-              <Link href="#" className="hover:text-white transition-colors">Teachers</Link>
-              <Link href="#" className="hover:text-white transition-colors">Privacy</Link>
-              <Link href="#" className="hover:text-white transition-colors">Contact</Link>
+            
+            <div className="flex flex-wrap gap-8 text-sm text-slate-400 font-medium">
+              <div className="flex flex-col gap-3">
+                <span className="text-white font-bold mb-1">Platform</span>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">Topics</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">AI Assistant</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">The Book</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-white font-bold mb-1">Community</span>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">For Schools</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">For Parents</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">For Teachers</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-white font-bold mb-1">Legal</span>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">Privacy Policy</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">Terms of Service</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">Cookie Policy</Link>
+              </div>
+              <div className="flex flex-col gap-3">
+                <span className="text-white font-bold mb-1">Socials</span>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">LinkedIn</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">Instagram</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">YouTube</Link>
+                <Link href="#" className="hover:text-cyan-400 transition-colors">Email Us</Link>
+              </div>
             </div>
-            <div className="text-sm text-slate-500">
-              © {new Date().getFullYear()} Young AI Explorers.
-            </div>
+          </div>
+          
+          <div className="border-t border-white/5 mt-12 pt-8 text-center text-sm text-slate-600">
+            © {new Date().getFullYear()} Young AI Explorers. Designed for the future.
           </div>
         </div>
       </footer>
