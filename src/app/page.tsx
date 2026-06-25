@@ -171,7 +171,7 @@ export default function Home() {
               Start the journey off-screen. The perfect companion to the online platform, available worldwide.
             </p>
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center md:justify-start">
-              <Link href="https://amazon.com" target="_blank" className="w-full sm:w-auto px-8 py-4 bg-[#ff9900] text-black rounded-full font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2">
+              <Link href="https://www.amazon.com/Young-AI-Explorers-Guide-Future/dp/B0H4KGNW3B/ref=sr_1_1?crid=1B47QDACN97ZG&dib=eyJ2IjoiMSJ9.yXspQGnrKSKPF9NWQY0CSsiGBl6_7uWc422KOGdLjpnJy1vSiLR9g8VkWRK52_edLmhaT4dKyLYjkzFH0UlmedOd6KOC1p0QqPFjiZDxHr3UpyZvuRHKEWlbj5ZBaLlqzGj2xdU16HmDq6s1d0RiSU8q-9Wr62BmwtUsqe11Kz5LlpkSq5HPnSMm3pjJZ5mG_Skq6WiZDEmmiesYlDNdmyB16-KDK087gRhf3PEPUXM.gULxLo1HgyynT2lOmFzFar6FStXYNo321SBTppBQRj4&dib_tag=se&keywords=young+AI+EXPLORER&qid=1782348015&sprefix=young+ai+explorer%2Caps%2C231&sr=8-1" target="_blank" className="w-full sm:w-auto px-8 py-4 bg-[#ff9900] text-black rounded-full font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2">
                 Available on Amazon <ArrowUpRight className="h-5 w-5" />
               </Link>
               <Link href="/dashboard/student" className="w-full sm:w-auto px-8 py-4 text-white hover:text-cyan-400 transition-colors flex items-center justify-center gap-2">

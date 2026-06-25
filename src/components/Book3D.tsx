@@ -14,9 +14,10 @@ export function Book3D() {
         {/* Book Cover (Front) */}
         <div className="absolute inset-0 backface-hidden transform-style-3d shadow-2xl rounded-r-lg overflow-hidden border-l-4 border-slate-900/40">
           <Image
-            src="/assets/cover.png"
+            src="/assets/young-ai-explorers-book-cutout.png"
             alt="Young AI Explorers Book"
             fill
+            sizes="(max-width: 768px) 100vw, 384px"
             className="object-cover"
             priority
           />
