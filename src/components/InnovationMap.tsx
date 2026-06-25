@@ -78,7 +78,7 @@ export function InnovationMap() {
 
                 {/* Island Label */}
                 <motion.div 
-                  className="absolute top-16 whitespace-nowrap bg-slate-900/80 backdrop-blur-md px-3 py-1 rounded-full border border-white/10 text-xs font-medium text-slate-200 opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-16 whitespace-nowrap bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 text-sm font-bold text-white shadow-[0_0_15px_rgba(0,100,255,0.3)] transition-transform group-hover:-translate-y-2"
                   style={{ transform: "rotateX(-60deg) rotateZ(10deg)" }}
                 >
                   {island.name}
