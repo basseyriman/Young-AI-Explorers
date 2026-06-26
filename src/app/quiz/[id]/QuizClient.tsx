@@ -7,6 +7,15 @@ import { saveBadge } from './actions'
 import Link from 'next/link'
 import { createClient } from '@/utils/supabase/client'
 
+const bookOrder = [
+  "intro", 11, 34, 9, 4, 27,
+  1, 15, 2, 3, 12, 35, 16,
+  13, 7, 28, 23, 14,
+  5, 22, 19, 20, 21, 36,
+  10, 29, 24, 25, 26,
+  17, 18, 30, 32, 33, 6, 31, 8, 37
+];
+
 export default function QuizClient({ 
   questions, 
   lessonTitle, 
@@ -14,7 +23,7 @@ export default function QuizClient({
 }: { 
   questions: any[], 
   lessonTitle: string, 
-  topicNumber: number 
+  topicNumber: number | string 
 }) {
   const [currentIdx, setCurrentIdx] = useState(0)
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null)
@@ -97,13 +106,18 @@ export default function QuizClient({
               Back to Dashboard
             </Button>
           </Link>
-          {topicNumber < 37 && (
-            <Link href={`/lesson/${topicNumber + 1}`} className="w-full sm:w-auto">
-              <Button size="lg" className="w-full px-8 rounded-full bg-blue-600 text-white hover:bg-blue-700 font-bold h-14 shadow-lg shadow-blue-600/20 transition-all duration-300 hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-1 border-2 border-transparent">
-                Next Chapter <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-            </Link>
-          )}
+          {(() => {
+            const currentIndex = bookOrder.indexOf(topicNumber as any);
+            const nextChapterId = currentIndex !== -1 && currentIndex < bookOrder.length - 1 ? bookOrder[currentIndex + 1] : null;
+            if (!nextChapterId) return null;
+            return (
+              <Link href={`/lesson/${nextChapterId}`} className="w-full sm:w-auto">
+                <Button size="lg" className="w-full px-8 rounded-full bg-blue-600 text-white hover:bg-blue-700 font-bold h-14 shadow-lg shadow-blue-600/20 transition-all duration-300 hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-1 border-2 border-transparent">
+                  Next Chapter <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            );
+          })()}
         </div>
       </div>
     )

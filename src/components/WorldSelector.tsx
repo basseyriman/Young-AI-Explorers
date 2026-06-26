@@ -1,99 +1,94 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
-import Image from "next/image";
+import { ArrowRight, Brain, Eye, Bot, Home, Globe, Palette, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 
-const worlds = [
+type World = {
+  id: string;
+  title: string;
+  subtitle: string;
+  lessons: string;
+  duration: string;
+  icon: LucideIcon;
+  index: string;
+  accent: "purple" | "gold";
+};
+
+const worlds: World[] = [
   {
     id: "ai-foundations",
     title: "AI Foundations",
-    image: "/assets/island_ai_foundations.png",
+    subtitle: "Core concepts every explorer needs",
     lessons: "6 Lessons",
     duration: "~ 60 mins",
-    accentColor: "bg-purple-600 hover:bg-purple-700 shadow-purple-500/20",
-    hoverBorder: "hover:border-purple-500/40 hover:shadow-[0_0_30px_rgba(168,85,247,0.2)]",
-    arrowBg: "bg-purple-600",
-    badgeColor: "text-purple-400 bg-purple-500/10",
+    icon: Brain,
+    index: "01",
+    accent: "purple",
+  },
+  {
+    id: "sees-hears-speaks",
+    title: "AI That Sees, Hears & Speaks",
+    subtitle: "Computer vision, speech, and language",
+    lessons: "7 Lessons",
+    duration: "~ 75 mins",
+    icon: Eye,
+    index: "02",
+    accent: "gold",
   },
   {
     id: "robotics-machines",
-    title: "Robotics & Machines",
-    image: "/assets/island_robotics.png",
+    title: "Robotics & Intelligent Machines",
+    subtitle: "How machines learn to move and decide",
     lessons: "5 Lessons",
     duration: "~ 55 mins",
-    accentColor: "bg-orange-500 hover:bg-orange-600 shadow-orange-500/20",
-    hoverBorder: "hover:border-orange-500/40 hover:shadow-[0_0_30px_rgba(249,115,22,0.2)]",
-    arrowBg: "bg-orange-500",
-    badgeColor: "text-orange-400 bg-orange-500/10",
+    icon: Bot,
+    index: "03",
+    accent: "purple",
   },
   {
-    id: "space-discovery",
-    title: "Space Discovery",
-    image: "/assets/island_space.png",
-    lessons: "6 Lessons",
-    duration: "~ 65 mins",
-    accentColor: "bg-blue-600 hover:bg-blue-700 shadow-blue-500/20",
-    hoverBorder: "hover:border-blue-500/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.2)]",
-    arrowBg: "bg-blue-600",
-    badgeColor: "text-blue-400 bg-blue-500/10",
-  },
-  {
-    id: "healthcare-ai",
-    title: "Healthcare AI",
-    image: "/assets/island_healthcare.png",
+    id: "everyday-life",
+    title: "AI in Everyday Life",
+    subtitle: "Healthcare, transport, and daily tools",
     lessons: "6 Lessons",
     duration: "~ 60 mins",
-    accentColor: "bg-cyan-500 hover:bg-cyan-600 shadow-cyan-500/20",
-    hoverBorder: "hover:border-cyan-500/40 hover:shadow-[0_0_30px_rgba(6,182,212,0.2)]",
-    arrowBg: "bg-cyan-500",
-    badgeColor: "text-cyan-400 bg-cyan-500/10",
+    icon: Home,
+    index: "04",
+    accent: "gold",
   },
   {
     id: "smart-world",
-    title: "Smart World",
-    image: "/assets/island_smart_world.png",
+    title: "Smart World & Digital Society",
+    subtitle: "Ethics, privacy, and the connected world",
     lessons: "5 Lessons",
     duration: "~ 50 mins",
-    accentColor: "bg-emerald-500 hover:bg-emerald-600 shadow-emerald-500/20",
-    hoverBorder: "hover:border-emerald-500/40 hover:shadow-[0_0_30px_rgba(16,185,129,0.2)]",
-    arrowBg: "bg-emerald-500",
-    badgeColor: "text-emerald-400 bg-emerald-500/10",
+    icon: Globe,
+    index: "05",
+    accent: "purple",
   },
   {
     id: "creativity-innovation",
-    title: "Creativity & Innovation",
-    image: "/assets/island_creativity.png",
-    lessons: "8 Lessons",
-    duration: "~ 70 mins",
-    accentColor: "bg-pink-500 hover:bg-pink-600 shadow-pink-500/20",
-    hoverBorder: "hover:border-pink-500/40 hover:shadow-[0_0_30px_rgba(236,72,153,0.2)]",
-    arrowBg: "bg-pink-500",
-    badgeColor: "text-pink-400 bg-pink-500/10",
+    title: "Creativity & Future Innovation",
+    subtitle: "Art, music, and tomorrow's inventions",
+    lessons: "9 Lessons",
+    duration: "~ 90 mins",
+    icon: Palette,
+    index: "06",
+    accent: "gold",
   },
 ];
 
 const containerVariants = {
   hidden: {},
-  visible: {
-    transition: {
-      staggerChildren: 0.1,
-    },
-  },
+  visible: { transition: { staggerChildren: 0.08 } },
 };
 
 const cardVariants = {
-  hidden: { opacity: 0, y: 30, scale: 0.95 },
+  hidden: { opacity: 0, y: 24 },
   visible: {
     opacity: 1,
     y: 0,
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 15,
-    },
+    transition: { type: "spring", stiffness: 120, damping: 18 },
   },
 } as const;
 
@@ -103,49 +98,50 @@ export function WorldSelector() {
       variants={containerVariants}
       initial="hidden"
       whileInView="visible"
-      viewport={{ once: true, margin: "-100px" }}
-      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mt-12"
+      viewport={{ once: true, margin: "-60px" }}
+      className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
     >
-      {worlds.map((world) => (
-        <Link href={`/dashboard/student`} key={world.id} className="block group">
-          <motion.div
-            variants={cardVariants}
-            className={`h-full flex flex-col rounded-3xl bg-white dark:bg-[#090d1f] border border-slate-200 dark:border-white/5 transition-all duration-500 overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none hover:-translate-y-2 ${world.hoverBorder}`}
-          >
-            {/* Image Section */}
-            <div className="relative w-full aspect-square bg-slate-900/5 dark:bg-white/5 overflow-hidden">
-              <Image
-                src={world.image}
-                alt={world.title}
-                fill
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, 16vw"
-                className="object-cover transform group-hover:scale-105 transition-transform duration-500"
-                priority
-              />
-            </div>
+      {worlds.map((world) => {
+        const Icon = world.icon;
+        const isGold = world.accent === "gold";
 
-            {/* Content Section */}
-            <div className="p-5 flex flex-col flex-grow justify-between min-h-[140px]">
-              <div>
-                <h3 className="font-heading font-bold text-base md:text-lg text-slate-900 dark:text-white leading-tight mb-2 tracking-tight group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+        return (
+          <Link href="/dashboard/student" key={world.id} className="block group">
+            <motion.article
+              variants={cardVariants}
+              className="h-full flex flex-col rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/12 dark:border-brand-gold/15 overflow-hidden transition-all duration-200 hover:border-brand-gold/40 dark:hover:border-brand-gold/35 hover:shadow-[0_12px_40px_rgba(74,45,110,0.1)] hover:-translate-y-0.5"
+            >
+              <div className="px-6 pt-6 pb-4 flex items-start justify-between">
+                <span className={`text-3xl font-heading font-bold tabular-nums leading-none ${isGold ? "text-brand-gold" : "text-brand-purple/25 dark:text-brand-gold/30"}`}>
+                  {world.index}
+                </span>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center border ${isGold ? "bg-brand-gold/10 border-brand-gold/25 text-brand-gold" : "bg-brand-purple/8 border-brand-purple/15 text-brand-purple dark:bg-brand-gold/10 dark:border-brand-gold/20 dark:text-brand-gold"}`}>
+                  <Icon className="h-5 w-5" strokeWidth={1.5} />
+                </div>
+              </div>
+
+              <div className="px-6 pb-6 flex flex-col flex-grow">
+                <h3 className="font-heading font-bold text-lg text-brand-purple dark:text-brand-cream leading-snug mb-2 group-hover:text-brand-gold transition-colors duration-200">
                   {world.title}
                 </h3>
-              </div>
+                <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55 leading-relaxed mb-6 flex-grow">
+                  {world.subtitle}
+                </p>
 
-              <div className="flex items-center justify-between mt-4">
-                <div className="flex flex-col gap-0.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
-                  <span>{world.lessons}</span>
-                  <span>{world.duration}</span>
-                </div>
-
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:rotate-12 ${world.arrowBg}`}>
-                  <ArrowRight className="h-4 w-4" />
+                <div className="flex items-center justify-between pt-4 border-t border-brand-purple/8 dark:border-brand-gold/10">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-xs font-semibold text-brand-purple dark:text-brand-cream">{world.lessons}</span>
+                    <span className="text-xs text-brand-purple/45 dark:text-brand-cream/45">{world.duration}</span>
+                  </div>
+                  <div className={`w-9 h-9 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:translate-x-0.5 ${isGold ? "bg-brand-gold text-brand-purple-dark" : "bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark"}`}>
+                    <ArrowRight className="h-4 w-4" strokeWidth={2} />
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        </Link>
-      ))}
+            </motion.article>
+          </Link>
+        );
+      })}
     </motion.div>
   );
 }

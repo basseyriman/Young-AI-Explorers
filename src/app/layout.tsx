@@ -31,8 +31,16 @@ export default function RootLayout({
       className={`${inter.variable} ${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-white dark:bg-space-gradient text-slate-900 dark:text-white transition-colors duration-300 overflow-x-hidden">
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+      <head>
+        {/* Inline theme init: reads localStorage before React hydrates to prevent flash */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem('theme');if(t==='dark'){document.documentElement.classList.add('dark')}else{document.documentElement.classList.remove('dark')}}catch(e){}})()`,
+          }}
+        />
+      </head>
+      <body className="min-h-full flex flex-col font-sans bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:text-brand-cream transition-colors duration-300 overflow-x-hidden" suppressHydrationWarning>
+        <ThemeProvider defaultTheme="light">
           {children}
           <AIAssistant />
         </ThemeProvider>

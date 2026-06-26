@@ -3,7 +3,7 @@
 import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
 
-export async function saveBadge(topicNumber: number) {
+export async function saveBadge(topicNumber: number | string) {
   const supabase = await createClient()
 
   const { data: { user } } = await supabase.auth.getUser()

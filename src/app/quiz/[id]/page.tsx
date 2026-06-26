@@ -1,10 +1,11 @@
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, HelpCircle } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/Logo'
 import QuizClient from './QuizClient'
+import { ALL_LESSONS, ALL_QUIZZES } from '@/data/lessons'
 
 export default async function QuizPage({
   params,
@@ -22,54 +23,37 @@ export default async function QuizPage({
     return redirect('/login')
   }
 
-  // 1. Fetch the lesson
-  const { data: lesson, error: lessonError } = await supabase
-    .from('lessons')
-    .select('id, title, topic_number')
-    .eq('topic_number', parseInt(id))
-    .single()
+  let lesson: any = null
+  let questions: any[] = []
 
-  if (lessonError || !lesson) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-white bg-slate-950">
-        <h1 className="text-2xl font-bold mb-4">Lesson Not Found</h1>
-        <Link href="/dashboard/student">
-          <Button>Return to Dashboard</Button>
-        </Link>
-      </div>
-    )
-  }
+  if (id === 'intro') {
+    lesson = { id: 'intro', title: "Welcome to the Future – Your AI Adventure Begins!", topic_number: 0 }
+    questions = [
+      { question: "What is Artificial Intelligence (AI)?", options: ["A type of mechanical battery", "Computers having 'brainpower' to learn, think, and help us", "A robot that plays music only", "A system for washing cars"], answer: "Computers having 'brainpower' to learn, think, and help us" },
+      { question: "True or False: AI can learn from patterns and data without needing new rules for everything.", options: ["True", "False"], answer: "True" },
+      { question: "Who is your friendly robot guide in Young AI Explorers?", options: ["Echo Ed", "Logic Leo", "Vision Vee", "Astro Ace"], answer: "Vision Vee" }
+    ]
+  } else {
+    const topicNum = parseInt(id);
+    const staticLesson = ALL_LESSONS[topicNum];
+    const staticQuestions = ALL_QUIZZES[topicNum];
 
-  // 2. Fetch the quiz for this lesson
-  const { data: quiz, error: quizError } = await supabase
-    .from('quizzes')
-    .select('questions')
-    .eq('lesson_id', lesson.id)
-    .single()
-
-  if (quizError || !quiz || !quiz.questions) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-screen text-white bg-slate-950 p-6">
-        <div className="p-8 rounded-3xl bg-slate-900 border border-slate-800 text-center max-w-md">
-          <HelpCircle className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold mb-2">No Quiz Available</h1>
-          <p className="text-slate-400 mb-6">
-            There doesn't seem to be a quiz available for {lesson.title} yet.
-          </p>
-          <Link href={`/lesson/${id}`}>
-            <Button className="w-full bg-blue-600 hover:bg-blue-700">Return to Lesson</Button>
-          </Link>
+    if (!staticLesson) {
+      return (
+        <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
+          <div className="p-8 rounded-2xl bg-white border border-slate-200 text-center max-w-md shadow-lg">
+            <h1 className="text-2xl font-bold mb-2 text-slate-900">Lesson Not Found</h1>
+            <p className="text-slate-500 mb-6">We couldn't find quiz #{id}.</p>
+            <Link href="/dashboard/student">
+              <Button className="bg-slate-900 text-white rounded-full px-8">Return to Dashboard</Button>
+            </Link>
+          </div>
         </div>
-      </div>
-    )
-  }
+      )
+    }
 
-  // Parse questions
-  let questions = []
-  try {
-    questions = typeof quiz.questions === 'string' ? JSON.parse(quiz.questions) : quiz.questions
-  } catch (e) {
-    console.error('Failed to parse questions', e)
+    lesson = { id: topicNum, title: staticLesson.title, topic_number: topicNum };
+    questions = staticQuestions || [];
   }
 
   return (
@@ -94,11 +78,11 @@ export default async function QuizPage({
         </div>
         <div className="flex items-center gap-4">
           <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-bold tracking-wider uppercase text-blue-600 border border-blue-200 shadow-sm">
-            Quiz: Chapter {lesson.topic_number}
+            Quiz: {id === 'intro' ? 'Introduction' : `Chapter ${parseInt(id) < 10 ? '0' + id : id}`}
           </span>
           <Link href="/" className="hidden sm:flex items-center gap-2 hover:opacity-80 transition-opacity">
             <div className="flex h-6 w-6 items-center justify-center rounded-md overflow-hidden bg-slate-100 border border-slate-200">
-              <Logo className="h-4 w-4 text-blue-600" />
+              <Logo size="sm" />
             </div>
             <span className="font-heading text-sm font-bold text-slate-800">Young AI Explorers</span>
           </Link>
@@ -110,7 +94,7 @@ export default async function QuizPage({
         <QuizClient 
           questions={questions} 
           lessonTitle={lesson.title} 
-          topicNumber={lesson.topic_number} 
+          topicNumber={id === 'intro' ? 'intro' : parseInt(id)} 
         />
       </main>
     </div>

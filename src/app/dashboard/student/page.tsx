@@ -3,7 +3,50 @@ import { redirect } from 'next/navigation'
 import { Sparkles, PlayCircle, LogOut, Flame, Medal, Award, Star, Compass, ArrowRight } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
+import OpenAIAssistantButton from '@/components/OpenAIAssistantButton'
 import Image from 'next/image'
+import { LearningJourney } from '@/components/LearningJourney'
+
+const bookLessons = [
+  { id: "intro", title: "Welcome to the Future", category: "AI Foundations" },
+  { id: 11, title: "Machine Learning", category: "AI Foundations" },
+  { id: 34, title: "Deep Learning", category: "AI Foundations" },
+  { id: 9, title: "Neural Networks", category: "AI Foundations" },
+  { id: 4, title: "AI Decision Making", category: "AI Foundations" },
+  { id: 27, title: "AI Ethics", category: "AI Foundations" },
+  { id: 1, title: "Computer Vision", category: "AI That Sees, Hears & Speaks" },
+  { id: 15, title: "Facial Recognition", category: "AI That Sees, Hears & Speaks" },
+  { id: 2, title: "Speech Recognition", category: "AI That Sees, Hears & Speaks" },
+  { id: 3, title: "AI Translation", category: "AI That Sees, Hears & Speaks" },
+  { id: 12, title: "Natural Language Processing", category: "AI That Sees, Hears & Speaks" },
+  { id: 35, title: "AI Chatbots", category: "AI That Sees, Hears & Speaks" },
+  { id: 16, title: "Virtual Assistants", category: "AI That Sees, Hears & Speaks" },
+  { id: 13, title: "Robotics", category: "Robotics & Intelligent Machines" },
+  { id: 7, title: "Self-Driving Cars", category: "Robotics & Intelligent Machines" },
+  { id: 28, title: "Smart Manufacturing", category: "Robotics & Intelligent Machines" },
+  { id: 23, title: "Smart Traffic", category: "Robotics & Intelligent Machines" },
+  { id: 14, title: "Recommendation Systems", category: "Robotics & Intelligent Machines" },
+  { id: 5, title: "AI in Healthcare", category: "AI in Everyday Life" },
+  { id: 22, title: "AI in Education", category: "AI in Everyday Life" },
+  { id: 19, title: "AI in Sports", category: "AI in Everyday Life" },
+  { id: 20, title: "AI in Agriculture", category: "AI in Everyday Life" },
+  { id: 21, title: "Weather Prediction", category: "AI in Everyday Life" },
+  { id: 36, title: "Emergency Services", category: "AI in Everyday Life" },
+  { id: 10, title: "AI & Planet Earth", category: "Smart World & Digital Society" },
+  { id: 29, title: "Cybersecurity", category: "Smart World & Digital Society" },
+  { id: 24, title: "Secure Banking", category: "Smart World & Digital Society" },
+  { id: 25, title: "Smart Shopping", category: "Smart World & Digital Society" },
+  { id: 26, title: "Social Media AI", category: "Smart World & Digital Society" },
+  { id: 17, title: "AI in Art", category: "Creativity & Future Innovation" },
+  { id: 18, title: "AI in Music", category: "Creativity & Future Innovation" },
+  { id: 30, title: "Smart Photography", category: "Creativity & Future Innovation" },
+  { id: 32, title: "AI in Fashion", category: "Creativity & Future Innovation" },
+  { id: 33, title: "AI in Movies", category: "Creativity & Future Innovation" },
+  { id: 6, title: "AI in Games", category: "Creativity & Future Innovation" },
+  { id: 31, title: "AI in Food & Nutrition", category: "Creativity & Future Innovation" },
+  { id: 8, title: "AI in Space Exploration", category: "Creativity & Future Innovation" },
+  { id: 37, title: "Digital Archaeology", category: "Creativity & Future Innovation" }
+];
 
 export default async function StudentDashboard() {
   const supabase = await createClient()
@@ -26,13 +69,19 @@ export default async function StudentDashboard() {
   // Fallback to "Emma" as requested in the design prompt if no name is set
   const firstName = user.user_metadata?.first_name || 'Emma';
 
+  const earnedBadges = user.user_metadata?.earned_badges || [];
+  
+  // Find active lesson (first that's not completed)
+  const activeLesson = bookLessons.find(l => !earnedBadges.includes(l.id)) || bookLessons[0];
+  const completedCount = earnedBadges.length;
+
   return (
     <div className="flex min-h-screen flex-col bg-white dark:bg-[#020617] font-sans text-slate-900 dark:text-white selection:bg-cyan-500/30 relative overflow-hidden">
       {/* Background */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] dark:opacity-20 brightness-150 dark:brightness-100 contrast-150 mix-blend-overlay"></div>
         <div className="absolute top-[-10%] right-[-5%] w-[800px] h-[800px] bg-cyan-600/[0.02] dark:bg-cyan-600/10 rounded-full blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
-        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-purple-600/[0.03] dark:bg-purple-600/20 rounded-full blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[600px] h-[600px] bg-purple-650/[0.03] dark:bg-purple-600/20 rounded-full blur-[150px] mix-blend-multiply dark:mix-blend-screen" />
       </div>
       
       {/* Top Navigation */}
@@ -81,13 +130,20 @@ export default async function StudentDashboard() {
                     <Sparkles className="h-4 w-4 text-cyan-600 dark:text-cyan-400" />
                     <span className="text-sm font-bold text-cyan-700 dark:text-cyan-300 tracking-wider uppercase">Today's Mission</span>
                   </div>
-                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Continue Robotics</h2>
+                  <h2 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">
+                    {earnedBadges.includes(activeLesson.id) ? `Review ${activeLesson.title}` : `Explore ${activeLesson.title}`}
+                  </h2>
                   <p className="text-slate-650 dark:text-slate-400 mb-8 max-w-md text-lg">
-                    You're 60% through "How Robots See the World". Finish the interactive quiz to earn your Silver Inventor badge!
+                    {activeLesson.id === "intro" 
+                      ? "Welcome! Start your journey with the Introduction to tomorrow's tech and earn your first badge."
+                      : `Your next goal is "${activeLesson.title}" under ${activeLesson.category}. Finish the quiz to earn its badge!`
+                    }
                   </p>
-                  <Button className="bg-slate-900 text-white dark:bg-white dark:text-[#020617] hover:bg-slate-805 dark:hover:bg-slate-200 hover:scale-105 transition-transform rounded-full px-8 h-14 font-bold text-lg shadow-[0_10px_20px_rgba(0,0,0,0.15)] dark:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-                    <PlayCircle className="mr-2 h-6 w-6" /> Resume Lesson
-                  </Button>
+                  <Link href={`/lesson/${activeLesson.id}`}>
+                    <Button className="bg-slate-900 text-white dark:bg-white dark:text-[#020617] hover:bg-slate-805 dark:hover:bg-slate-200 hover:scale-105 transition-transform rounded-full px-8 h-14 font-bold text-lg shadow-[0_10px_20px_rgba(0,0,0,0.15)] dark:shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+                      <PlayCircle className="mr-2 h-6 w-6" /> {earnedBadges.includes(activeLesson.id) ? "Review Lesson" : "Start Lesson"}
+                    </Button>
+                  </Link>
                 </div>
                 
                 <div className="w-48 h-48 relative shrink-0 hidden sm:block">
@@ -96,10 +152,10 @@ export default async function StudentDashboard() {
                     {/* Progress Ring (SVG) */}
                     <svg className="absolute inset-0 w-full h-full transform -rotate-90">
                       <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" className="text-slate-200 dark:text-slate-800" />
-                      <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray="552.92" strokeDashoffset="221.16" className="text-cyan-600 dark:text-cyan-400 drop-shadow-[0_4px_10px_rgba(34,211,238,0.3)] dark:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all duration-1000" />
+                      <circle cx="96" cy="96" r="88" stroke="currentColor" strokeWidth="12" fill="transparent" strokeDasharray="552.92" strokeDashoffset={552.92 - (552.92 * (completedCount / 38))} className="text-cyan-600 dark:text-cyan-400 drop-shadow-[0_4px_10px_rgba(34,211,238,0.3)] dark:drop-shadow-[0_0_10px_rgba(34,211,238,0.8)] transition-all duration-1000" />
                     </svg>
                     <div className="text-center relative z-10">
-                      <div className="text-4xl font-bold text-slate-900 dark:text-white">60%</div>
+                      <div className="text-4xl font-bold text-slate-900 dark:text-white">{Math.round((completedCount / 38) * 100)}%</div>
                       <div className="text-xs text-cyan-600 dark:text-cyan-400 font-medium uppercase tracking-wider">Completed</div>
                     </div>
                   </div>
@@ -117,16 +173,15 @@ export default async function StudentDashboard() {
                  </div>
                  <ArrowRight className="h-5 w-5 text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
                </Link>
-               <button onClick={() => window.dispatchEvent(new Event('open-ai-assistant'))} className="text-left p-6 rounded-3xl bg-slate-50/50 dark:bg-glass border border-slate-200 dark:border-white/5 hover:bg-slate-100/50 dark:hover:bg-white/5 transition-colors group flex items-center justify-between shadow-sm">
-                 <div>
-                   <div className="w-8 h-8 relative rounded-full overflow-hidden bg-slate-200 dark:bg-black mb-4 border border-cyan-500/30 group-hover:scale-110 transition-transform shadow-[0_0_10px_rgba(0,255,255,0.2)]">
-                     <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-contain p-0.5" />
-                   </div>
-                   <div className="font-bold text-slate-900 dark:text-white text-lg">Ask Vision Vee</div>
-                   <div className="text-sm text-slate-600 dark:text-slate-400">Your AI Assistant</div>
-                 </div>
-                 <ArrowRight className="h-5 w-5 text-slate-500 group-hover:text-slate-900 dark:group-hover:text-white transition-colors" />
-               </button>
+               <OpenAIAssistantButton />
+            </div>
+
+            {/* My Learning Journey */}
+            <div className="space-y-6 pt-4">
+              <h2 className="text-2xl md:text-3xl font-heading font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                <Compass className="h-7 w-7 text-cyan-600 dark:text-cyan-400" /> My Learning Journey
+              </h2>
+              <LearningJourney completedLessonIds={earnedBadges} activeLessonId={activeLesson.id} />
             </div>
           </div>
 
@@ -153,7 +208,7 @@ export default async function StudentDashboard() {
                 </div>
                 <div>
                   <div className="text-sm text-slate-550 dark:text-slate-400 font-medium mb-1">Badges Earned</div>
-                  <div className="text-2xl font-bold text-slate-900 dark:text-white">12 <span className="text-sm font-normal text-slate-500">/ 37</span></div>
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white">{completedCount} <span className="text-sm font-normal text-slate-500">/ 38</span></div>
                 </div>
               </div>
 

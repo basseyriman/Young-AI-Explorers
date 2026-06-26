@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-import { Brain, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import Link from 'next/link'
 
@@ -16,26 +16,21 @@ export default async function SignupPage({
   const message = params.message as string
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-slate-50 dark:bg-[#020617] font-sans text-slate-900 dark:text-white selection:bg-purple-500/30 p-4 relative overflow-hidden">
-      {/* Premium Background setup */}
-      <div className="absolute inset-0 bg-slate-50 dark:bg-[#020617]">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(233,213,255,0.7),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(139,92,246,0.15),rgba(2,6,23,0))]" />
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMSIgY3k9IjEiIHI9IjEiIGZpbGw9InJnYmEoMCwwLDAsMC4wNSkiLz48L3N2Zz4=')] opacity-[0.03] dark:opacity-20" />
+    <div className="flex min-h-screen flex-col items-center justify-center bg-brand-gradient dark:bg-brand-gradient-dark font-sans text-brand-purple dark:text-brand-cream selection:bg-brand-gold/30 p-4 relative overflow-hidden">
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,160,78,0.12),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,160,78,0.08),rgba(26,15,46,0))]" />
       </div>
 
       <div className="w-full max-w-md relative z-10">
-        <Link href="/" className="inline-flex items-center text-sm font-semibold text-slate-500 hover:text-purple-600 dark:text-slate-400 dark:hover:text-purple-400 mb-8 transition-colors">
+        <Link href="/" className="inline-flex items-center text-sm font-semibold text-brand-purple/50 hover:text-brand-gold dark:text-brand-cream/50 dark:hover:text-brand-gold mb-8 transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
         </Link>
         
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl overflow-hidden mb-4 shadow-sm bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
-            <Logo className="h-8 w-8 text-purple-600" />
+          <div className="mb-4">
+            <Logo showWordmark size="lg" />
           </div>
-          <h1 className="font-heading text-3xl font-black tracking-tight text-slate-900 dark:text-white">
-            Young AI Explorers
-          </h1>
-          <p className="mt-2 text-sm text-slate-600 dark:text-slate-400 font-medium">
+          <p className="mt-2 text-sm text-brand-purple/60 dark:text-brand-cream/60 font-medium">
             Create an account to start your journey.
           </p>
         </div>
