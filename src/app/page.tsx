@@ -101,22 +101,18 @@ export default function Home() {
             transition={{ duration: 1.5, ease: "easeOut" }}
             className="flex-1 relative w-full aspect-square max-w-lg hidden md:block"
           >
-            {/* 3D Rotating Earth representation */}
-            <div className="absolute inset-0 rounded-full border border-white/5 animate-rotate-slow shadow-[0_0_100px_rgba(0,100,255,0.2)]">
-              <div className="absolute top-0 left-1/2 w-4 h-4 bg-cyan-400 rounded-full blur-sm" />
-              <div className="absolute bottom-1/4 right-0 w-2 h-2 bg-purple-400 rounded-full blur-sm" />
-            </div>
-            
             {/* The Mascot */}
-            <div className="absolute inset-0 flex items-center justify-center animate-float pointer-events-none">
-              <Image 
-                src="/assets/mascot_transparent.png" 
-                alt="Vision Vee Robot" 
-                width={380} 
-                height={380} 
-                className="object-contain drop-shadow-[0_20px_50px_rgba(0,180,255,0.25)]"
-                priority
-              />
+            <div className="absolute inset-0 flex items-center justify-center animate-float mix-blend-screen pointer-events-none">
+              <div className="relative w-[380px] h-[380px]">
+                <Image 
+                  src="/assets/mascot_transparent.png" 
+                  alt="Vision Vee Robot" 
+                  fill
+                  className="object-contain"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 380px"
+                />
+              </div>
             </div>
           </motion.div>
         </div>
