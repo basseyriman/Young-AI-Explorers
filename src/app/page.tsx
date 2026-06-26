@@ -6,7 +6,6 @@ import { Sparkles, ArrowRight, Brain, Rocket, Bot, Globe, Shield, Activity, Moni
 import Link from "next/link";
 import Image from "next/image";
 import { WorldSelector } from "@/components/WorldSelector";
-import { InnovationMap } from "@/components/InnovationMap";
 import { Book3D } from "@/components/Book3D";
 import { AssistantTriggerCard } from "@/components/AssistantTriggerCard";
 import { NavBar } from "@/components/NavBar";
@@ -134,7 +133,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION: ADVENTURE GATEWAY (Map vs Grid selection) */}
+      {/* SECTION: ADVENTURE GATEWAY (Single Centered Cover Gate) */}
       <section id="map" className="py-32 relative z-10">
         <div className="container mx-auto px-6">
           <AnimatePresence mode="wait">
@@ -145,82 +144,34 @@ export default function Home() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.5 }}
-                className="w-full"
+                className="w-full max-w-3xl mx-auto text-center"
               >
-                <div className="text-center mb-16">
-                  <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-4">
-                    Start Your Adventure 🚀
-                  </h2>
-                  <p className="text-slate-650 dark:text-slate-400 text-lg max-w-2xl mx-auto font-medium">
-                    How would you like to explore the future of technology today?
-                  </p>
-                </div>
+                <div className="p-8 md:p-12 rounded-[40px] border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-[#020617]/50 backdrop-blur-xl shadow-xl relative overflow-hidden group">
+                  {/* Subtle decorative background glows */}
+                  <div className="absolute top-0 left-1/4 w-72 h-72 bg-purple-500/10 rounded-full blur-[100px] pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+                  <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-cyan-500/10 rounded-full blur-[100px] pointer-events-none group-hover:scale-110 transition-transform duration-700" />
+                  
+                  <div className="relative z-10 flex flex-col items-center">
+                    <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white shadow-lg shadow-cyan-500/20">
+                      <Rocket className="h-8 w-8 animate-pulse" />
+                    </div>
+                    
+                    <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-4 leading-tight">
+                      Start Your Adventure 🚀
+                    </h2>
+                    
+                    <p className="text-slate-655 dark:text-slate-400 text-base md:text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-medium">
+                      Enter the learning dashboard to explore future technologies. Choose your world from AI Foundations, Space Discovery, Robotics, and more!
+                    </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                  {/* Option A: Map */}
-                  <div 
-                    onClick={() => setExplorationMode("map")}
-                    className="relative overflow-hidden rounded-[32px] border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-glass p-8 cursor-pointer group shadow-lg hover:shadow-cyan-500/10 hover:border-cyan-500/30 transition-all duration-300 flex flex-col justify-between min-h-[340px]"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                      <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-500 dark:text-cyan-400 group-hover:scale-110 transition-transform duration-300">
-                        <Globe className="h-8 w-8" />
-                      </div>
-                      <h3 className="font-heading text-2xl font-bold text-slate-900 dark:text-white mb-4">3D Innovation Map</h3>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
-                        Explore the interactive sandbox map from yesterday! Hover and zoom into different technology islands to discover deep space, climate grids, and robotics cities.
-                      </p>
-                    </div>
-                    <div className="relative z-10 inline-flex items-center gap-2 font-bold text-cyan-600 dark:text-cyan-400 group-hover:text-cyan-700 dark:group-hover:text-cyan-300 transition-colors mt-6">
-                      Enter to Explore (3D Map) <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
-                  </div>
-
-                  {/* Option B: Grid */}
-                  <div 
-                    onClick={() => setExplorationMode("grid")}
-                    className="relative overflow-hidden rounded-[32px] border border-slate-200 dark:border-white/10 bg-white/70 dark:bg-glass p-8 cursor-pointer group shadow-lg hover:shadow-purple-500/10 hover:border-purple-500/30 transition-all duration-300 flex flex-col justify-between min-h-[340px]"
-                  >
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    <div className="relative z-10">
-                      <div className="mb-6 inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-purple-500/10 dark:bg-purple-500/20 text-purple-500 dark:text-purple-400 group-hover:scale-110 transition-transform duration-300">
-                        <Rocket className="h-8 w-8" />
-                      </div>
-                      <h3 className="font-heading text-2xl font-bold text-slate-900 dark:text-white mb-4">Choose Your World</h3>
-                      <p className="text-slate-600 dark:text-slate-400 text-sm leading-relaxed mb-6">
-                        Jump straight into the lessons! Choose your learning world from our newly designed structured worlds dashboard.
-                      </p>
-                    </div>
-                    <div className="relative z-10 inline-flex items-center gap-2 font-bold text-purple-600 dark:text-purple-400 group-hover:text-purple-700 dark:group-hover:text-purple-300 transition-colors mt-6">
-                      Choose Your World <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                    </div>
+                    <button 
+                      onClick={() => setExplorationMode("grid")}
+                      className="px-8 py-4 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-full font-bold hover:scale-105 transition-transform flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.15)] dark:shadow-[0_0_30px_rgba(255,255,255,0.3)] group/btn"
+                    >
+                      Enter to Explore <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
+                    </button>
                   </div>
                 </div>
-              </motion.div>
-            )}
-
-            {explorationMode === "map" && (
-              <motion.div
-                key="map-view"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.5 }}
-                className="w-full relative"
-              >
-                <div className="flex justify-between items-center mb-8">
-                  <button
-                    onClick={() => setExplorationMode(null)}
-                    className="px-5 py-2.5 rounded-full border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-white/10 font-bold transition-all text-sm flex items-center gap-2"
-                  >
-                    ← Switch View Mode
-                  </button>
-                  <div className="text-sm font-semibold uppercase tracking-widest text-cyan-600 dark:text-cyan-400">
-                    Interactive Map Sandbox
-                  </div>
-                </div>
-                <InnovationMap />
               </motion.div>
             )}
 
@@ -238,7 +189,7 @@ export default function Home() {
                     onClick={() => setExplorationMode(null)}
                     className="px-5 py-2.5 rounded-full border border-slate-200 dark:border-white/10 bg-white/50 dark:bg-white/5 text-slate-700 dark:text-slate-350 hover:bg-slate-100 dark:hover:bg-white/10 font-bold transition-all text-sm flex items-center gap-2"
                   >
-                    ← Switch View Mode
+                    ← Back
                   </button>
                   <div className="text-sm font-semibold uppercase tracking-widest text-purple-600 dark:text-purple-400">
                     Guided Worlds Grid
@@ -249,7 +200,7 @@ export default function Home() {
                   <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-4">
                     Choose Your World ⭐️
                   </h2>
-                  <p className="text-slate-650 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+                  <p className="text-slate-655 dark:text-slate-400 text-lg max-w-2xl mx-auto">
                     Click a world to begin your guided learning adventure.
                   </p>
                 </div>
