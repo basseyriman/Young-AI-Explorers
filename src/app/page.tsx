@@ -105,7 +105,7 @@ export default function Home() {
             <div className="absolute inset-0 flex items-center justify-center animate-float mix-blend-screen pointer-events-none">
               <div className="relative w-[380px] h-[380px]">
                 <Image 
-                  src="/assets/mascot_transparent.png" 
+                  src="/assets/mascot_iconic.png" 
                   alt="Vision Vee Robot" 
                   fill
                   className="object-contain"
