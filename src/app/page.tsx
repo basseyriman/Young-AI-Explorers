@@ -108,21 +108,15 @@ export default function Home() {
             </div>
             
             {/* The Mascot */}
-            <div className="absolute inset-0 flex items-center justify-center animate-float pointer-events-none">
-              <div 
-                className="relative w-[130%] h-[130%]"
-                style={{ 
-                  WebkitMaskImage: "radial-gradient(circle at 50% 50%, black 45%, transparent 65%)",
-                  maskImage: "radial-gradient(circle at 50% 50%, black 45%, transparent 65%)" 
-                }}
-              >
+            <div className="absolute inset-0 flex items-center justify-center animate-float">
+              <div className="relative w-[280px] h-[280px] rounded-full overflow-hidden border-[6px] border-slate-900/50 shadow-[0_0_60px_rgba(0,200,255,0.3)] ring-4 ring-cyan-500/20">
                 <Image 
-                  src="/assets/mascot_transparent.png" 
+                  src="/assets/new_mascot.png" 
                   alt="Vision Vee Robot" 
                   fill
-                  className="object-contain scale-110"
+                  className="object-cover scale-[1.15]"
                   priority
-                  sizes="(max-width: 768px) 100vw, 500px"
+                  sizes="(max-width: 768px) 100vw, 280px"
                 />
               </div>
             </div>

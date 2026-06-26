@@ -20,12 +20,12 @@ export default function AIAssistant() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!input.trim() || isLoading) return;
-    sendMessage({ role: 'user', content: input });
+    sendMessage({ text: input });
     setInput('');
   };
 
   const handleSuggestedPrompt = (prompt: string) => {
-    sendMessage({ role: 'user', content: prompt });
+    sendMessage({ text: prompt });
   };
 
   useEffect(() => {
@@ -123,7 +123,7 @@ export default function AIAssistant() {
                     </div>
                   )}
                   <div className={`rounded-2xl px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${m.role === 'user' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-tr-none' : 'bg-[#0d1b2a] border border-white/10 text-slate-200 rounded-tl-none'}`}>
-                    {m.content || (m.parts && m.parts.map((p, i) => p.type === 'text' ? p.text : '').join(''))}
+                    {m.parts.map((p) => p.type === 'text' ? p.text : '').join('')}
                   </div>
                 </div>
               </div>
