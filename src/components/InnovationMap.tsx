@@ -27,20 +27,24 @@ export function InnovationMap() {
       <div className="absolute inset-0 bg-[#020617]">
         {/* Starfield */}
         <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-        {Array.from({ length: 60 }).map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-white rounded-full animate-twinkle"
-            style={{
-              width: Math.random() * 2 + 1 + "px",
-              height: Math.random() * 2 + 1 + "px",
-              top: Math.random() * 100 + "%",
-              left: Math.random() * 100 + "%",
-              animationDelay: Math.random() * 5 + "s",
-              opacity: Math.random() * 0.8 + 0.2,
-            }}
-          />
-        ))}
+        {Array.from({ length: 60 }).map((_, i) => {
+          const pseudoRand = (i * 137) % 100;
+          const pseudoRand2 = (i * 93) % 100;
+          return (
+            <div
+              key={i}
+              className="absolute bg-white rounded-full animate-twinkle"
+              style={{
+                width: (pseudoRand % 2) + 1 + "px",
+                height: (pseudoRand % 2) + 1 + "px",
+                top: pseudoRand + "%",
+                left: pseudoRand2 + "%",
+                animationDelay: (pseudoRand % 5) + "s",
+                opacity: (pseudoRand2 / 100) * 0.8 + 0.2,
+              }}
+            />
+          );
+        })}
         {/* Nebulas */}
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/30 rounded-full blur-[150px] mix-blend-screen animate-float-slow" />
         <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-cyan-600/20 rounded-full blur-[150px] mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
