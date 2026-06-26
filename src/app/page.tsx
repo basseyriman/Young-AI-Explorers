@@ -103,14 +103,14 @@ export default function Home() {
           >
             {/* The Mascot */}
             <div className="absolute inset-0 flex items-center justify-center animate-float pointer-events-none">
-              <div className="relative w-[380px] h-[380px]">
+              <div className="relative w-[480px] h-[480px]">
                 <Image 
                   src="/assets/mascot_iconic_clean.png" 
                   alt="Vision Vee Robot" 
                   fill
                   className="object-contain"
                   priority
-                  sizes="(max-width: 768px) 100vw, 380px"
+                  sizes="(max-width: 768px) 100vw, 480px"
                 />
               </div>
             </div>
