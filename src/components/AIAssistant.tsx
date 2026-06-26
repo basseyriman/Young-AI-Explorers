@@ -61,23 +61,23 @@ export default function AIAssistant() {
       </div>
 
       {isOpen && (
-        <div className="fixed bottom-6 right-6 z-[100] flex h-[650px] max-h-[85vh] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#020617]/95 backdrop-blur-3xl shadow-[0_0_50px_rgba(0,0,0,0.5)]">
+        <div className="fixed bottom-6 right-6 z-[100] flex h-[650px] max-h-[85vh] w-[420px] max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-3xl border border-slate-200 dark:border-white/10 bg-white dark:bg-[#020617]/95 backdrop-blur-3xl shadow-[0_10px_50px_rgba(0,0,0,0.1)] dark:shadow-[0_0_50px_rgba(0,0,0,0.5)]">
           {/* Header */}
-          <div className="flex items-center justify-between bg-gradient-to-r from-blue-900/50 to-purple-900/50 px-6 py-4 border-b border-white/10">
+          <div className="flex items-center justify-between bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-900/50 dark:to-purple-900/50 px-6 py-4 border-b border-slate-200 dark:border-white/10">
             <div className="flex items-center gap-4">
-              <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-cyan-400/50 bg-black shadow-[0_0_15px_rgba(0,255,255,0.3)]">
+              <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-cyan-400 bg-slate-100 dark:bg-black shadow-[0_0_15px_rgba(0,255,255,0.2)] dark:shadow-[0_0_15px_rgba(0,255,255,0.3)]">
                 <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
               </div>
               <div>
-                <h3 className="font-heading font-bold text-white text-lg flex items-center gap-2">
+                <h3 className="font-heading font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
                   Vision Vee <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                 </h3>
-                <p className="text-xs text-cyan-300 font-medium tracking-wide">ONLINE NOW</p>
+                <p className="text-xs text-cyan-600 dark:text-cyan-300 font-medium tracking-wide">ONLINE NOW</p>
               </div>
             </div>
             <button
               onClick={() => setIsOpen(false)}
-              className="rounded-full p-2 text-slate-400 transition-colors hover:bg-white/10 hover:text-white"
+              className="rounded-full p-2 text-slate-500 dark:text-slate-400 transition-colors hover:bg-slate-100 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white"
             >
               <ChevronUp className="h-6 w-6" />
             </button>
@@ -88,10 +88,10 @@ export default function AIAssistant() {
             {messages.length === 0 && (
               <div className="flex h-full flex-col justify-end gap-3 pb-4">
                 <div className="flex gap-4">
-                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-black mt-1">
+                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-slate-200 dark:bg-black mt-1">
                     <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
                   </div>
-                  <div className="rounded-2xl rounded-tl-none px-4 py-3 text-sm leading-relaxed bg-[#0d1b2a] border border-white/5 text-slate-200 shadow-md">
+                  <div className="rounded-2xl rounded-tl-none px-4 py-3 text-sm leading-relaxed bg-slate-100 dark:bg-[#0d1b2a] border border-slate-200/50 dark:border-white/5 text-slate-800 dark:text-slate-200 shadow-md">
                     Hi Explorer! 👋 I'm Vision Vee. I can help you understand Artificial Intelligence, space, robotics, and more. What would you like to explore today?
                   </div>
                 </div>
@@ -101,7 +101,7 @@ export default function AIAssistant() {
                     <button 
                       key={i}
                       onClick={() => handleSuggestedPrompt(prompt)}
-                      className="text-left px-4 py-2.5 rounded-xl border border-cyan-500/30 bg-cyan-500/10 text-cyan-100 text-sm hover:bg-cyan-500/20 hover:border-cyan-400 transition-all shadow-[0_0_10px_rgba(0,200,255,0)] hover:shadow-[0_0_10px_rgba(0,200,255,0.2)]"
+                      className="text-left px-4 py-2.5 rounded-xl border border-cyan-500/30 dark:border-cyan-500/30 bg-cyan-500/5 dark:bg-cyan-500/10 text-cyan-750 dark:text-cyan-100 text-sm hover:bg-cyan-500/10 dark:hover:bg-cyan-500/20 hover:border-cyan-400 transition-all shadow-[0_0_10px_rgba(0,200,255,0)] hover:shadow-[0_0_10px_rgba(0,200,255,0.2)]"
                     >
                       {prompt}
                     </button>
@@ -118,11 +118,11 @@ export default function AIAssistant() {
                       <User className="h-4 w-4" />
                     </div>
                   ) : (
-                    <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-black mt-1 shadow-[0_0_10px_rgba(0,255,255,0.2)]">
+                    <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-slate-200 dark:bg-black mt-1 shadow-[0_0_10px_rgba(0,255,255,0.2)]">
                       <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
                     </div>
                   )}
-                  <div className={`rounded-2xl px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${m.role === 'user' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-tr-none' : 'bg-[#0d1b2a] border border-white/10 text-slate-200 rounded-tl-none'}`}>
+                  <div className={`rounded-2xl px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${m.role === 'user' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-tr-none' : 'bg-slate-100 dark:bg-[#0d1b2a] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 rounded-tl-none'}`}>
                     {m.parts.map((p) => p.type === 'text' ? p.text : '').join('')}
                   </div>
                 </div>
@@ -132,13 +132,13 @@ export default function AIAssistant() {
             {isLoading && (
               <div className="flex justify-start">
                 <div className="flex max-w-[80%] gap-3 flex-row">
-                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-black mt-1">
+                  <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-slate-200 dark:bg-black mt-1">
                     <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
                   </div>
-                  <div className="rounded-2xl bg-[#0d1b2a] border border-white/10 px-5 py-4 shadow-sm rounded-tl-none flex items-center gap-1.5">
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" />
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                  <div className="rounded-2xl bg-slate-100 dark:bg-[#0d1b2a] border border-slate-200 dark:border-white/10 px-5 py-4 shadow-sm rounded-tl-none flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce" />
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -147,11 +147,11 @@ export default function AIAssistant() {
           </div>
 
           {/* Input Area */}
-          <div className="border-t border-white/10 bg-[#020617] p-4">
+          <div className="border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-[#020617] p-4">
             <form onSubmit={handleSubmit} className="flex gap-3 items-center">
               <button
                 type="button"
-                className="p-3 text-slate-400 hover:text-cyan-400 hover:bg-cyan-400/10 rounded-full transition-colors"
+                className="p-3 text-slate-500 dark:text-slate-400 hover:text-cyan-600 dark:hover:text-cyan-400 hover:bg-cyan-500/10 dark:hover:bg-cyan-400/10 rounded-full transition-colors"
                 title="Voice input"
               >
                 <Mic className="h-5 w-5" />
@@ -160,7 +160,7 @@ export default function AIAssistant() {
                 value={input}
                 onChange={handleInputChange}
                 placeholder="Message Vision Vee..."
-                className="flex-1 rounded-full border border-white/10 bg-white/5 px-5 py-3 text-sm text-white placeholder-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:bg-white/10 transition-all"
+                className="flex-1 rounded-full border border-slate-200 dark:border-white/10 bg-white dark:bg-white/5 px-5 py-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-cyan-500/50 focus:outline-none focus:ring-1 focus:ring-cyan-500/50 focus:bg-slate-100 dark:focus:bg-white/10 transition-all"
               />
               <button
                 type="submit"
