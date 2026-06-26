@@ -71,7 +71,7 @@
 }
 
 @utility bg-space-gradient {
-  background: #000000;
+  background: radial-gradient(circle at 50% 0%, #0d1b2a 0%, #000000 100%);
 }
 @utility bg-glass {
   background: rgba(255, 255, 255, 0.05);
@@ -121,7 +121,7 @@
 }
 
 .dark {
-  --background: oklch(0 0 0);
+  --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
