@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { Sparkles, ArrowRight, Brain, Rocket, Bot, Globe, Shield, Activity, MonitorPlay, CheckCircle2, Medal, Trophy, Download, GraduationCap, ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { InnovationMap } from "@/components/InnovationMap";
+import { WorldSelector } from "@/components/WorldSelector";
 import { Book3D } from "@/components/Book3D";
 import { AssistantTriggerCard } from "@/components/AssistantTriggerCard";
 import { NavBar } from "@/components/NavBar";
@@ -130,14 +130,18 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION: INNOVATION MAP (Signature Feature) */}
+      {/* SECTION: WORLD SELECTOR */}
       <section id="map" className="py-32 relative z-10">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-4">The Innovation Map</h2>
-            <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">Click an island to begin your adventure. Explore the interconnected world of future technologies.</p>
+            <h2 className="text-3xl md:text-5xl font-heading font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-3">
+              Choose Your World ⭐️
+            </h2>
+            <p className="text-slate-600 dark:text-slate-400 text-lg max-w-2xl mx-auto">
+              Click a world to begin your guided learning adventure.
+            </p>
           </div>
-          <InnovationMap />
+          <WorldSelector />
         </div>
       </section>
 
