@@ -102,10 +102,10 @@ export default function Home() {
             className="flex-1 relative w-full aspect-square max-w-lg hidden md:block"
           >
             {/* The Mascot */}
-            <div className="absolute inset-0 flex items-center justify-center animate-float mix-blend-screen pointer-events-none">
+            <div className="absolute inset-0 flex items-center justify-center animate-float pointer-events-none">
               <div className="relative w-[380px] h-[380px]">
                 <Image 
-                  src="/assets/mascot_iconic.png" 
+                  src="/assets/mascot_iconic_transparent.png" 
                   alt="Vision Vee Robot" 
                   fill
                   className="object-contain"
