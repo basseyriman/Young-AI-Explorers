@@ -111,7 +111,7 @@ export default function Home() {
             <div className="absolute inset-0 flex items-center justify-center animate-float">
               <div className="relative w-[280px] h-[280px] rounded-full overflow-hidden border-[6px] border-slate-900/50 shadow-[0_0_60px_rgba(0,200,255,0.3)] ring-4 ring-cyan-500/20">
                 <Image 
-                  src="/assets/new_mascot.png" 
+                  src="/assets/vision_vee_circular.png" 
                   alt="Vision Vee Robot" 
                   fill
                   className="object-cover scale-[1.15]"
