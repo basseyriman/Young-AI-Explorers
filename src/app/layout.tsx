@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import AIAssistant from "@/components/AIAssistant";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -27,12 +28,14 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${outfit.variable} dark h-full antialiased`}
+      className={`${inter.variable} ${outfit.variable} h-full antialiased`}
       suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col font-sans bg-space-gradient text-white overflow-x-hidden">
-        {children}
-        <AIAssistant />
+      <body className="min-h-full flex flex-col font-sans bg-white dark:bg-space-gradient text-slate-900 dark:text-white transition-colors duration-300 overflow-x-hidden">
+        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+          {children}
+          <AIAssistant />
+        </ThemeProvider>
       </body>
     </html>
   );
