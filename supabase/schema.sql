@@ -63,6 +63,74 @@ CREATE TABLE certificates (
 
 -- RLS Policies (Row Level Security)
 -- Note: Enable RLS on these tables in Supabase dashboard
+
+-- Extended platform features (communities, curriculum, match quiz)
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS region TEXT DEFAULT 'global';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS sharing_level TEXT DEFAULT 'region' CHECK (sharing_level IN ('private', 'region', 'global'));
+
+CREATE TABLE IF NOT EXISTS family_links (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  parent_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  child_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  UNIQUE(parent_id, child_id)
+);
+
+CREATE TABLE IF NOT EXISTS custom_topics (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE,
+  child_id UUID REFERENCES profiles(id),
+  title TEXT NOT NULL,
+  description TEXT,
+  created_by TEXT CHECK (created_by IN ('parent', 'vision_vee', 'student')),
+  world_id TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS curriculum_settings (
+  user_id UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
+  disabled_topic_ids JSONB DEFAULT '[]'::jsonb,
+  allow_match_quiz BOOLEAN DEFAULT true,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS explorer_regions (
+  id TEXT PRIMARY KEY,
+  label TEXT NOT NULL,
+  flag TEXT,
+  explorer_count INT DEFAULT 0
+);
+
+INSERT INTO explorer_regions (id, label, flag, explorer_count) VALUES
+  ('uk', 'United Kingdom', '🇬🇧', 1240),
+  ('nigeria', 'Nigeria', '🇳🇬', 2180),
+  ('ghana', 'Ghana', '🇬🇭', 890),
+  ('uganda', 'Uganda', '🇺🇬', 640),
+  ('tanzania', 'Tanzania', '🇹🇿', 520),
+  ('global', 'Global', '🌍', 8400)
+ON CONFLICT (id) DO NOTHING;
+
+CREATE TABLE IF NOT EXISTS regional_trending (
+  id SERIAL PRIMARY KEY,
+  region_id TEXT REFERENCES explorer_regions(id),
+  topic_title TEXT NOT NULL,
+  explorer_count INT DEFAULT 0,
+  sample_idea TEXT,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS match_quiz_sessions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  player_a UUID REFERENCES profiles(id),
+  player_b UUID REFERENCES profiles(id),
+  region_id TEXT REFERENCES explorer_regions(id),
+  topic_id TEXT,
+  player_a_score INT DEFAULT 0,
+  player_b_score INT DEFAULT 0,
+  status TEXT CHECK (status IN ('waiting', 'active', 'completed')) DEFAULT 'waiting',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Example policies:
 -- ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
 -- CREATE POLICY "Public profiles are viewable by everyone." ON profiles FOR SELECT USING (true);

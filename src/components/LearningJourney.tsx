@@ -111,12 +111,17 @@ const categories: Category[] = [
 interface LearningJourneyProps {
   completedLessonIds?: (number | string)[];
   activeLessonId?: number | string;
+  disabledTopicIds?: (number | string)[];
 }
 
 export function LearningJourney({
   completedLessonIds = [1, 7, 14, 15, 19],
-  activeLessonId = 11
+  activeLessonId = 11,
+  disabledTopicIds = [],
 }: LearningJourneyProps) {
+  const isDisabled = (id: number | string) =>
+    disabledTopicIds.some((d) => String(d) === String(id));
+
   const [expandedCategory, setExpandedCategory] = useState<string | null>("ai-foundations");
 
   const toggleCategory = (id: string) => {
@@ -127,8 +132,9 @@ export function LearningJourney({
     <div className="space-y-4">
       {categories.map((category) => {
         const isExpanded = expandedCategory === category.id;
-        const totalLessons = category.lessons.length;
-        const completedCount = category.lessons.filter(l => completedLessonIds.includes(l.id)).length;
+        const visibleLessons = category.lessons.filter((l) => !isDisabled(l.id));
+        const totalLessons = visibleLessons.length;
+        const completedCount = visibleLessons.filter(l => completedLessonIds.includes(l.id)).length;
         const progressPercentage = Math.round((completedCount / totalLessons) * 100);
 
         return (
@@ -172,7 +178,7 @@ export function LearningJourney({
                   className="overflow-hidden"
                 >
                   <div className="px-6 pb-6 pt-2 border-t border-slate-200/50 dark:border-white/5 space-y-3 bg-white/50 dark:bg-black/20">
-                    {category.lessons.map((lesson, idx) => {
+                    {visibleLessons.map((lesson) => {
                       const isCompleted = completedLessonIds.includes(lesson.id);
                       const isActive = lesson.id === activeLessonId;
 

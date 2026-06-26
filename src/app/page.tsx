@@ -11,6 +11,8 @@ import { AssistantTriggerCard } from "@/components/AssistantTriggerCard";
 import { NavBar } from "@/components/NavBar";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { Logo } from "@/components/Logo";
+import { RegionalCommunities } from "@/components/RegionalCommunities";
+import { BASE_LESSON_COUNT, TOPIC_COUNT_LABEL, QUIZ_QUESTION_COUNT } from "@/data/curriculum";
 
 function InitialsAvatar({ name, className = "" }: { name: string; className?: string }) {
   const initials = name.split(" ").map((n) => n[0]).join("");
@@ -69,14 +71,14 @@ export default function Home() {
                 href="#topics"
                 className="w-full sm:w-auto px-8 py-4 bg-transparent border border-brand-purple/20 dark:border-brand-gold/25 text-brand-purple dark:text-brand-cream rounded-full font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center"
               >
-                Explore 38 Topics
+                Explore {TOPIC_COUNT_LABEL} Topics
               </Link>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-brand-purple/10 dark:border-brand-gold/10">
               {[
-                { value: 38, suffix: "+", label: "Interactive Lessons" },
-                { value: 200, suffix: "+", label: "Quiz Questions" },
+                { value: BASE_LESSON_COUNT, suffix: "+", label: "Interactive Lessons" },
+                { value: QUIZ_QUESTION_COUNT, suffix: "+", label: "Quiz Questions" },
                 { value: null, suffix: "", label: "AI Learning Assistant", display: "AI" },
                 { value: null, suffix: "", label: "Future Ready", display: "100%" },
               ].map((stat, i) => (
@@ -137,13 +139,13 @@ export default function Home() {
           <div className="max-w-3xl mx-auto text-center mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-purple/6 dark:bg-brand-gold/8 border border-brand-purple/10 dark:border-brand-gold/15 mb-6">
               <Layers className="h-3.5 w-3.5 text-brand-gold" strokeWidth={2} />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-purple/70 dark:text-brand-cream/70">38 Topics · 6 Worlds</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-purple/70 dark:text-brand-cream/70">{TOPIC_COUNT_LABEL} Topics · 6 Worlds · Custom Additions</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4 leading-tight">
               Explore Every Topic
             </h2>
             <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg leading-relaxed">
-              Structured learning paths across artificial intelligence, robotics, space, healthcare, and the technologies shaping tomorrow.
+              {BASE_LESSON_COUNT}+ core topics across six guided worlds — plus custom topics Vision Vee or parents can add to any child&apos;s curriculum.
             </p>
           </div>
 
@@ -204,6 +206,8 @@ export default function Home() {
       {/* Legacy anchor for nav */}
       <section id="map" className="sr-only" aria-hidden="true" />
 
+      <RegionalCommunities />
+
       {/* THE BOOK */}
       <section id="book" className="py-28 relative z-10 border-y border-brand-purple/8 dark:border-brand-gold/8 bg-brand-surface/40 dark:bg-brand-purple-dark/20">
         <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
@@ -258,7 +262,7 @@ export default function Home() {
             </div>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-6">Meet Vision Vee</h2>
             <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-8 font-light">
-              A friendly companion that answers questions, explains complex ideas with simple analogies, and guides children through their learning journey.
+              Not just an AI. A friendly companion that answers questions, explains complex ideas with simple analogies, and can create custom topics for your curriculum when you or your parent asks.
             </p>
             <div className="p-6 rounded-2xl bg-brand-surface/80 dark:bg-brand-purple-dark/40 border border-brand-purple/10 dark:border-brand-gold/10 shadow-sm">
               <div className="flex gap-4 mb-4">
@@ -405,7 +409,7 @@ export default function Home() {
             <div className="p-8 md:p-10">
               <h2 className="text-2xl font-bold text-brand-purple dark:text-brand-cream mb-4">For Parents</h2>
               <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6 leading-relaxed">
-                Equip your child with essential AI literacy. Our platform ensures screen time is highly educational, completely safe, and aligned with future career outcomes.
+                Equip your child with essential AI literacy. Control their curriculum — enable, remove, or add custom topics beyond the core {TOPIC_COUNT_LABEL} lessons. Set sharing preferences and connect with explorers worldwide.
               </p>
               <div className="p-4 rounded-xl bg-brand-purple/[0.03] dark:bg-brand-gold/[0.05] border border-brand-purple/8 dark:border-brand-gold/10 mb-8">
                 <p className="text-sm text-brand-purple/70 dark:text-brand-cream/70 italic leading-relaxed">
@@ -413,8 +417,8 @@ export default function Home() {
                 </p>
                 <p className="text-xs font-semibold text-brand-gold mt-3">Sarah T., Parent</p>
               </div>
-              <Link href="#" className="block w-full py-4 text-center text-brand-cream dark:text-brand-purple-dark bg-brand-purple dark:bg-brand-gold rounded-full font-semibold hover:opacity-90 transition-all">
-                Explore Parent Dashboard
+              <Link href="/dashboard/parent" className="block w-full py-4 text-center text-brand-cream dark:text-brand-purple-dark bg-brand-purple dark:bg-brand-gold rounded-full font-semibold hover:opacity-90 transition-all">
+                Parent Dashboard — Control Curriculum
               </Link>
             </div>
           </div>
@@ -471,7 +475,7 @@ export default function Home() {
             <div className="flex flex-wrap gap-10 text-sm text-brand-purple/60 dark:text-brand-cream/60">
               {[
                 { title: "Platform", links: ["Topics", "AI Assistant", "The Book"] },
-                { title: "Community", links: ["For Schools", "For Parents", "For Teachers"] },
+                { title: "Community", links: ["UK Explorers", "Nigeria", "Ghana", "Global Network"] },
                 { title: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy"] },
               ].map((col) => (
                 <div key={col.title} className="flex flex-col gap-2.5">
