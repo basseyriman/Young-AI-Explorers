@@ -145,42 +145,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SECTION 2: EXPLORE THE FUTURE (Cards) */}
-      <section className="py-24 relative z-10">
-        <div className="container mx-auto px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { icon: "🧠", title: "Artificial Intelligence", desc: "Teach computers to think.", color: "from-purple-500/20 to-purple-500/0", border: "group-hover:border-purple-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(168,85,247,0.3)]" },
-              { icon: "🤖", title: "Robotics", desc: "Build machines that move.", color: "from-cyan-500/20 to-cyan-500/0", border: "group-hover:border-cyan-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(6,182,212,0.3)]" },
-              { icon: "🚀", title: "Space", desc: "Explore the final frontier.", color: "from-orange-500/20 to-orange-500/0", border: "group-hover:border-orange-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(249,115,22,0.3)]" },
-              { icon: "🏥", title: "Healthcare AI", desc: "Cure diseases with data.", color: "from-emerald-500/20 to-emerald-500/0", border: "group-hover:border-emerald-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(16,185,129,0.3)]" },
-              { icon: "🌍", title: "Climate Tech", desc: "Protect our planet.", color: "from-blue-500/20 to-blue-500/0", border: "group-hover:border-blue-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(59,130,246,0.3)]" },
-              { icon: "🛡️", title: "Cybersecurity", desc: "Defend the digital world.", color: "from-rose-500/20 to-rose-500/0", border: "group-hover:border-rose-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(244,63,94,0.3)]" },
-              { icon: "🎮", title: "Gaming AI", desc: "Create intelligent worlds.", color: "from-yellow-500/20 to-yellow-500/0", border: "group-hover:border-yellow-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(234,179,8,0.3)]" },
-              { icon: "🚗", title: "Self Driving", desc: "Cars that drive themselves.", color: "from-indigo-500/20 to-indigo-500/0", border: "group-hover:border-indigo-500/50", shadow: "group-hover:shadow-[0_0_30px_rgba(99,102,241,0.3)]" },
-            ].map((topic, i) => {
-              return (
-                <Link href={`/dashboard/student`} key={i}>
-                  <motion.div 
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.1 }}
-                    className={`relative p-6 rounded-3xl bg-white/70 dark:bg-[#020617]/50 backdrop-blur-xl border border-slate-200 dark:border-white/5 hover:-translate-y-3 transition-all duration-300 group overflow-hidden shadow-sm hover:shadow-xl dark:shadow-none ${topic.shadow} ${topic.border}`}
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-b ${topic.color} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
-                    <div className="relative z-10">
-                      <div className="text-4xl mb-6 group-hover:scale-125 group-hover:rotate-6 transition-transform duration-300 transform-origin-bottom">{topic.icon}</div>
-                      <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">{topic.title}</h3>
-                      <p className="text-sm text-slate-600 dark:text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-300 transition-colors">{topic.desc}</p>
-                    </div>
-                  </motion.div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
 
       {/* SECTION 3: THE 3D BOOK */}
       <section className="py-32 relative z-10 border-y border-slate-200 dark:border-white/5 bg-slate-50 dark:bg-slate-900/50">
