@@ -66,7 +66,7 @@ export default function AIAssistant() {
           <div className="flex items-center justify-between bg-gradient-to-r from-blue-500/10 to-purple-500/10 dark:from-blue-900/50 dark:to-purple-900/50 px-6 py-4 border-b border-slate-200 dark:border-white/10">
             <div className="flex items-center gap-4">
               <div className="relative h-12 w-12 overflow-hidden rounded-full border-2 border-cyan-400 bg-slate-100 dark:bg-black shadow-[0_0_15px_rgba(0,255,255,0.2)] dark:shadow-[0_0_15px_rgba(0,255,255,0.3)]">
-                <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
+                <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-contain p-1" />
               </div>
               <div>
                 <h3 className="font-heading font-bold text-slate-900 dark:text-white text-lg flex items-center gap-2">
@@ -89,7 +89,7 @@ export default function AIAssistant() {
               <div className="flex h-full flex-col justify-end gap-3 pb-4">
                 <div className="flex gap-4">
                   <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-slate-200 dark:bg-black mt-1">
-                    <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
+                    <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-contain p-0.5" />
                   </div>
                   <div className="rounded-2xl rounded-tl-none px-4 py-3 text-sm leading-relaxed bg-slate-100 dark:bg-[#0d1b2a] border border-slate-200/50 dark:border-white/5 text-slate-800 dark:text-slate-200 shadow-md">
                     Hi Explorer! 👋 I'm Vision Vee. I can help you understand Artificial Intelligence, space, robotics, and more. What would you like to explore today?
@@ -119,7 +119,7 @@ export default function AIAssistant() {
                     </div>
                   ) : (
                     <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-slate-200 dark:bg-black mt-1 shadow-[0_0_10px_rgba(0,255,255,0.2)]">
-                      <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
+                      <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-contain p-0.5" />
                     </div>
                   )}
                   <div className={`rounded-2xl px-5 py-3.5 text-sm leading-relaxed whitespace-pre-wrap shadow-lg ${m.role === 'user' ? 'bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-tr-none' : 'bg-slate-100 dark:bg-[#0d1b2a] border border-slate-200 dark:border-white/10 text-slate-800 dark:text-slate-200 rounded-tl-none'}`}>
@@ -133,7 +133,7 @@ export default function AIAssistant() {
               <div className="flex justify-start">
                 <div className="flex max-w-[80%] gap-3 flex-row">
                   <div className="relative h-8 w-8 shrink-0 overflow-hidden rounded-full border border-cyan-400/30 bg-slate-200 dark:bg-black mt-1">
-                    <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-cover scale-150" />
+                    <Image src="/assets/mascot_transparent.png" alt="Vision Vee" fill className="object-contain p-0.5" />
                   </div>
                   <div className="rounded-2xl bg-slate-100 dark:bg-[#0d1b2a] border border-slate-200 dark:border-white/10 px-5 py-4 shadow-sm rounded-tl-none flex items-center gap-1.5">
                     <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 dark:bg-cyan-400 animate-bounce" />

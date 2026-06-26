@@ -37,8 +37,8 @@ export default function Home() {
           );
         })}
         {/* Glowing Orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/[0.03] dark:bg-purple-600/20 rounded-full blur-[120px] mix-blend-multiply dark:mix-blend-screen animate-float-slow" />
-        <div className="absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-cyan-600/[0.02] dark:bg-cyan-600/10 rounded-full blur-[150px] mix-blend-multiply dark:mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
+        <div className="hidden dark:block absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-purple-600/20 rounded-full blur-[120px] mix-blend-screen animate-float-slow" />
+        <div className="hidden dark:block absolute bottom-1/4 right-1/4 w-[600px] h-[600px] bg-cyan-600/10 rounded-full blur-[150px] mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
       </div>
 
       {/* SECTION 1: HERO EXPERIENCE */}
@@ -99,11 +99,11 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.5, ease: "easeOut" }}
-            className="flex-1 relative w-full aspect-square max-w-lg hidden md:block"
+            className="flex-1 relative w-full aspect-[3/4] max-w-xl hidden md:block"
           >
             {/* The Mascot */}
             <div className="absolute inset-0 flex items-center justify-center animate-float pointer-events-none">
-              <div className="relative w-[480px] h-[480px]">
+              <div className="relative w-[480px] h-[660px] max-h-[75vh]">
                 <Image 
                   src="/assets/mascot_iconic_clean.png" 
                   alt="Vision Vee Robot" 
@@ -215,7 +215,7 @@ export default function Home() {
       <section className="py-32 relative z-10 overflow-hidden">
         <div className="container mx-auto px-6 flex flex-col-reverse md:flex-row items-center gap-16">
           <div className="flex-1 w-full max-w-md mx-auto relative">
-            <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/20 to-purple-500/20 blur-3xl -z-10 rounded-full"></div>
+            <div className="absolute -inset-4 bg-gradient-to-tr from-cyan-500/5 to-purple-500/5 dark:from-cyan-500/20 dark:to-purple-500/20 blur-3xl -z-10 rounded-full"></div>
             <AssistantTriggerCard />
           </div>
           <div className="flex-1 text-center md:text-left">
