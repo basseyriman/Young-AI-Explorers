@@ -19,6 +19,9 @@ interface Props {
 export function SignupForm({ countries, defaultRole }: Props) {
   const [role, setRole] = useState(defaultRole)
   const isStudent = role === 'student'
+  const currentYear = new Date().getFullYear()
+  const fieldClass =
+    'h-12 rounded-xl border-brand-purple/15 dark:border-brand-cream/25 bg-brand-warm dark:bg-brand-purple-dark text-brand-purple dark:text-brand-cream placeholder:text-brand-purple/40 dark:placeholder:text-brand-cream/50'
 
   return (
     <Card className="border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-surface dark:bg-brand-purple-dark shadow-xl rounded-2xl overflow-hidden">
@@ -30,15 +33,15 @@ export function SignupForm({ countries, defaultRole }: Props) {
         <form action={signup} className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="fullName" className="text-brand-purple dark:text-brand-cream font-semibold">Full Name</Label>
-            <Input id="fullName" name="fullName" type="text" placeholder="Your name" required className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
+            <Input id="fullName" name="fullName" type="text" placeholder="Your name" required className={fieldClass} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email" className="text-brand-purple dark:text-brand-cream font-semibold">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="you@example.com" required className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
+            <Input id="email" name="email" type="email" placeholder="you@example.com" required className={fieldClass} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password" className="text-brand-purple dark:text-brand-cream font-semibold">Password</Label>
-            <Input id="password" name="password" type="password" required minLength={6} placeholder="At least 6 characters" className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
+            <Input id="password" name="password" type="password" required minLength={6} placeholder="At least 6 characters" className={fieldClass} />
           </div>
           <div className="space-y-2">
             <Label className="text-brand-purple dark:text-brand-cream font-semibold">Country / Region</Label>
@@ -52,9 +55,9 @@ export function SignupForm({ countries, defaultRole }: Props) {
               required
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="flex h-12 w-full rounded-xl border-2 border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50 px-3 text-sm font-medium text-brand-purple dark:text-brand-cream"
+              className={`flex h-12 w-full rounded-xl border-2 px-3 text-sm font-medium ${fieldClass}`}
             >
-              <option value="student">Student (ages 8–14)</option>
+              <option value="student">Student (child)</option>
               <option value="parent">Parent / Guardian</option>
               <option value="teacher">Teacher / Educator</option>
             </select>
@@ -65,11 +68,11 @@ export function SignupForm({ countries, defaultRole }: Props) {
               <p className="text-sm font-semibold text-brand-purple dark:text-brand-cream">Parent / Guardian Consent (required for students)</p>
               <div className="space-y-2">
                 <Label htmlFor="birthYear" className="text-brand-purple dark:text-brand-cream font-semibold">Birth Year</Label>
-                <Input id="birthYear" name="birthYear" type="number" min={2008} max={2018} placeholder="e.g. 2014" required={isStudent} className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
+                <Input id="birthYear" name="birthYear" type="number" min={1995} max={currentYear} placeholder="e.g. 2015" required={isStudent} className={fieldClass} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="parentEmail" className="text-brand-purple dark:text-brand-cream font-semibold">Parent / Guardian Email</Label>
-                <Input id="parentEmail" name="parentEmail" type="email" placeholder="parent@example.com" required={isStudent} className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
+                <Input id="parentEmail" name="parentEmail" type="email" placeholder="parent@example.com" required={isStudent} className={fieldClass} />
               </div>
               <label className="flex items-start gap-3 text-sm cursor-pointer">
                 <input type="checkbox" name="parentConsent" required={isStudent} className="mt-1 rounded" />

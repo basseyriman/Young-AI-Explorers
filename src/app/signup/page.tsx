@@ -2,6 +2,7 @@ import { SignupForm } from '@/components/SignupForm'
 import { ArrowLeft } from 'lucide-react'
 import { Logo } from '@/components/Logo'
 import { getCountries } from '@/lib/db/platform'
+import { normalizeSignupMessage } from '@/lib/auth/signup-utils'
 import Link from 'next/link'
 
 export default async function SignupPage({
@@ -10,7 +11,7 @@ export default async function SignupPage({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
   const params = await searchParams
-  const message = params.message as string
+  const message = normalizeSignupMessage(params.message)
   const roleParam = typeof params.role === 'string' ? params.role : 'student'
   const defaultRole = ['student', 'parent', 'teacher'].includes(roleParam) ? roleParam : 'student'
   const countries = await getCountries()

@@ -1,30 +1,16 @@
-import { createClient } from '@/utils/supabase/server'
-import { redirect } from 'next/navigation'
 import { PlayCircle, LogOut, Flame, Medal, Award, Star, Compass, ArrowRight, Globe, Swords } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import OpenAIAssistantButton from '@/components/OpenAIAssistantButton'
 import { LearningJourney } from '@/components/LearningJourney'
 import { Logo } from '@/components/Logo'
-import {
-  BOOK_LESSONS,
-  getTotalTopicCount,
-  TOPIC_COUNT_LABEL,
-  isTopicEnabled,
-} from '@/data/curriculum'
+import { BOOK_LESSONS, getTotalTopicCount, isTopicEnabled, TOPIC_MARKETING, EXPLORER_MAP_LABEL } from '@/data/curriculum'
 import { getCurriculumFromDb, getUserBadges, getCountries, mergeCurriculumWithFallback, getProfile } from '@/lib/db/platform'
+import { requireRole } from '@/lib/auth/dashboard-access'
+import { signOut } from '@/app/dashboard/actions'
 
 export default async function StudentDashboard() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) redirect('/login')
-
-  const signOut = async () => {
-    'use server'
-    const supabaseServer = await createClient()
-    await supabaseServer.auth.signOut()
-    redirect('/login')
-  }
+  const { user } = await requireRole(['student', 'teacher', 'admin'])
 
   let curriculum = mergeCurriculumWithFallback(null, user.user_metadata)
   let earnedBadges: (string | number)[] = user.user_metadata?.earned_badges ?? []
@@ -75,7 +61,7 @@ export default async function StudentDashboard() {
                 Hello, <span className="text-gradient">{firstName}</span>
               </h1>
               <p className="text-brand-purple/60 dark:text-brand-cream/60">
-                {TOPIC_COUNT_LABEL} topics · {curriculum.customTopics.length} custom · Supabase synced
+                {TOPIC_MARKETING.platformLine} · {curriculum.customTopics.length} custom added · {TOPIC_MARKETING.growsWithVisionVee}
               </p>
             </div>
 
@@ -96,19 +82,42 @@ export default async function StudentDashboard() {
 
             {curriculum.customTopics.length > 0 && (
               <div className="rounded-2xl border border-brand-gold/20 bg-brand-gold/5 p-6 space-y-3">
-                <h3 className="font-heading font-bold">Custom Topics</h3>
-                {curriculum.customTopics.map((t) => (
-                  <div key={t.id} className="p-4 rounded-xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/15">
-                    <div className="font-semibold text-sm">{t.title}</div>
-                    <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
-                  </div>
-                ))}
+                <h3 className="font-heading font-bold flex items-center gap-2">
+                  <span aria-hidden>✨</span> Vision Vee Custom Topics
+                </h3>
+                {curriculum.customTopics.map((t) => {
+                  const isReady = t.contentStatus === 'ready';
+                  const isDone = earnedBadges.map(String).includes(t.id);
+                  return (
+                    <div key={t.id} className="p-4 rounded-xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                      <div>
+                        <div className="font-semibold text-sm flex items-center gap-2">
+                          {t.title}
+                          {isDone && <span className="text-[10px] uppercase text-emerald-600 font-bold">Completed</span>}
+                        </div>
+                        <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
+                        {t.badgeName && isReady && (
+                          <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-1">Badge: {t.badgeName}</div>
+                        )}
+                      </div>
+                      {isReady ? (
+                        <Link href={`/lesson/${t.id}`}>
+                          <Button size="sm" className="rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark shrink-0">
+                            <PlayCircle className="h-4 w-4 mr-1.5" /> Start
+                          </Button>
+                        </Link>
+                      ) : (
+                        <span className="text-xs text-brand-purple/45 italic shrink-0">Preparing…</span>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             )}
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <Link href="/#topics" className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 hover:border-brand-gold/30 transition-colors group flex items-center justify-between">
-                <div><Compass className="h-6 w-6 text-brand-gold mb-2" /><div className="font-bold text-sm">Topics</div></div>
+                <div><Compass className="h-6 w-6 text-brand-gold mb-2" /><div className="font-bold text-sm">{EXPLORER_MAP_LABEL}</div></div>
                 <ArrowRight className="h-4 w-4 opacity-40 group-hover:opacity-100" />
               </Link>
               <Link href="/community" className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 hover:border-brand-gold/30 transition-colors group flex items-center justify-between">
@@ -127,10 +136,20 @@ export default async function StudentDashboard() {
               <h2 className="text-2xl font-heading font-bold flex items-center gap-3">
                 <Compass className="h-6 w-6 text-brand-gold" /> My Learning Journey
               </h2>
+              <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55 -mt-4">
+                Book lessons to start · Vision Vee topics grow from here
+              </p>
               <LearningJourney
                 completedLessonIds={earnedBadges}
                 activeLessonId={activeLesson?.id}
                 disabledTopicIds={curriculum.disabledTopics}
+                customTopics={curriculum.customTopics.map((t) => ({
+                  id: t.id,
+                  title: t.title,
+                  description: t.description,
+                  badgeName: t.badgeName,
+                  contentStatus: t.contentStatus,
+                }))}
               />
             </div>
           </div>
@@ -139,7 +158,7 @@ export default async function StudentDashboard() {
             <h3 className="font-heading font-bold text-lg px-2">Your Progress</h3>
             <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 text-center">
               <div className="text-4xl font-bold text-gradient mb-1">{progressPct}%</div>
-              <div className="text-sm text-brand-purple/50">{completedCount} of {totalTopics}+ topics</div>
+              <div className="text-sm text-brand-purple/50">{completedCount} of {totalTopics} enabled · unlimited with custom topics</div>
             </div>
             {[
               { icon: Flame, label: 'Streak', value: '—', color: 'text-orange-500' },

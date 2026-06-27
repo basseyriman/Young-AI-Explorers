@@ -1,4 +1,4 @@
-import { login, signup } from './actions'
+import { login } from './actions'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -25,66 +25,66 @@ export default async function LoginPage({
         <Link href="/" className="inline-flex items-center text-sm font-semibold text-brand-purple/50 hover:text-brand-gold dark:text-brand-cream/50 dark:hover:text-brand-gold mb-8 transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
         </Link>
-        
+
         <div className="mb-8 flex flex-col items-center text-center">
-          <div className="mb-4">
-            <Logo showWordmark size="lg" />
-          </div>
-          <p className="mt-2 text-sm text-brand-purple/60 dark:text-brand-cream/60 font-medium">
+          <Logo showWordmark size="lg" />
+          <p className="mt-4 text-sm text-brand-purple/60 dark:text-brand-cream/60 font-medium">
             Sign in to continue your adventure.
           </p>
         </div>
 
         {message && (
-          <div className="mb-4 rounded-md bg-red-50 p-4 border-2 border-red-200">
-            <p className="text-sm font-semibold text-red-600 text-center">{message}</p>
+          <div className="mb-4 rounded-xl bg-red-50 dark:bg-red-950/30 p-4 border border-red-200 dark:border-red-800">
+            <p className="text-sm font-semibold text-red-600 dark:text-red-400 text-center">{message}</p>
           </div>
         )}
 
-        <Card className="border-2 border-slate-100 dark:border-white/5 bg-white dark:bg-[#020617]/50 shadow-xl rounded-[24px] overflow-hidden">
-          <CardHeader className="bg-slate-50 dark:bg-white/5 border-b border-slate-100 dark:border-white/5 pb-6">
-            <CardTitle className="text-2xl font-bold text-slate-900 dark:text-white">Welcome Back</CardTitle>
-            <CardDescription className="text-slate-500 dark:text-slate-400 font-medium">Enter your details below to log in or create an account.</CardDescription>
+        <Card className="border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-surface dark:bg-brand-purple-dark shadow-xl rounded-2xl overflow-hidden">
+          <CardHeader className="border-b border-brand-purple/8 dark:border-brand-gold/8 pb-6 text-center items-center">
+            <CardTitle className="text-2xl font-bold text-brand-purple dark:text-brand-cream">Welcome Back</CardTitle>
+            <CardDescription className="text-brand-purple/50 dark:text-brand-cream/50 font-medium">
+              Enter your details below to log in or create an account.
+            </CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
             <form className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-slate-700 dark:text-slate-300 font-bold">Email</Label>
-                <Input 
-                  id="email" 
-                  name="email" 
-                  type="email" 
-                  placeholder="you@example.com" 
-                  required 
-                  className="border-2 border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-slate-500 focus-visible:ring-blue-500 font-medium h-12 rounded-xl"
+                <Label htmlFor="email" className="text-brand-purple dark:text-brand-cream font-semibold">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  placeholder="you@example.com"
+                  required
+                  className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-brand-purple dark:text-brand-cream placeholder:text-brand-purple/40 dark:placeholder:text-brand-cream/40 focus-visible:ring-brand-gold/50"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-slate-700 dark:text-slate-300 font-bold">Password</Label>
-                <Input 
-                  id="password" 
-                  name="password" 
-                  type="password" 
-                  required 
-                  className="border-2 border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5 text-slate-900 dark:text-white focus-visible:ring-blue-500 font-medium h-12 rounded-xl"
+                <Label htmlFor="password" className="text-brand-purple dark:text-brand-cream font-semibold">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-brand-purple dark:text-brand-cream focus-visible:ring-brand-gold/50"
                 />
               </div>
-              
+
               <div className="flex flex-col gap-3 pt-4">
-                <Button 
-                  type="submit" 
-                  formAction={login} 
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white border-2 border-transparent shadow-lg shadow-blue-600/20 transition-all hover:shadow-xl hover:shadow-blue-600/30 hover:-translate-y-0.5 font-bold h-12 rounded-full text-base"
+                <Button
+                  type="submit"
+                  formAction={login}
+                  className="w-full h-12 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold hover:opacity-90 transition-opacity shadow-[0_8px_30px_rgba(74,45,110,0.2)] dark:shadow-[0_8px_30px_rgba(201,160,78,0.15)]"
                 >
                   Log in
                 </Button>
-                
-                <div className="text-center text-sm font-medium text-slate-550 dark:text-slate-400 mt-4">
-                  Don't have an account?{' '}
-                  <Link href="/signup" className="text-blue-600 dark:text-blue-400 font-bold hover:text-blue-700 dark:hover:text-blue-300 hover:underline underline-offset-4">
+
+                <p className="text-center text-sm text-brand-purple/50 dark:text-brand-cream/50 pt-2">
+                  Don&apos;t have an account?{' '}
+                  <Link href="/signup" className="text-brand-gold font-semibold hover:underline">
                     Sign up here
                   </Link>
-                </div>
+                </p>
               </div>
             </form>
           </CardContent>

@@ -9,11 +9,11 @@ import { WorldSelector } from "@/components/WorldSelector";
 import { Book3D } from "@/components/Book3D";
 import { AssistantTriggerCard } from "@/components/AssistantTriggerCard";
 import { NavBar } from "@/components/NavBar";
-import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { Logo } from "@/components/Logo";
 import { TrustAndStandards } from "@/components/TrustAndStandards";
 import { RegionalCommunities } from "@/components/RegionalCommunities";
-import { BASE_LESSON_COUNT, TOPIC_COUNT_LABEL, QUIZ_QUESTION_COUNT } from "@/data/curriculum";
+import { HERO_STATS, TOPIC_MARKETING, EXPLORE_TOPICS_CTA, EXPLORER_MAP_LABEL, BOOK_TAGLINE } from "@/data/curriculum";
+import { LEGAL_OWNER } from "@/data/legal";
 
 function InitialsAvatar({ name, className = "" }: { name: string; className?: string }) {
   const initials = name.split(" ").map((n) => n[0]).join("");
@@ -48,17 +48,17 @@ export default function Home() {
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10 dark:border-brand-gold/15 mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
               <span className="text-sm font-medium text-brand-purple/70 dark:text-brand-cream/70 tracking-wide">
-                The future of learning, beautifully crafted
+                Unlimited AI learning · {BOOK_TAGLINE}
               </span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold tracking-tight text-brand-purple dark:text-brand-cream mb-6 leading-[1.08]">
-              Young AI{" "}
-              <span className="text-gradient">Explorers</span>
+              A Kid&apos;s Guide to the{" "}
+              <span className="text-gradient">Future</span>
             </h1>
 
             <p className="text-lg md:text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-10 max-w-xl font-light leading-relaxed mx-auto lg:mx-0">
-              Discover artificial intelligence, robotics, and the technologies shaping tomorrow — through guided lessons designed for curious young minds.
+              {TOPIC_MARKETING.heroLine}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-16">
@@ -72,20 +72,15 @@ export default function Home() {
                 href="#topics"
                 className="w-full sm:w-auto px-8 py-4 bg-transparent border border-brand-purple/20 dark:border-brand-gold/25 text-brand-purple dark:text-brand-cream rounded-full font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center"
               >
-                Explore {TOPIC_COUNT_LABEL} Topics
+                {EXPLORE_TOPICS_CTA}
               </Link>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-brand-purple/10 dark:border-brand-gold/10">
-              {[
-                { value: BASE_LESSON_COUNT, suffix: "+", label: "Interactive Lessons" },
-                { value: QUIZ_QUESTION_COUNT, suffix: "+", label: "Quiz Questions" },
-                { value: null, suffix: "", label: "AI Learning Assistant", display: "AI" },
-                { value: null, suffix: "", label: "Future Ready", display: "100%" },
-              ].map((stat, i) => (
+              {HERO_STATS.map((stat, i) => (
                 <div key={i}>
                   <div className="text-2xl md:text-3xl font-bold text-brand-purple dark:text-brand-cream mb-1">
-                    {stat.display ?? <AnimatedCounter value={stat.value!} suffix={stat.suffix} />}
+                    {stat.display}
                   </div>
                   <div className="text-xs text-brand-purple/50 dark:text-brand-cream/50 uppercase tracking-wider">{stat.label}</div>
                 </div>
@@ -134,19 +129,19 @@ export default function Home() {
         </div>
       </section>
 
-      {/* TOPICS & WORLDS */}
+      {/* STARTER PATHS & EXPLORER MAP */}
       <section id="topics" className="py-28 relative z-10 bg-brand-warm/60 dark:bg-brand-purple-dark/20 border-b border-brand-purple/8 dark:border-brand-gold/8">
         <div className="container mx-auto px-6">
           <div className="max-w-3xl mx-auto text-center mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-brand-purple/6 dark:bg-brand-gold/8 border border-brand-purple/10 dark:border-brand-gold/15 mb-6">
               <Layers className="h-3.5 w-3.5 text-brand-gold" strokeWidth={2} />
-              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-purple/70 dark:text-brand-cream/70">{TOPIC_COUNT_LABEL} Topics · 6 Worlds · Custom Additions</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-purple/70 dark:text-brand-cream/70">{TOPIC_MARKETING.headline} · Published Book Curriculum · {TOPIC_MARKETING.growsWithVisionVee}</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4 leading-tight">
-              Explore Every Topic
+              Your Explorer Map
             </h2>
             <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg leading-relaxed">
-              {BASE_LESSON_COUNT}+ core topics across six guided worlds — plus custom topics Vision Vee or parents can add to any child&apos;s curriculum.
+              {TOPIC_MARKETING.subline}
             </p>
           </div>
 
@@ -168,13 +163,13 @@ export default function Home() {
                     Start Your Adventure
                   </h3>
                   <p className="text-brand-purple/60 dark:text-brand-cream/60 text-base max-w-lg mx-auto mb-8 leading-relaxed">
-                    Choose from six guided worlds — each packed with illustrated lessons, quizzes, and badges.
+                    {TOPIC_MARKETING.explorerMapLine}
                   </p>
                   <button
                     onClick={() => setExplorationMode("grid")}
                     className="px-8 py-3.5 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mx-auto shadow-[0_6px_24px_rgba(74,45,110,0.18)] group/btn"
                   >
-                    View All Worlds <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
+                    {EXPLORE_TOPICS_CTA} <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
                   </button>
                 </div>
               </motion.div>
@@ -195,7 +190,7 @@ export default function Home() {
                   >
                     ← Collapse
                   </button>
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">Guided Worlds</span>
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">{EXPLORER_MAP_LABEL}</span>
                 </div>
                 <WorldSelector />
               </motion.div>
@@ -224,12 +219,15 @@ export default function Home() {
               </div>
               <span className="text-brand-purple/50 dark:text-brand-cream/50 text-sm font-medium">100+ Amazon Reviews</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-6">The Physical Book</h2>
-            <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-6 font-light">
-              Start the journey off-screen. The perfect companion to the online platform, available worldwide.
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">The Published Book</h2>
+            <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-3 font-light">
+              {TOPIC_MARKETING.bookCrossSell}
+            </p>
+            <p className="text-base text-brand-purple/50 dark:text-brand-cream/50 mb-6 max-w-lg mx-auto md:mx-0">
+              Your trusted passport into AI literacy — the perfect offline companion to the unlimited platform.
             </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start mb-8">
-              {["Ages 9–12", "Worldwide Shipping", "Paperback", "Future eBook"].map((tag) => (
+              {["For Kids", "Worldwide Shipping", "Paperback", "Future eBook"].map((tag) => (
                 <span key={tag} className="bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10 dark:border-brand-gold/15 rounded-full px-4 py-1.5 text-xs font-semibold text-brand-purple/70 dark:text-brand-cream/70 tracking-wide uppercase">
                   {tag}
                 </span>
@@ -243,7 +241,7 @@ export default function Home() {
               >
                 Buy on Amazon <ArrowUpRight className="h-5 w-5" />
               </Link>
-              <Link href="#" className="w-full sm:w-auto px-8 py-4 text-brand-purple dark:text-brand-cream border border-brand-purple/20 dark:border-brand-gold/20 rounded-full hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center gap-2">
+              <Link href="#book" className="w-full sm:w-auto px-8 py-4 text-brand-purple dark:text-brand-cream border border-brand-purple/20 dark:border-brand-gold/20 rounded-full hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center gap-2">
                 Read Sample
               </Link>
             </div>
@@ -263,7 +261,7 @@ export default function Home() {
             </div>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-6">Meet Vision Vee</h2>
             <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-8 font-light">
-              Not just an AI. A friendly companion that answers questions, explains complex ideas with simple analogies, and can create custom topics for your curriculum when you or your parent asks.
+              Not just an AI. A friendly companion that answers questions, explains complex ideas with simple analogies, and creates new topics on demand — so there&apos;s no limit to what you can learn on Young AI Explorers.
             </p>
             <div className="p-6 rounded-2xl bg-brand-surface/80 dark:bg-brand-purple-dark/40 border border-brand-purple/10 dark:border-brand-gold/10 shadow-sm">
               <div className="flex gap-4 mb-4">
@@ -290,7 +288,7 @@ export default function Home() {
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">The Learning Journey</h2>
-            <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg">A rewarding, step-by-step path to mastering the future.</p>
+            <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg">Start with book lessons. Keep going with Vision Vee — forever.</p>
           </div>
 
           <div className="max-w-3xl mx-auto relative">
@@ -410,7 +408,7 @@ export default function Home() {
             <div className="p-8 md:p-10">
               <h2 className="text-2xl font-bold text-brand-purple dark:text-brand-cream mb-4">For Parents</h2>
               <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6 leading-relaxed">
-                Equip your child with essential AI literacy. Control their curriculum — enable, remove, or add custom topics beyond the core {TOPIC_COUNT_LABEL} lessons. Set sharing preferences and connect with explorers worldwide.
+                Equip your child with essential AI literacy. Control their curriculum — enable, remove, or add unlimited custom topics with Vision Vee. {TOPIC_MARKETING.platformLine} Set sharing preferences and connect with explorers worldwide.
               </p>
               <div className="p-4 rounded-xl bg-brand-purple/[0.03] dark:bg-brand-gold/[0.05] border border-brand-purple/8 dark:border-brand-gold/10 mb-8">
                 <p className="text-sm text-brand-purple/70 dark:text-brand-cream/70 italic leading-relaxed">
@@ -418,7 +416,7 @@ export default function Home() {
                 </p>
                 <p className="text-xs font-semibold text-brand-gold mt-3">Sarah T., Parent</p>
               </div>
-              <Link href="/dashboard/parent" className="block w-full py-4 text-center text-brand-cream dark:text-brand-purple-dark bg-brand-purple dark:bg-brand-gold rounded-full font-semibold hover:opacity-90 transition-all">
+              <Link href="/signup?role=parent" className="block w-full py-4 text-center text-brand-cream dark:text-brand-purple-dark bg-brand-purple dark:bg-brand-gold rounded-full font-semibold hover:opacity-90 transition-all">
                 Parent Dashboard — Control Curriculum
               </Link>
             </div>
@@ -436,14 +434,14 @@ export default function Home() {
                 Partner with Young AI Explorers. Download classroom resources, book interactive workshops, and integrate AI literacy into your curriculum.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 mb-8">
-                <Link href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/5 text-brand-purple dark:text-brand-cream font-medium transition-colors border border-brand-purple/10 dark:border-brand-gold/15 hover:bg-brand-purple/8 dark:hover:bg-brand-gold/8">
+                <Link href="/school/curriculum" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/5 text-brand-purple dark:text-brand-cream font-medium transition-colors border border-brand-purple/10 dark:border-brand-gold/15 hover:bg-brand-purple/8 dark:hover:bg-brand-gold/8">
                   <Download className="h-4 w-4" strokeWidth={1.5} /> Curriculum PDF
                 </Link>
-                <Link href="#" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/5 text-brand-purple dark:text-brand-cream font-medium transition-colors border border-brand-purple/10 dark:border-brand-gold/15 hover:bg-brand-purple/8 dark:hover:bg-brand-gold/8">
+                <Link href="/school/workshop" className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/5 text-brand-purple dark:text-brand-cream font-medium transition-colors border border-brand-purple/10 dark:border-brand-gold/15 hover:bg-brand-purple/8 dark:hover:bg-brand-gold/8">
                   <Globe className="h-4 w-4" strokeWidth={1.5} /> Book Workshop
                 </Link>
               </div>
-              <Link href="#" className="block w-full py-4 text-center text-brand-purple dark:text-brand-cream bg-transparent border border-brand-purple/20 dark:border-brand-gold/20 rounded-full font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors">
+              <Link href="/school/demo" className="block w-full py-4 text-center text-brand-purple dark:text-brand-cream bg-transparent border border-brand-purple/20 dark:border-brand-gold/20 rounded-full font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors">
                 Request School Demo
               </Link>
             </div>
@@ -463,6 +461,7 @@ export default function Home() {
             <div className="flex flex-col items-center">
               <h3 className="font-heading text-xl font-bold text-brand-purple dark:text-brand-cream mb-1">Bassey Riman</h3>
               <p className="text-sm font-semibold text-brand-gold tracking-wider uppercase">Founder, Young AI Explorers</p>
+              <p className="text-sm text-brand-purple/50 dark:text-brand-cream/50 mt-1">{LEGAL_OWNER}</p>
               <p className="text-sm text-brand-purple/50 dark:text-brand-cream/50 mt-2">AI Engineer · Author · AI in Education</p>
             </div>
           </div>
@@ -470,21 +469,43 @@ export default function Home() {
           <div className="border-t border-brand-purple/10 dark:border-brand-gold/10 pt-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-8">
             <div className="flex flex-col gap-3">
               <Link href="/">
-                <Logo showWordmark size="md" />
+                <Logo showWordmark showTagline size="md" />
               </Link>
               <p className="text-sm text-brand-purple/50 dark:text-brand-cream/50">Inspiring the next generation of innovators.</p>
             </div>
 
             <div className="flex flex-wrap gap-10 text-sm text-brand-purple/60 dark:text-brand-cream/60">
               {[
-                { title: "Platform", links: ["Topics", "AI Assistant", "The Book"] },
-                { title: "Community", links: ["UK Explorers", "Nigeria", "Ghana", "Global Network"] },
-                { title: "Legal", links: ["Privacy Policy", "Terms of Service", "Cookie Policy"] },
+                {
+                  title: "Platform",
+                  links: [
+                    { label: "Starter Paths", href: "#topics" },
+                    { label: "Vision Vee", href: "#assistant" },
+                    { label: "The Book", href: "#book" },
+                  ],
+                },
+                {
+                  title: "Community",
+                  links: [
+                    { label: "UK Explorers", href: "/community" },
+                    { label: "Nigeria", href: "/community" },
+                    { label: "Ghana", href: "/community" },
+                    { label: "Global Network", href: "/community" },
+                  ],
+                },
+                {
+                  title: "Legal",
+                  links: [
+                    { label: "Privacy Policy", href: "/privacy" },
+                    { label: "Terms of Service", href: "/terms" },
+                    { label: "Cookie Policy", href: "/cookies" },
+                  ],
+                },
               ].map((col) => (
                 <div key={col.title} className="flex flex-col gap-2.5">
                   <span className="text-brand-purple dark:text-brand-cream font-semibold mb-1">{col.title}</span>
                   {col.links.map((link) => (
-                    <Link key={link} href="#" className="hover:text-brand-gold transition-colors">{link}</Link>
+                    <Link key={link.label} href={link.href} className="hover:text-brand-gold transition-colors">{link.label}</Link>
                   ))}
                 </div>
               ))}
@@ -492,7 +513,7 @@ export default function Home() {
           </div>
 
           <div className="border-t border-brand-purple/8 dark:border-brand-gold/8 mt-10 pt-8 text-center text-sm text-brand-purple/40 dark:text-brand-cream/40">
-            © {new Date().getFullYear()} Young AI Explorers. Designed for the future.
+            © {new Date().getFullYear()} Young AI Explorers · {LEGAL_OWNER}. All rights reserved.
           </div>
         </div>
       </footer>

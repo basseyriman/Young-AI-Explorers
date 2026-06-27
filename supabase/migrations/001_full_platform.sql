@@ -24,6 +24,14 @@ CREATE TABLE IF NOT EXISTS profiles (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- Upgrade legacy profiles table if it existed from an older schema
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS nickname TEXT DEFAULT 'Explorer';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS country_code TEXT DEFAULT 'GB';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS sharing_level TEXT DEFAULT 'region';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS allow_match_quiz BOOLEAN DEFAULT true;
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+UPDATE profiles SET country_code = 'GB' WHERE country_code IS NULL;
+
 -- ─── Curriculum (per user / child) ─────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS curriculum_settings (
   user_id UUID REFERENCES profiles(id) ON DELETE CASCADE PRIMARY KEY,
@@ -227,6 +235,24 @@ ALTER TABLE topic_activity ENABLE ROW LEVEL SECURITY;
 ALTER TABLE match_quiz_queue ENABLE ROW LEVEL SECURITY;
 ALTER TABLE match_quiz_sessions ENABLE ROW LEVEL SECURITY;
 ALTER TABLE countries ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS "countries_public_read" ON countries;
+DROP POLICY IF EXISTS "profiles_read_own" ON profiles;
+DROP POLICY IF EXISTS "profiles_read_community" ON profiles;
+DROP POLICY IF EXISTS "profiles_update_own" ON profiles;
+DROP POLICY IF EXISTS "profiles_insert_own" ON profiles;
+DROP POLICY IF EXISTS "curriculum_own" ON curriculum_settings;
+DROP POLICY IF EXISTS "custom_topics_own" ON custom_topics;
+DROP POLICY IF EXISTS "family_parent" ON family_links;
+DROP POLICY IF EXISTS "progress_own" ON user_progress;
+DROP POLICY IF EXISTS "badges_own" ON user_badges;
+DROP POLICY IF EXISTS "badges_read_public" ON user_badges;
+DROP POLICY IF EXISTS "ideas_read_public" ON community_ideas;
+DROP POLICY IF EXISTS "ideas_insert_own" ON community_ideas;
+DROP POLICY IF EXISTS "topic_activity_read" ON topic_activity;
+DROP POLICY IF EXISTS "match_queue_own" ON match_quiz_queue;
+DROP POLICY IF EXISTS "match_queue_read" ON match_quiz_queue;
+DROP POLICY IF EXISTS "match_sessions_players" ON match_quiz_sessions;
 
 CREATE POLICY "countries_public_read" ON countries FOR SELECT USING (true);
 CREATE POLICY "profiles_read_own" ON profiles FOR SELECT USING (auth.uid() = id);

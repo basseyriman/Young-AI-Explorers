@@ -4,9 +4,10 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import {
   Shield, Plus, Trash2, Sparkles, Globe, Lock, Users, Save,
-  CheckCircle2, XCircle,
+  CheckCircle2, XCircle, LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { signOut } from "@/app/dashboard/actions";
 import { Logo } from "@/components/Logo";
 import { CountrySelect } from "@/components/CountrySelect";
 import {
@@ -111,6 +112,24 @@ export function ParentDashboardClient({
         return;
       }
       setPendingTopics((prev) => prev.filter((t) => t.id !== topicId));
+      const approved = initialPending.find((t) => t.id === topicId) ?? pendingTopics.find((t) => t.id === topicId);
+      if (approved) {
+        setSettings({
+          ...settings,
+          customTopics: [
+            ...settings.customTopics,
+            {
+              id: approved.id,
+              title: approved.title,
+              description: approved.description ?? '',
+              createdBy: approved.created_by === 'student' ? 'student' : 'vision_vee',
+              createdAt: approved.created_at,
+              contentStatus: (approved.content_status as 'ready') ?? 'ready',
+              badgeName: approved.badge_name ?? undefined,
+            },
+          ],
+        });
+      }
       setMessage("Topic approved — it now appears in your child's curriculum.");
     });
   };
@@ -137,9 +156,18 @@ export function ParentDashboardClient({
   return (
     <div className="min-h-screen bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:text-brand-cream">
       <header className="border-b border-brand-purple/10 dark:border-brand-gold/10 bg-brand-surface/80 dark:bg-brand-purple-dark/60">
-        <div className="container mx-auto px-6 h-20 flex items-center justify-between">
+        <div className="container mx-auto px-6 h-20 flex items-center justify-between gap-4">
           <Link href="/"><Logo showWordmark size="md" /></Link>
-          <span className="text-sm text-brand-purple/60 dark:text-brand-cream/60 hidden sm:block">{userEmail}</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-brand-purple/60 dark:text-brand-cream/60 hidden sm:block truncate max-w-[200px] md:max-w-none">
+              {userEmail}
+            </span>
+            <form action={signOut}>
+              <Button type="submit" variant="ghost" className="rounded-full text-sm font-semibold text-brand-purple/60 dark:text-brand-cream/60 shrink-0">
+                <LogOut className="h-4 w-4 mr-2" /> Sign Out
+              </Button>
+            </form>
+          </div>
         </div>
       </header>
 
@@ -252,22 +280,46 @@ export function ParentDashboardClient({
             <p className="text-sm text-brand-purple/45 dark:text-brand-cream/45 italic">No topics awaiting approval.</p>
           ) : (
             pendingTopics.map((t) => (
-              <div key={t.id} className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
-                <div>
-                  <div className="font-semibold text-sm">{t.title}</div>
-                  <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
-                  <div className="text-[10px] uppercase tracking-wider text-brand-purple/40 mt-2">
-                    For {t.child_name} · via {t.created_by === 'vision_vee' ? 'Vision Vee' : t.created_by}
+              <div key={t.id} className="flex flex-col gap-4 p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
+                <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <div className="font-semibold text-sm">{t.title}</div>
+                    <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-brand-purple/40 mt-2">
+                      For {t.child_name} · via {t.created_by === 'vision_vee' ? 'Vision Vee' : t.created_by}
+                      {t.content_status === 'generating' && ' · Generating lesson…'}
+                      {t.content_status === 'ready' && t.badge_name && ` · Badge: ${t.badge_name}`}
+                    </div>
+                  </div>
+                  <div className="flex gap-2 shrink-0">
+                    <Button size="sm" onClick={() => handleApproveTopic(t.id)} disabled={pending || t.content_status === 'generating'} className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700">
+                      Approve
+                    </Button>
+                    <Button size="sm" variant="outline" onClick={() => handleRejectTopic(t.id)} disabled={pending} className="rounded-full">
+                      Decline
+                    </Button>
                   </div>
                 </div>
-                <div className="flex gap-2 shrink-0">
-                  <Button size="sm" onClick={() => handleApproveTopic(t.id)} disabled={pending} className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700">
-                    Approve
-                  </Button>
-                  <Button size="sm" variant="outline" onClick={() => handleRejectTopic(t.id)} disabled={pending} className="rounded-full">
-                    Decline
-                  </Button>
-                </div>
+                {t.content_status === 'ready' && t.lesson_content && (
+                  <div className="rounded-xl border border-brand-purple/10 bg-brand-surface dark:bg-brand-purple-dark/50 p-4 space-y-3 text-sm">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Preview — Vision Vee generated</p>
+                    {t.lesson_content.introduction && (
+                      <p className="text-brand-purple/70 dark:text-brand-cream/70 leading-relaxed">{t.lesson_content.introduction}</p>
+                    )}
+                    {t.lesson_content.fun_facts && t.lesson_content.fun_facts.length > 0 && (
+                      <ul className="space-y-1.5">
+                        {t.lesson_content.fun_facts.slice(0, 2).map((fact, i) => (
+                          <li key={i} className="text-xs text-brand-purple/60 dark:text-brand-cream/60 flex gap-2">
+                            <span className="text-brand-gold">✦</span> {fact}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {t.badge_name && (
+                      <p className="text-xs font-medium text-brand-gold">Quiz badge: {t.badge_name}</p>
+                    )}
+                  </div>
+                )}
               </div>
             ))
           )}
@@ -291,6 +343,14 @@ export function ParentDashboardClient({
               <div>
                 <div className="font-semibold text-sm">{t.title}</div>
                 <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
+                {t.badgeName && (
+                  <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-2">Badge: {t.badgeName}</div>
+                )}
+                {t.contentStatus === 'ready' && (
+                  <Link href={`/lesson/${t.id}`} className="text-xs font-semibold text-brand-gold hover:underline mt-2 inline-block">
+                    Preview lesson →
+                  </Link>
+                )}
               </div>
               <button type="button" onClick={() => handleRemoveCustom(t.id)} className="text-brand-purple/40 hover:text-red-500 p-1">
                 <Trash2 className="h-4 w-4" />

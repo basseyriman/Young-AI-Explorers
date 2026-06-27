@@ -21,7 +21,7 @@ export function InnovationMap() {
   const activeIslandData = islands.find(i => i.id === selectedIsland);
 
   return (
-    <div className="relative w-full min-h-[90vh] rounded-[40px] overflow-hidden bg-black border border-white/10 mt-12 perspective-1000 shadow-[0_0_100px_rgba(0,100,255,0.15)] group">
+    <div className="relative w-full min-h-[90vh] rounded-[40px] overflow-hidden bg-black border border-brand-gold/15 mt-12 perspective-1000 shadow-[0_0_100px_rgba(74,45,110,0.25)] group">
       
       {/* Deep Space Background */}
       <div className="absolute inset-0 bg-[#020617]">
@@ -47,7 +47,7 @@ export function InnovationMap() {
         })}
         {/* Nebulas */}
         <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-purple-600/30 rounded-full blur-[150px] mix-blend-screen animate-float-slow" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-cyan-600/20 rounded-full blur-[150px] mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[60%] h-[60%] bg-brand-gold/20 rounded-full blur-[150px] mix-blend-screen animate-float" style={{ animationDelay: "2s" }} />
       </div>
       
       {/* Map Container */}
@@ -57,8 +57,8 @@ export function InnovationMap() {
           rotateX: selectedIsland ? 0 : 55, 
           rotateZ: selectedIsland ? 0 : -10, 
           scale: selectedIsland ? 1.5 : 0.85,
-          x: selectedIsland ? `-${activeIslandData?.x! - 50}%` : 0,
-          y: selectedIsland ? `-${activeIslandData?.y! - 50}%` : 0
+          x: selectedIsland && activeIslandData ? `-${activeIslandData.x - 50}%` : 0,
+          y: selectedIsland && activeIslandData ? `-${activeIslandData.y - 50}%` : 0
         }}
         transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }} // smooth cinematic ease
       >
@@ -84,14 +84,14 @@ export function InnovationMap() {
                      strokeDasharray="20 20"
                      animate={{ strokeDashoffset: [0, -200] }}
                      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-                     className="drop-shadow-[0_0_10px_rgba(0,200,255,0.8)]"
+                     className="drop-shadow-[0_0_10px_rgba(201,160,78,0.8)]"
                    />
                  )
                })}
                <defs>
                  <linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                   <stop offset="0%" stopColor="#00f2fe" stopOpacity="0.8"/>
-                   <stop offset="100%" stopColor="#4facfe" stopOpacity="0.2"/>
+                   <stop offset="0%" stopColor="#C9A04E" stopOpacity="0.8"/>
+                   <stop offset="100%" stopColor="#4A2D6E" stopOpacity="0.2"/>
                  </linearGradient>
                </defs>
             </motion.svg>
@@ -123,12 +123,12 @@ export function InnovationMap() {
             >
               {/* Island Image */}
               <div className="relative w-full h-full cursor-pointer group-island">
-                <div className={`absolute inset-0 bg-cyan-500/20 blur-3xl rounded-full transition-opacity duration-500 ${isHovered || isSelected ? 'opacity-100' : 'opacity-0'}`} />
+                <div className={`absolute inset-0 bg-brand-gold/20 blur-3xl rounded-full transition-opacity duration-500 ${isHovered || isSelected ? 'opacity-100' : 'opacity-0'}`} />
                 <Image 
                   src={island.image} 
                   alt={island.name} 
                   fill 
-                  className={`object-contain transition-all duration-700 ${isHovered ? 'drop-shadow-[0_20px_50px_rgba(0,255,255,0.4)]' : 'drop-shadow-2xl'}`} 
+                  className={`object-contain transition-all duration-700 ${isHovered ? 'drop-shadow-[0_20px_50px_rgba(201,160,78,0.4)]' : 'drop-shadow-2xl'}`} 
                   style={{ transform: !selectedIsland ? "rotateX(-55deg) rotateZ(10deg)" : "rotateX(0deg) rotateZ(0deg)", transition: "transform 1.2s cubic-bezier(0.16, 1, 0.3, 1)" }}
                 />
               </div>
@@ -140,34 +140,34 @@ export function InnovationMap() {
                     initial={{ opacity: 0, y: 20, scale: 0.9, rotateX: -55, rotateZ: 10 }}
                     animate={{ opacity: 1, y: -20, scale: 1, rotateX: -55, rotateZ: 10 }}
                     exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-8 w-80 bg-[#020617]/80 backdrop-blur-2xl border border-white/10 rounded-3xl p-5 shadow-[0_30px_60px_rgba(0,0,0,0.8)] pointer-events-none z-50 origin-bottom"
+                    className="absolute left-1/2 -translate-x-1/2 bottom-full mb-8 w-80 bg-brand-purple-dark/90 backdrop-blur-2xl border border-brand-gold/20 rounded-3xl p-5 shadow-[0_30px_60px_rgba(0,0,0,0.8)] pointer-events-none z-50 origin-bottom"
                   >
                     <div className="flex items-center gap-4 mb-4">
-                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-400/20 to-blue-600/20 border border-cyan-400/30 flex items-center justify-center">
-                        <island.badge className="w-6 h-6 text-cyan-400" />
+                      <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-gold/20 to-brand-purple/20 border border-brand-gold/30 flex items-center justify-center">
+                        <island.badge className="w-6 h-6 text-brand-gold" />
                       </div>
                       <div>
-                        <h3 className="font-bold text-white text-lg">{island.name}</h3>
-                        <div className="flex items-center gap-2 text-xs text-slate-400 font-medium">
-                          <Trophy className="w-3 h-3 text-yellow-400" /> {island.xp}
+                        <h3 className="font-bold text-brand-cream text-lg">{island.name}</h3>
+                        <div className="flex items-center gap-2 text-xs text-brand-cream/50 font-medium">
+                          <Trophy className="w-3 h-3 text-brand-gold" /> {island.xp}
                         </div>
                       </div>
                     </div>
-                    <p className="text-sm text-slate-300 mb-4 line-clamp-2">{island.desc}</p>
+                    <p className="text-sm text-brand-cream/70 mb-4 line-clamp-2">{island.desc}</p>
                     <div className="grid grid-cols-2 gap-2 mb-4">
                       <div className="bg-white/5 rounded-lg p-2 text-center">
-                        <div className="text-xs text-slate-400 mb-1">Lessons</div>
-                        <div className="font-bold text-white text-sm">{island.lessons}</div>
+                        <div className="text-xs text-brand-cream/50 mb-1">Lessons</div>
+                        <div className="font-bold text-brand-cream text-sm">{island.lessons}</div>
                       </div>
                       <div className="bg-white/5 rounded-lg p-2 text-center">
-                        <div className="text-xs text-slate-400 mb-1">Time</div>
-                        <div className="font-bold text-white text-sm">{island.time}</div>
+                        <div className="text-xs text-brand-cream/50 mb-1">Time</div>
+                        <div className="font-bold text-brand-cream text-sm">{island.time}</div>
                       </div>
                     </div>
-                    <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{ width: `${island.progress}%` }} />
+                    <div className="w-full h-1.5 bg-brand-purple-dark rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-brand-purple to-brand-gold" style={{ width: `${island.progress}%` }} />
                     </div>
-                    <div className="mt-2 text-xs font-bold text-cyan-400 text-right">{island.progress}% Completed</div>
+                    <div className="mt-2 text-xs font-bold text-brand-gold text-right">{island.progress}% Completed</div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -184,7 +184,7 @@ export function InnovationMap() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 50 }}
             transition={{ duration: 0.6, delay: 0.4 }}
-            className="absolute right-0 top-0 bottom-0 w-full md:w-[450px] bg-[#020617]/90 backdrop-blur-3xl border-l border-white/10 p-10 flex flex-col z-50"
+            className="absolute right-0 top-0 bottom-0 w-full md:w-[450px] bg-brand-purple-dark/95 backdrop-blur-3xl border-l border-brand-gold/15 p-10 flex flex-col z-50"
           >
             <button 
               onClick={() => setSelectedIsland(null)}
@@ -194,42 +194,42 @@ export function InnovationMap() {
             </button>
 
             <div className="mt-16 flex-1">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 mb-6">
-                <Star className="w-4 h-4 text-cyan-400" />
-                <span className="text-xs font-bold text-cyan-300 uppercase tracking-wider">Mission Briefing</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-gold/20 border border-brand-gold/30 mb-6">
+                <Star className="w-4 h-4 text-brand-gold" />
+                <span className="text-xs font-bold text-brand-gold-light uppercase tracking-wider">Mission Briefing</span>
               </div>
               
-              <h2 className="text-4xl font-heading font-bold text-white mb-4">{activeIslandData.name}</h2>
-              <p className="text-lg text-slate-300 mb-10 leading-relaxed">{activeIslandData.desc}</p>
+              <h2 className="text-4xl font-heading font-bold text-brand-cream mb-4">{activeIslandData.name}</h2>
+              <p className="text-lg text-brand-cream/70 mb-10 leading-relaxed">{activeIslandData.desc}</p>
               
               <div className="grid grid-cols-2 gap-4 mb-10">
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                  <PlayCircle className="w-6 h-6 text-cyan-400 mb-2" />
-                  <div className="text-2xl font-bold text-white">{activeIslandData.lessons}</div>
-                  <div className="text-sm text-slate-400">Interactive Lessons</div>
+                <div className="bg-white/5 border border-brand-gold/10 rounded-2xl p-4">
+                  <PlayCircle className="w-6 h-6 text-brand-gold mb-2" />
+                  <div className="text-2xl font-bold text-brand-cream">{activeIslandData.lessons}</div>
+                  <div className="text-sm text-brand-cream/50">Interactive Lessons</div>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-2xl p-4">
-                  <Trophy className="w-6 h-6 text-yellow-400 mb-2" />
-                  <div className="text-2xl font-bold text-white">{activeIslandData.xp}</div>
-                  <div className="text-sm text-slate-400">XP Reward</div>
+                <div className="bg-white/5 border border-brand-gold/10 rounded-2xl p-4">
+                  <Trophy className="w-6 h-6 text-brand-gold mb-2" />
+                  <div className="text-2xl font-bold text-brand-cream">{activeIslandData.xp}</div>
+                  <div className="text-sm text-brand-cream/50">XP Reward</div>
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-10">
+              <div className="bg-white/5 border border-brand-gold/10 rounded-2xl p-6 mb-10">
                 <div className="flex justify-between items-end mb-4">
                   <div>
-                    <div className="text-sm font-medium text-slate-400 mb-1">Your Progress</div>
-                    <div className="text-2xl font-bold text-white">{activeIslandData.progress}%</div>
+                    <div className="text-sm font-medium text-brand-cream/50 mb-1">Your Progress</div>
+                    <div className="text-2xl font-bold text-brand-cream">{activeIslandData.progress}%</div>
                   </div>
-                  <activeIslandData.badge className="w-10 h-10 text-slate-600" />
+                  <activeIslandData.badge className="w-10 h-10 text-brand-purple-light" />
                 </div>
-                <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{ width: `${activeIslandData.progress}%` }} />
+                <div className="w-full h-2 bg-brand-purple-dark rounded-full overflow-hidden">
+                  <div className="h-full bg-gradient-to-r from-brand-purple to-brand-gold" style={{ width: `${activeIslandData.progress}%` }} />
                 </div>
               </div>
             </div>
 
-            <button className="w-full py-4 rounded-full bg-gradient-to-r from-cyan-400 to-blue-600 text-white font-bold text-lg shadow-[0_0_30px_rgba(0,200,255,0.4)] hover:scale-105 transition-transform flex items-center justify-center gap-2">
+            <button className="w-full py-4 rounded-full bg-gradient-to-r from-brand-purple to-brand-gold text-brand-cream font-bold text-lg shadow-[0_0_30px_rgba(201,160,78,0.4)] hover:scale-105 transition-transform flex items-center justify-center gap-2">
               <PlayCircle className="w-6 h-6" /> Begin Journey
             </button>
           </motion.div>

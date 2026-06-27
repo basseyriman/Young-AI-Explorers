@@ -310,7 +310,13 @@ export const ALL_LESSONS: Record<number, LessonData> = {
 };
 
 // Quiz questions for all 37 topics
-export const ALL_QUIZZES: Record<number, { question: string; options: string[]; answer: string }[]> = {
+export interface QuizQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+export const ALL_QUIZZES: Record<number, QuizQuestion[]> = {
   1: [
     { question: "What is Computer Vision?", options: ["Teaching computers to hear sounds", "Teaching computers to see and understand images", "Teaching computers to taste food", "Teaching computers to smell flowers"], answer: "Teaching computers to see and understand images" },
     { question: "True or False: Computer Vision can help identify objects in photos.", options: ["True", "False"], answer: "True" },

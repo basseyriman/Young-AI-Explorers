@@ -1,38 +1,25 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { ThemeProvider as NextThemesProvider } from "next-themes";
+import { ReactNode } from "react";
 
-type Theme = "dark" | "light";
-
-const ThemeContext = createContext<{
-  theme: Theme;
-  setTheme: (t: Theme) => void;
-}>({ theme: "dark", setTheme: () => {} });
-
-export function ThemeProvider({ children, defaultTheme = "dark" }: { children: ReactNode; defaultTheme?: Theme }) {
-  const [theme, setThemeState] = useState<Theme>(defaultTheme);
-
-  useEffect(() => {
-    const stored = localStorage.getItem("theme") as Theme | null;
-    const resolved = stored ?? defaultTheme;
-    setThemeState(resolved);
-    document.documentElement.classList.toggle("dark", resolved === "dark");
-  }, [defaultTheme]);
-
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
-    localStorage.setItem("theme", t);
-    document.documentElement.classList.toggle("dark", t === "dark");
-  };
-
-  // Theme resolved via inline script in layout.tsx before hydration
+export function ThemeProvider({
+  children,
+  defaultTheme = "light",
+}: {
+  children: ReactNode;
+  defaultTheme?: "light" | "dark";
+}) {
   return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
+    <NextThemesProvider
+      attribute="class"
+      defaultTheme={defaultTheme}
+      enableSystem={false}
+      storageKey="theme"
+    >
       {children}
-    </ThemeContext.Provider>
+    </NextThemesProvider>
   );
 }
 
-export function useTheme() {
-  return useContext(ThemeContext);
-}
+export { useTheme } from "next-themes";

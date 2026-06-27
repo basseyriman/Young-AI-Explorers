@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useCallback } from "react";
+import { ALL_COUNTRIES, mergeCountryLists } from "@/data/countries";
 
 export interface CountryOption {
   code: string;
@@ -20,17 +21,46 @@ interface Props {
 export function CountrySelect({ countries, name = "countryCode", defaultValue = "GB", required = true, onChange }: Props) {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(defaultValue);
+  const [listOpen, setListOpen] = useState(false);
 
-  const featured = useMemo(() => countries.filter((c) => c.is_featured), [countries]);
+  const allCountries = useMemo(
+    () => mergeCountryLists(countries),
+    [countries]
+  );
+
+  const featured = useMemo(() => allCountries.filter((c) => c.is_featured), [allCountries]);
+
   const filtered = useMemo(() => {
     const q = search.toLowerCase().trim();
-    if (!q) return countries;
-    return countries.filter(
-      (c) => c.name.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+    if (!q) return allCountries;
+    return allCountries.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.code.toLowerCase().includes(q)
     );
-  }, [countries, search]);
+  }, [allCountries, search]);
 
-  const selectedCountry = countries.find((c) => c.code === selected);
+  const selectedCountry = allCountries.find((c) => c.code === selected);
+  const showResults = listOpen || search.trim().length > 0;
+  const visibleResults = search.trim() ? filtered : filtered.slice(0, 12);
+
+  const pickCountry = useCallback((code: string) => {
+    setSelected(code);
+    setSearch("");
+    setListOpen(false);
+    onChange?.(code);
+  }, [onChange]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" && filtered.length > 0) {
+      e.preventDefault();
+      pickCountry(filtered[0].code);
+    }
+    if (e.key === "Escape") {
+      setSearch("");
+      setListOpen(false);
+    }
+  };
 
   return (
     <div className="space-y-2">
@@ -38,14 +68,19 @@ export function CountrySelect({ countries, name = "countryCode", defaultValue = 
       <div className="relative">
         <input
           type="text"
-          placeholder="Search all countries…"
+          placeholder={`Search ${allCountries.length}+ countries…`}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="flex h-12 w-full rounded-xl border-2 border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50 px-4 text-sm font-medium text-brand-purple dark:text-brand-cream placeholder:text-brand-purple/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold/40"
+          onChange={(e) => {
+            setSearch(e.target.value);
+            setListOpen(true);
+          }}
+          onFocus={() => setListOpen(true)}
+          onKeyDown={handleKeyDown}
+          className="flex h-12 w-full rounded-xl border-2 border-brand-purple/15 dark:border-brand-cream/25 bg-brand-warm dark:bg-brand-purple-dark px-4 text-sm font-medium text-brand-purple dark:text-brand-cream placeholder:text-brand-purple/40 dark:placeholder:text-brand-cream/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-gold/40 dark:focus-visible:ring-brand-gold/60"
         />
       </div>
-      {selectedCountry && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-gold/10 border border-brand-gold/20 text-sm font-medium">
+      {selectedCountry && !search && (
+        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-gold/10 border border-brand-gold/20 text-sm font-medium text-brand-purple dark:text-brand-cream">
           <span>{selectedCountry.flag_emoji}</span>
           <span>{selectedCountry.name}</span>
         </div>
@@ -56,11 +91,11 @@ export function CountrySelect({ countries, name = "countryCode", defaultValue = 
             <button
               key={c.code}
               type="button"
-              onClick={() => { setSelected(c.code); setSearch(""); onChange?.(c.code); }}
+              onClick={() => pickCountry(c.code)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
                 selected === c.code
                   ? "bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark border-transparent"
-                  : "border-brand-purple/15 dark:border-brand-gold/15 hover:border-brand-gold/40"
+                  : "border-brand-purple/15 dark:border-brand-cream/25 text-brand-purple/80 dark:text-brand-cream/80 hover:border-brand-gold/40"
               }`}
             >
               {c.flag_emoji} {c.name}
@@ -68,25 +103,37 @@ export function CountrySelect({ countries, name = "countryCode", defaultValue = 
           ))}
         </div>
       )}
-      <div className="max-h-40 overflow-y-auto rounded-xl border border-brand-purple/10 dark:border-brand-gold/10 divide-y divide-brand-purple/5 dark:divide-brand-gold/5">
-        {filtered.slice(0, 50).map((c) => (
-          <button
-            key={c.code}
-            type="button"
-            onClick={() => { setSelected(c.code); setSearch(""); }}
-            className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors ${
-              selected === c.code ? "bg-brand-gold/10 font-semibold" : ""
-            }`}
-          >
-            <span>{c.flag_emoji}</span>
-            <span>{c.name}</span>
-            <span className="ml-auto text-xs text-brand-purple/40">{c.code}</span>
-          </button>
-        ))}
-        {filtered.length === 0 && (
-          <p className="px-4 py-3 text-sm text-brand-purple/50">No countries found</p>
-        )}
-      </div>
+      {!search && (
+        <p className="text-xs text-brand-purple/45 dark:text-brand-cream/45">
+          Type your country — e.g. Togo, Brazil, Japan — then click or press Enter.
+        </p>
+      )}
+      {showResults && (
+        <div className="max-h-48 overflow-y-auto rounded-xl border border-brand-purple/10 dark:border-brand-gold/10 divide-y divide-brand-purple/5 dark:divide-brand-gold/5 bg-brand-surface dark:bg-brand-purple-dark/80 shadow-lg">
+          {visibleResults.map((c) => (
+            <button
+              key={c.code}
+              type="button"
+              onClick={() => pickCountry(c.code)}
+              className={`w-full text-left px-4 py-2.5 text-sm flex items-center gap-2 text-brand-purple dark:text-brand-cream hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors ${
+                selected === c.code ? "bg-brand-gold/10 font-semibold" : ""
+              }`}
+            >
+              <span>{c.flag_emoji}</span>
+              <span>{c.name}</span>
+              <span className="ml-auto text-xs text-brand-purple/40 dark:text-brand-cream/45">{c.code}</span>
+            </button>
+          ))}
+          {filtered.length === 0 && (
+            <p className="px-4 py-3 text-sm text-brand-purple/50 dark:text-brand-cream/50">No countries found — try a different spelling</p>
+          )}
+          {!search.trim() && filtered.length > 12 && (
+            <p className="px-4 py-2 text-xs text-brand-purple/45 dark:text-brand-cream/45 border-t border-brand-purple/5 dark:border-brand-gold/5">
+              Keep typing to search all {allCountries.length} countries
+            </p>
+          )}
+        </div>
+      )}
     </div>
   );
 }

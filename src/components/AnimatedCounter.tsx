@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useInView, useSpring, useTransform } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { motion, useInView, useSpring, useMotionValueEvent } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 interface AnimatedCounterProps {
   value: number;
@@ -11,11 +11,11 @@ interface AnimatedCounterProps {
 export function AnimatedCounter({ value, suffix = "" }: AnimatedCounterProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
-  
+  const [display, setDisplay] = useState(0);
+
   const springValue = useSpring(0, {
     stiffness: 50,
     damping: 20,
-    duration: 2000
   });
 
   useEffect(() => {
@@ -24,11 +24,13 @@ export function AnimatedCounter({ value, suffix = "" }: AnimatedCounterProps) {
     }
   }, [isInView, value, springValue]);
 
-  const displayValue = useTransform(springValue, (current) => Math.floor(current));
+  useMotionValueEvent(springValue, "change", (latest) => {
+    setDisplay(Math.floor(latest));
+  });
 
   return (
     <span ref={ref} className="tabular-nums">
-      <motion.span>{displayValue}</motion.span>{suffix}
+      {display}{suffix}
     </span>
   );
 }

@@ -6,7 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { ArrowLeft, Swords, Trophy, Clock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ALL_QUIZZES } from "@/data/lessons";
-import { BOOK_LESSONS, TOPIC_COUNT_LABEL } from "@/data/curriculum";
+import { BOOK_LESSONS, TOPIC_MARKETING } from "@/data/curriculum";
 import { joinMatchQuizAction, leaveMatchQueueAction } from "@/app/dashboard/parent/actions";
 
 type MatchPhase = "lobby" | "matching" | "playing" | "results";
@@ -104,7 +104,7 @@ function MatchQuizContent() {
           <Swords className="h-10 w-10 text-brand-gold mx-auto mb-4" />
           <h1 className="text-3xl font-heading font-bold mb-2">Match Quiz</h1>
           <p className="text-brand-purple/60 dark:text-brand-cream/60 text-sm">
-            Live Supabase matchmaking · {TOPIC_COUNT_LABEL} topics · nickname only
+            Live Supabase matchmaking · {TOPIC_MARKETING.matchQuizLine} · nickname only
           </p>
         </div>
 

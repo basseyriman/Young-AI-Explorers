@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Globe, MessageSquare, Shield, TrendingUp } from "lucide-react";
-import { TOPIC_COUNT_LABEL } from "@/data/curriculum";
+import { CUSTOM_TOPICS_LABEL } from "@/data/curriculum";
 
 interface Country {
   code: string;
@@ -93,8 +93,8 @@ export function RegionalCommunities() {
             <ul className="space-y-4 text-sm text-brand-purple/65 dark:text-brand-cream/65 flex-grow">
               <li>✓ All countries supported — featured nations shown first at signup</li>
               <li>✓ Parents control sharing: Private, Region, or Global</li>
-              <li>✓ Match Quiz uses nicknames and {TOPIC_COUNT_LABEL} curriculum topics</li>
-              <li>✓ Vision Vee can add custom topics — parent-approved</li>
+              <li>✓ Match Quiz uses nicknames and your full curriculum — core plus custom topics</li>
+              <li>✓ Vision Vee creates new topics on request — {CUSTOM_TOPICS_LABEL.toLowerCase()}</li>
               <li>✓ Supabase row-level security on all user data</li>
             </ul>
             <div className="flex flex-col sm:flex-row gap-3 mt-8">

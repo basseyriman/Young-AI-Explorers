@@ -1,9 +1,48 @@
-/** Core curriculum constants — always use 38+ to allow Vision Vee & parent-created topics */
+/** Internal book curriculum size — used for logic and teacher PDFs */
 
 export const BASE_LESSON_COUNT = 38;
 export const BASE_CHAPTER_COUNT = 37;
-export const TOPIC_COUNT_LABEL = "38+";
 export const QUIZ_QUESTION_COUNT = 114;
+/** Starter library: ~2 fun facts per guided lesson; grows as Vision Vee adds topics */
+export const STARTER_FUN_FACT_COUNT = BASE_LESSON_COUNT * 2;
+
+/** User-facing marketing — topics are unlimited; starter library counts are honest floors */
+export const TOPIC_COUNT_LABEL = "Unlimited";
+export const CORE_TOPICS_LABEL = "Unlimited topics to explore";
+export const STARTER_LESSONS_LABEL = `${BASE_LESSON_COUNT}+ guided lessons to start`;
+export const FUN_FACTS_LABEL = `${STARTER_FUN_FACT_COUNT}+ fun facts`;
+export const QUIZZES_LABEL = `${QUIZ_QUESTION_COUNT}+ quizzes to attempt`;
+export const CUSTOM_TOPICS_LABEL = "Unlimited custom topics";
+export const EXPLORE_TOPICS_CTA = "Browse Starter Paths";
+export const EXPLORER_MAP_LABEL = "Explorer Map";
+export const STARTER_PATHS_LABEL = "Starter Paths";
+export const BOOK_CURRICULUM_LABEL = `${BASE_LESSON_COUNT}+ book lessons to start`;
+export const BOOK_TAGLINE = "Based on the Young AI Explorers book — available on Amazon.";
+
+export const HERO_STATS = [
+  { display: "∞", label: "Topics to Explore" },
+  { display: `${BASE_LESSON_COUNT}+`, label: "Book Lessons to Start" },
+  { display: `${STARTER_FUN_FACT_COUNT}+`, label: "Fun Facts" },
+  { display: `${QUIZ_QUESTION_COUNT}+`, label: "Quizzes to Attempt" },
+] as const;
+
+export const TOPIC_MARKETING = {
+  headline: "No Limit to Learning",
+  heroLine:
+    "No limit to what you can learn about AI. Start with our published Young AI Explorers book curriculum — then Vision Vee creates new lessons on whatever you're curious about.",
+  platformLine:
+    "Start with the published Young AI Explorers book curriculum — then Vision Vee creates new lessons on anything you're curious about.",
+  subline:
+    "A trusted book launch pad, not a ceiling. Browse starter paths, earn badges, and keep growing — your path never hits a wall.",
+  bookLine: BOOK_TAGLINE,
+  bookCrossSell: "Read the book. Explore forever on the platform.",
+  explorerMapLine:
+    "Six starter paths from the Young AI Explorers book — illustrated lessons, quizzes, fun facts, and badges. Vision Vee adds more anytime.",
+  visionVeeLine: "Ask Vision Vee to create a topic on anything — parents approve, then it joins your curriculum.",
+  matchQuizLine: "Match Quiz draws from every topic in your curriculum — the starter library plus every custom topic Vision Vee creates.",
+  growsWithVisionVee: "Grows with Vision Vee",
+  heroStats: HERO_STATS,
+} as const;
 
 export type TopicId = number | "intro" | string;
 
@@ -18,9 +57,11 @@ export interface CustomTopic {
   id: string;
   title: string;
   description: string;
-  createdBy: "parent" | "vision_vee";
+  createdBy: "parent" | "vision_vee" | "student";
   createdAt: string;
   worldId?: string;
+  contentStatus?: "pending" | "generating" | "ready" | "failed";
+  badgeName?: string;
 }
 
 export interface CurriculumSettings {
@@ -98,6 +139,9 @@ export const WORLDS = [
   { id: "creativity-innovation", title: "Creativity & Future Innovation", lessonCount: 9, topicIds: [17, 18, 30, 32, 33, 6, 31, 8, 37] as TopicId[] },
 ];
 
+/** Book-based starter paths shown in the Explorer Map (same data as WORLDS). */
+export const STARTER_PATHS = WORLDS;
+
 
 export function topicIdKey(id: TopicId): string {
   return String(id);
@@ -117,5 +161,8 @@ export function getTotalTopicCount(settings: CurriculumSettings = DEFAULT_CURRIC
 
 export function getTopicCountLabel(settings?: CurriculumSettings): string {
   const total = settings ? getTotalTopicCount(settings) : BASE_LESSON_COUNT;
-  return total > BASE_LESSON_COUNT ? `${total}+` : `${BASE_LESSON_COUNT}+`;
+  if (settings && settings.customTopics.length > 0) {
+    return `${total}+`;
+  }
+  return CORE_TOPICS_LABEL;
 }

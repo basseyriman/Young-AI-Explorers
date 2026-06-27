@@ -1,6 +1,9 @@
 import { createClient } from '@/utils/supabase/server'
 import type { CurriculumSettings, CustomTopic, TopicId } from '@/data/curriculum'
 import { DEFAULT_CURRICULUM, BOOK_LESSONS } from '@/data/curriculum'
+import { ALL_COUNTRIES, mergeCountryLists } from '@/data/countries'
+import type { CustomTopicRow } from '@/lib/custom-topic-content'
+import { generateTopicContent } from '@/lib/vision-vee/generate-topic-content'
 
 export interface CountryRow {
   code: string
@@ -47,22 +50,10 @@ export interface PendingCustomTopicRow {
   created_by: string
   created_at: string
   child_name: string | null
+  content_status: string | null
+  badge_name: string | null
+  lesson_content: { introduction?: string; main_lesson?: string; fun_facts?: string[] } | null
 }
-
-const FALLBACK_COUNTRIES: CountryRow[] = [
-  { code: 'GLOBAL', name: 'Global / International', flag_emoji: '🌍', is_featured: true, explorer_count: 0 },
-  { code: 'GB', name: 'United Kingdom', flag_emoji: '🇬🇧', is_featured: true, explorer_count: 0 },
-  { code: 'NG', name: 'Nigeria', flag_emoji: '🇳🇬', is_featured: true, explorer_count: 0 },
-  { code: 'GH', name: 'Ghana', flag_emoji: '🇬🇭', is_featured: true, explorer_count: 0 },
-  { code: 'UG', name: 'Uganda', flag_emoji: '🇺🇬', is_featured: true, explorer_count: 0 },
-  { code: 'US', name: 'United States', flag_emoji: '🇺🇸', is_featured: true, explorer_count: 0 },
-  { code: 'IN', name: 'India', flag_emoji: '🇮🇳', is_featured: true, explorer_count: 0 },
-  { code: 'CA', name: 'Canada', flag_emoji: '🇨🇦', is_featured: true, explorer_count: 0 },
-  { code: 'AU', name: 'Australia', flag_emoji: '🇦🇺', is_featured: true, explorer_count: 0 },
-  { code: 'ZA', name: 'South Africa', flag_emoji: '🇿🇦', is_featured: true, explorer_count: 0 },
-  { code: 'KE', name: 'Kenya', flag_emoji: '🇰🇪', is_featured: true, explorer_count: 0 },
-  { code: 'IE', name: 'Ireland', flag_emoji: '🇮🇪', is_featured: true, explorer_count: 0 },
-]
 
 export async function getCountries(): Promise<CountryRow[]> {
   const supabase = await createClient()
@@ -73,16 +64,18 @@ export async function getCountries(): Promise<CountryRow[]> {
     .order('explorer_count', { ascending: false })
     .order('name')
 
-  if (error || !data?.length) {
-    const { data: fallback } = await supabase
-      .from('countries')
-      .select('code, name, flag_emoji, is_featured')
-      .order('is_featured', { ascending: false })
-      .order('name')
-    const rows = (fallback ?? []).map((c) => ({ ...c, explorer_count: 0 }))
-    return rows.length ? rows : FALLBACK_COUNTRIES
+  if (!error && data?.length) {
+    return mergeCountryLists(data as CountryRow[])
   }
-  return data as CountryRow[]
+
+  const { data: fallback } = await supabase
+    .from('countries')
+    .select('code, name, flag_emoji, is_featured')
+    .order('is_featured', { ascending: false })
+    .order('name')
+
+  const rows = (fallback ?? []).map((c) => ({ ...c, explorer_count: 0 }))
+  return mergeCountryLists(rows.length ? rows : ALL_COUNTRIES.map((c) => ({ ...c, explorer_count: 0 })))
 }
 
 export async function getCountryTrending(countryCode: string, limit = 5): Promise<TrendingRow[]> {
@@ -119,12 +112,17 @@ export async function getLinkedChildren(parentId: string): Promise<LinkedChildRo
     .select('id, full_name, nickname, email')
     .in('id', childIds)
 
-  return (profiles ?? []).map((p) => ({
-    child_id: p.id,
-    full_name: p.full_name,
-    nickname: p.nickname,
-    email: p.email,
-  }))
+  const profileById = new Map((profiles ?? []).map((p) => [p.id, p]))
+
+  return childIds.map((child_id) => {
+    const p = profileById.get(child_id)
+    return {
+      child_id,
+      full_name: p?.full_name ?? null,
+      nickname: p?.nickname ?? null,
+      email: p?.email ?? null,
+    }
+  })
 }
 
 export async function parentCanManageChild(parentId: string, childId: string): Promise<boolean> {
@@ -184,7 +182,7 @@ export async function getPendingCustomTopicsForParent(parentId: string): Promise
 
   const { data } = await supabase
     .from('custom_topics')
-    .select('id, user_id, title, description, created_by, created_at')
+    .select('id, user_id, title, description, created_by, created_at, content_status, badge_name, lesson_content')
     .in('user_id', childIds)
     .eq('is_approved', false)
     .order('created_at', { ascending: false })
@@ -230,6 +228,8 @@ export async function getCurriculumFromDb(userId: string): Promise<CurriculumSet
       createdBy: t.created_by as CustomTopic['createdBy'],
       createdAt: t.created_at,
       worldId: t.world_id ?? undefined,
+      contentStatus: t.content_status ?? undefined,
+      badgeName: t.badge_name ?? undefined,
     })),
     sharingLevel: (settings?.sharing_level ?? profile?.sharing_level ?? 'region') as CurriculumSettings['sharingLevel'],
     allowMatchQuiz: settings?.allow_match_quiz ?? profile?.allow_match_quiz ?? true,
@@ -258,10 +258,114 @@ export async function saveCurriculumToDb(userId: string, settings: CurriculumSet
   return { success: true }
 }
 
+export async function profileExists(userId: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data } = await supabase.from('profiles').select('id').eq('id', userId).maybeSingle()
+  return !!data
+}
+
+/** Create profiles + curriculum_settings for the signed-in user if missing (legacy accounts). */
+export async function ensureOwnProfile(): Promise<{ ok: true } | { error: string }> {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  if (await profileExists(user.id)) return { ok: true }
+
+  const meta = user.user_metadata ?? {}
+  const role = (meta.role as string) ?? 'student'
+  const { error: profileErr } = await supabase.from('profiles').upsert({
+    id: user.id,
+    email: user.email ?? null,
+    full_name: (meta.full_name as string) ?? '',
+    role,
+    country_code: (meta.country_code as string) ?? 'GB',
+    nickname: (meta.nickname as string) ?? 'Explorer',
+    sharing_level: role === 'student' ? 'private' : 'region',
+    allow_match_quiz: role !== 'student',
+  })
+
+  if (profileErr) return { error: profileErr.message }
+
+  await supabase.from('curriculum_settings').upsert({
+    user_id: user.id,
+    sharing_level: role === 'student' ? 'private' : 'region',
+    allow_match_quiz: role !== 'student',
+  })
+
+  return { ok: true }
+}
+
+export type ResolveOwnerResult = { ownerId: string } | { error: string }
+
+export async function resolveCustomTopicOwnerId(actorId: string, role: string): Promise<ResolveOwnerResult> {
+  if (role === 'parent') {
+    const children = await getLinkedChildren(actorId)
+    if (children.length > 0) {
+      return { ownerId: children[0].child_id }
+    }
+    if (!(await profileExists(actorId))) {
+      return { error: 'Your account profile is not set up yet. Sign out and sign in again, then link your child in the Parent Dashboard.' }
+    }
+    return {
+      error: 'Link your child\'s account in the Parent Dashboard before adding custom topics — topics are saved to your explorer\'s journey.',
+    }
+  }
+
+  if (!(await profileExists(actorId))) {
+    const ensured = await ensureOwnProfile()
+    if ('error' in ensured) return ensured
+    if (!(await profileExists(actorId))) {
+      return { error: 'Your learning profile is not set up yet. Sign out and sign in again to continue.' }
+    }
+  }
+
+  return { ownerId: actorId }
+}
+
+export async function getCustomTopicById(topicId: string, userId: string): Promise<CustomTopicRow | null> {
+  const supabase = await createClient()
+  const { data } = await supabase
+    .from('custom_topics')
+    .select('*')
+    .eq('id', topicId)
+    .eq('user_id', userId)
+    .eq('is_approved', true)
+    .maybeSingle()
+
+  return (data as CustomTopicRow | null) ?? null
+}
+
+export async function generateCustomTopicContent(topicId: string): Promise<{ error?: string }> {
+  const supabase = await createClient()
+  const { data: topic } = await supabase.from('custom_topics').select('*').eq('id', topicId).single()
+  if (!topic) return { error: 'Topic not found' }
+
+  await supabase.from('custom_topics').update({ content_status: 'generating' }).eq('id', topicId)
+
+  try {
+    const generated = await generateTopicContent(topic.title, topic.description ?? topic.title)
+    const { error } = await supabase.from('custom_topics').update({
+      lesson_content: generated.lesson,
+      quiz_content: generated.quiz,
+      badge_name: generated.badgeName,
+      content_status: 'ready',
+      generated_at: new Date().toISOString(),
+    }).eq('id', topicId)
+
+    if (error) return { error: error.message }
+    return {}
+  } catch (e) {
+    const message = e instanceof Error ? e.message : 'Generation failed'
+    await supabase.from('custom_topics').update({ content_status: 'failed' }).eq('id', topicId)
+    return { error: message }
+  }
+}
+
 export async function addCustomTopicToDb(
   userId: string,
   topic: { title: string; description: string; createdBy: 'parent' | 'vision_vee' | 'student' },
-  options?: { isApproved?: boolean }
+  options?: { isApproved?: boolean; generateContent?: boolean }
 ) {
   const supabase = await createClient()
   const isApproved = options?.isApproved ?? topic.createdBy === 'parent'
@@ -271,9 +375,16 @@ export async function addCustomTopicToDb(
     description: topic.description,
     created_by: topic.createdBy,
     is_approved: isApproved,
+    content_status: 'pending',
   }).select().single()
 
   if (error) return { error: error.message }
+
+  const shouldGenerate = options?.generateContent !== false
+  if (shouldGenerate && data?.id) {
+    await generateCustomTopicContent(data.id)
+  }
+
   return { success: true, topic: data }
 }
 
@@ -292,6 +403,12 @@ export async function approveCustomTopic(parentId: string, topicId: string) {
 
   const { error } = await supabase.from('custom_topics').update({ is_approved: true }).eq('id', topicId)
   if (error) return { error: error.message }
+
+  const { data: fullTopic } = await supabase.from('custom_topics').select('content_status').eq('id', topicId).single()
+  if (fullTopic?.content_status !== 'ready') {
+    await generateCustomTopicContent(topicId)
+  }
+
   return { success: true }
 }
 
@@ -335,7 +452,16 @@ export async function getUserBadges(userId: string): Promise<(string | number)[]
 export async function saveBadgeToDb(userId: string, topicId: string | number) {
   const supabase = await createClient()
   const topicKey = String(topicId)
-  const title = BOOK_LESSONS.find((l) => String(l.id) === topicKey)?.title ?? topicKey
+  let title = BOOK_LESSONS.find((l) => String(l.id) === topicKey)?.title ?? topicKey
+
+  if (topicKey.includes('-')) {
+    const { data: custom } = await supabase
+      .from('custom_topics')
+      .select('title')
+      .eq('id', topicKey)
+      .maybeSingle()
+    if (custom?.title) title = custom.title
+  }
 
   await supabase.from('user_badges').upsert({
     user_id: userId,

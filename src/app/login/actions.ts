@@ -3,6 +3,12 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/utils/supabase/server'
 import { dashboardPathForRole, getUserRole } from '@/lib/auth/dashboard-access'
+import {
+  formatSignupError,
+  resolveCountryCodeForSignup,
+  ensureSignupProfile,
+  registerAuthUser,
+} from '@/lib/auth/signup-utils'
 
 export async function login(formData: FormData) {
   const supabase = await createClient()
@@ -14,6 +20,8 @@ export async function login(formData: FormData) {
 
   const { data: { user } } = await supabase.auth.getUser()
   if (user) {
+    const { ensureOwnProfile } = await import('@/lib/db/platform')
+    await ensureOwnProfile()
     const role = await getUserRole(user.id, user.user_metadata)
     redirect(dashboardPathForRole(role))
   }
@@ -23,11 +31,18 @@ export async function login(formData: FormData) {
 export async function signup(formData: FormData) {
   const supabase = await createClient()
 
-  const email = formData.get('email') as string
+  const email = (formData.get('email') as string)?.trim()
   const password = formData.get('password') as string
-  const fullName = formData.get('fullName') as string
+  const fullName = (formData.get('fullName') as string)?.trim()
   const role = (formData.get('role') as string) || 'student'
-  const countryCode = (formData.get('countryCode') as string) || 'GB'
+
+  if (!fullName) {
+    redirect('/signup?message=' + encodeURIComponent('Please enter your full name.'))
+  }
+  if (!email?.includes('@')) {
+    redirect('/signup?message=' + encodeURIComponent('Please enter a valid email address.'))
+  }
+  const countryCode = await resolveCountryCodeForSignup(supabase, (formData.get('countryCode') as string) || 'GB')
   const nickname = fullName.split(' ')[0] || 'Explorer'
   const parentEmail = (formData.get('parentEmail') as string)?.trim() || null
   const parentConsent = formData.get('parentConsent') === 'on'
@@ -46,34 +61,56 @@ export async function signup(formData: FormData) {
     if (!parentEmail || !parentEmail.includes('@')) {
       redirect('/signup?message=' + encodeURIComponent('Please enter a parent or guardian email address.'))
     }
-    if (!birthYear || birthYear < 2008 || birthYear > 2018) {
-      redirect('/signup?message=' + encodeURIComponent('Please enter a valid birth year (ages 8–14).'))
+    const currentYear = new Date().getFullYear()
+    if (!birthYear || birthYear < 1995 || birthYear > currentYear) {
+      redirect('/signup?message=' + encodeURIComponent('Please enter a valid birth year.'))
     }
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
-  const { data, error } = await supabase.auth.signUp({
+  const metadata: Record<string, unknown> = {
+    full_name: fullName,
+    role,
+    country_code: countryCode,
+    nickname,
+    parent_email: parentEmail,
+  }
+  if (role === 'student' && birthYear != null) {
+    metadata.birth_year = birthYear
+  }
+
+  const registered = await registerAuthUser({
     email,
     password,
-    options: {
-      emailRedirectTo: `${siteUrl}/auth/callback`,
-      data: {
-        full_name: fullName,
-        role,
-        country_code: countryCode,
-        nickname,
-        parent_email: parentEmail,
-        birth_year: birthYear,
-      },
-    },
+    emailRedirectTo: `${siteUrl}/auth/callback`,
+    metadata,
   })
 
-  if (error) redirect(`/signup?message=${encodeURIComponent(error.message)}`)
+  if (!registered.ok) {
+    console.error('[signup] registerAuthUser failed:', registered.error)
+    redirect(`/signup?message=${encodeURIComponent(formatSignupError(registered.error))}`)
+  }
 
-  if (data.user) {
+  const profilePayload = {
+    userId: registered.userId,
+    email,
+    fullName,
+    role,
+    countryCode,
+    nickname,
+    parentEmail,
+    birthYear,
+  }
+
+  const ensured = await ensureSignupProfile(profilePayload)
+  if (ensured.error) {
+    console.error('[signup] profile ensure failed:', ensured.error)
+  }
+
+  if (registered.sessionCreated) {
     await supabase.from('profiles').upsert({
-      id: data.user.id,
+      id: registered.userId,
       email,
       full_name: fullName,
       role,
@@ -86,13 +123,13 @@ export async function signup(formData: FormData) {
       birth_year: role === 'student' ? birthYear : null,
     })
     await supabase.from('curriculum_settings').upsert({
-      user_id: data.user.id,
+      user_id: registered.userId,
       sharing_level: role === 'student' ? 'private' : 'region',
       allow_match_quiz: role !== 'student',
     })
   }
 
-  if (data.user && !data.user.email_confirmed_at) {
+  if (!registered.emailConfirmed) {
     redirect(`/signup/verify-email?email=${encodeURIComponent(email)}&role=${role}`)
   }
 

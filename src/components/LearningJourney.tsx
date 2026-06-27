@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Play, CheckCircle2, Lock, BookOpen } from "lucide-react";
+import { ChevronDown, Play, CheckCircle2, BookOpen } from "lucide-react";
 import Link from "next/link";
 
 interface Lesson {
@@ -38,7 +38,7 @@ const categories: Category[] = [
     id: "sees-hears-speaks",
     title: "AI That Sees, Hears & Speaks",
     icon: "👁️",
-    accentColor: "from-blue-500/10 to-blue-500/0 border-blue-500/20 text-blue-600 dark:text-blue-400",
+    accentColor: "from-brand-purple/10 to-brand-purple/0 border-brand-purple/20 text-brand-purple dark:text-brand-cream",
     lessons: [
       { id: 1, title: "Computer Vision", desc: "Give cameras the power to recognize and label objects in the world." },
       { id: 15, title: "Facial Recognition", desc: "Learn how smart locks and phones identify face patterns." },
@@ -66,7 +66,7 @@ const categories: Category[] = [
     id: "everyday-life",
     title: "AI in Everyday Life",
     icon: "🏥",
-    accentColor: "from-cyan-500/10 to-cyan-500/0 border-cyan-500/20 text-cyan-600 dark:text-cyan-400",
+    accentColor: "from-brand-gold/10 to-brand-gold/0 border-brand-gold/20 text-brand-gold",
     lessons: [
       { id: 5, title: "AI in Healthcare", desc: "Help doctors spot illnesses early and discover new medicine." },
       { id: 22, title: "AI in Education", desc: "Customized learning assistants tailored to your strengths." },
@@ -112,12 +112,14 @@ interface LearningJourneyProps {
   completedLessonIds?: (number | string)[];
   activeLessonId?: number | string;
   disabledTopicIds?: (number | string)[];
+  customTopics?: { id: string; title: string; description: string; badgeName?: string; contentStatus?: string }[];
 }
 
 export function LearningJourney({
   completedLessonIds = [1, 7, 14, 15, 19],
   activeLessonId = 11,
   disabledTopicIds = [],
+  customTopics = [],
 }: LearningJourneyProps) {
   const isDisabled = (id: number | string) =>
     disabledTopicIds.some((d) => String(d) === String(id));
@@ -130,6 +132,68 @@ export function LearningJourney({
 
   return (
     <div className="space-y-4">
+      {customTopics.length > 0 && (
+        <div className="rounded-3xl border border-brand-gold/25 bg-brand-gold/5 dark:bg-brand-purple-dark/60 overflow-hidden shadow-sm">
+          <div className="px-6 py-5 flex items-center gap-4">
+            <span className="text-3xl">✨</span>
+            <div>
+              <h3 className="font-heading font-bold text-lg text-brand-purple dark:text-brand-cream">
+                Vision Vee Custom Topics
+              </h3>
+              <p className="text-xs text-brand-purple/50 dark:text-brand-cream/50 mt-1">
+                {customTopics.length} topic{customTopics.length !== 1 ? 's' : ''} created just for you
+              </p>
+            </div>
+          </div>
+          <div className="px-6 pb-6 pt-2 border-t border-brand-gold/15 space-y-3">
+            {customTopics.map((topic) => {
+              const isCompleted = completedLessonIds.includes(topic.id);
+              const isReady = topic.contentStatus === 'ready';
+              return (
+                <Link
+                  href={isReady ? `/lesson/${topic.id}` : '#'}
+                  key={topic.id}
+                  className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-200 group/item ${
+                    isCompleted
+                      ? 'bg-brand-purple/5 border-brand-purple/10 opacity-80 hover:opacity-100'
+                      : 'bg-brand-surface/80 dark:bg-brand-purple-dark/40 border-brand-gold/20 hover:border-brand-gold/40'
+                  } ${!isReady ? 'opacity-60 pointer-events-none' : ''}`}
+                >
+                  <div className="flex items-center gap-4 flex-1">
+                    <div className="shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-brand-purple/15 to-brand-gold/15 flex items-center justify-center text-xl border border-brand-gold/20">
+                      ✨
+                    </div>
+                    <div>
+                      <div className="font-bold text-sm md:text-base text-brand-purple dark:text-brand-cream flex items-center gap-2 flex-wrap">
+                        <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-brand-gold/10 text-brand-gold border border-brand-gold/20">
+                          Custom
+                        </span>
+                        {topic.title}
+                        {isCompleted && <CheckCircle2 className="h-4 w-4 text-emerald-500" />}
+                      </div>
+                      <div className="text-xs text-brand-purple/50 dark:text-brand-cream/50 mt-1 max-w-xl font-medium">
+                        {topic.description}
+                        {topic.badgeName && isReady && (
+                          <span className="block mt-1 text-brand-gold">Earn the {topic.badgeName} badge</span>
+                        )}
+                        {!isReady && (
+                          <span className="block mt-1 italic">Vision Vee is preparing your lesson…</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  {isReady && (
+                    <span className="shrink-0 pl-4 h-8 w-8 rounded-full border border-brand-gold/25 flex items-center justify-center bg-brand-surface dark:bg-brand-purple-dark group-hover/item:bg-brand-gold group-hover/item:text-brand-purple-dark transition-colors">
+                      <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
+                    </span>
+                  )}
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {categories.map((category) => {
         const isExpanded = expandedCategory === category.id;
         const visibleLessons = category.lessons.filter((l) => !isDisabled(l.id));
@@ -140,7 +204,7 @@ export function LearningJourney({
         return (
           <div 
             key={category.id} 
-            className="rounded-3xl border border-slate-200 dark:border-white/5 bg-slate-50/50 dark:bg-glass overflow-hidden shadow-sm transition-all duration-300"
+            className="rounded-3xl border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-surface/80 dark:bg-brand-purple-dark/60 overflow-hidden shadow-sm transition-all duration-300"
           >
             {/* Header Accordion Button */}
             <button
@@ -150,21 +214,21 @@ export function LearningJourney({
               <div className="flex items-center gap-4">
                 <span className="text-3xl">{category.icon}</span>
                 <div>
-                  <h3 className="font-heading font-bold text-lg text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
+                  <h3 className="font-heading font-bold text-lg text-brand-purple dark:text-brand-cream group-hover:text-brand-gold transition-colors">
                     {category.title}
                   </h3>
                   <div className="flex items-center gap-3 mt-1.5">
-                    <div className="w-24 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-gradient-to-r from-cyan-400 to-blue-500" style={{ width: `${progressPercentage}%` }} />
+                    <div className="w-24 h-1.5 bg-brand-purple/10 dark:bg-brand-gold/10 rounded-full overflow-hidden">
+                      <div className="h-full bg-gradient-to-r from-brand-purple to-brand-gold dark:from-brand-gold dark:to-brand-purple" style={{ width: `${progressPercentage}%` }} />
                     </div>
-                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                    <span className="text-xs text-brand-purple/50 dark:text-brand-cream/50 font-medium">
                       {completedCount}/{totalLessons} completed ({progressPercentage}%)
                     </span>
                   </div>
                 </div>
               </div>
               
-              <ChevronDown className={`h-5 w-5 text-slate-500 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-5 w-5 text-brand-purple/50 dark:text-brand-cream/50 transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Accordion Content Panel */}
@@ -177,7 +241,7 @@ export function LearningJourney({
                   transition={{ duration: 0.3, ease: "easeInOut" }}
                   className="overflow-hidden"
                 >
-                  <div className="px-6 pb-6 pt-2 border-t border-slate-200/50 dark:border-white/5 space-y-3 bg-white/50 dark:bg-black/20">
+                  <div className="px-6 pb-6 pt-2 border-t border-brand-purple/10 dark:border-brand-gold/10 space-y-3 bg-brand-warm/50 dark:bg-brand-purple-dark/30">
                     {visibleLessons.map((lesson) => {
                       const isCompleted = completedLessonIds.includes(lesson.id);
                       const isActive = lesson.id === activeLessonId;
@@ -188,10 +252,10 @@ export function LearningJourney({
                           key={lesson.id}
                           className={`flex items-center justify-between p-4 rounded-2xl border transition-all duration-200 group/item ${
                             isActive 
-                              ? "bg-cyan-500/5 border-cyan-500/30 hover:border-cyan-400/50 shadow-sm"
+                              ? "bg-brand-gold/10 border-brand-gold/30 hover:border-brand-gold/50 shadow-sm"
                               : isCompleted
-                              ? "bg-slate-50/20 border-slate-200/50 dark:border-white/5 opacity-80 hover:opacity-100"
-                              : "bg-transparent border-slate-200/30 dark:border-white/5 hover:bg-slate-100/30 dark:hover:bg-white/5 hover:border-slate-350"
+                              ? "bg-brand-purple/5 border-brand-purple/10 opacity-80 hover:opacity-100"
+                              : "bg-transparent border-brand-purple/10 dark:border-brand-gold/10 hover:bg-brand-warm dark:hover:bg-brand-purple-dark/50"
                           }`}
                         >
                           <div className="flex items-center gap-4 flex-1">
@@ -200,34 +264,34 @@ export function LearningJourney({
                               {isCompleted ? (
                                 <CheckCircle2 className="h-6 w-6 text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]" />
                               ) : isActive ? (
-                                <div className="h-6 w-6 rounded-full bg-cyan-500 flex items-center justify-center text-white animate-pulse">
+                                <div className="h-6 w-6 rounded-full bg-brand-purple dark:bg-brand-gold flex items-center justify-center text-brand-cream dark:text-brand-purple-dark animate-pulse">
                                   <Play className="h-3 w-3 fill-current ml-0.5" />
                                 </div>
                               ) : (
-                                <BookOpen className="h-5 w-5 text-slate-400 group-hover/item:text-slate-600 dark:group-hover/item:text-slate-300 transition-colors" />
+                                <BookOpen className="h-5 w-5 text-brand-purple/40 group-hover/item:text-brand-gold transition-colors" />
                               )}
                             </div>
                             
                             <div>
-                              <div className="font-bold text-sm md:text-base text-slate-800 dark:text-slate-200 flex items-center gap-2">
-                                <span className="text-slate-400 font-mono text-xs">
+                              <div className="font-bold text-sm md:text-base text-brand-purple dark:text-brand-cream flex items-center gap-2">
+                                <span className="text-brand-purple/40 font-mono text-xs">
                                   {lesson.id === "intro" ? "Intro." : `Ch ${typeof lesson.id === 'number' && lesson.id < 10 ? '0' + lesson.id : lesson.id}.`}
                                 </span>
                                 {lesson.title}
                                 {isActive && (
-                                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 border border-cyan-500/20">
+                                  <span className="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-md bg-brand-gold/10 text-brand-gold border border-brand-gold/20">
                                     Next up
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xl font-medium">
+                              <div className="text-xs text-brand-purple/50 dark:text-brand-cream/50 mt-1 max-w-xl font-medium">
                                 {lesson.desc}
                               </div>
                             </div>
                           </div>
 
                           <div className="shrink-0 pl-4">
-                            <span className="h-8 w-8 rounded-full border border-slate-200 dark:border-white/10 flex items-center justify-center bg-white dark:bg-slate-900 group-hover/item:bg-slate-900 dark:group-hover/item:bg-white group-hover/item:text-white dark:group-hover/item:text-slate-900 transition-colors">
+                            <span className="h-8 w-8 rounded-full border border-brand-purple/15 dark:border-brand-gold/15 flex items-center justify-center bg-brand-surface dark:bg-brand-purple-dark group-hover/item:bg-brand-purple dark:group-hover/item:bg-brand-gold group-hover/item:text-brand-cream dark:group-hover/item:text-brand-purple-dark transition-colors">
                               <Play className="h-3.5 w-3.5 fill-current ml-0.5" />
                             </span>
                           </div>

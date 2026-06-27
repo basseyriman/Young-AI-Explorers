@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import { isTopicEnabled, topicIdKey, type CurriculumSettings, type TopicId } from '@/data/curriculum'
-import { getCurriculumFromDb, mergeCurriculumWithFallback } from '@/lib/db/platform'
+import { getCurriculumFromDb, mergeCurriculumWithFallback, getCustomTopicById } from '@/lib/db/platform'
+import { isCustomTopicId } from '@/lib/custom-topic-content'
 import type { DashboardRole } from '@/lib/auth/dashboard-access'
 
 export async function getEffectiveCurriculum(
@@ -17,10 +18,13 @@ export async function getEffectiveCurriculum(
 }
 
 export function isTopicAllowed(settings: CurriculumSettings, topicId: TopicId): boolean {
+  if (typeof topicId === 'string' && isCustomTopicId(topicId)) {
+    return settings.customTopics.some((t) => t.id === topicId)
+  }
   return isTopicEnabled(topicId, settings)
 }
 
-/** Redirect students away from disabled topics; staff roles may preview all topics. */
+/** Redirect students away from disabled or unknown topics; staff roles may preview all topics. */
 export async function requireTopicAccess(
   userId: string,
   topicId: TopicId,
@@ -28,9 +32,22 @@ export async function requireTopicAccess(
   metadata?: Record<string, unknown>
 ): Promise<CurriculumSettings> {
   const settings = await getEffectiveCurriculum(userId, metadata)
-  if (role === 'student' && !isTopicAllowed(settings, topicId)) {
-    redirect(`/dashboard/student?blocked=${encodeURIComponent(topicIdKey(topicId))}`)
+
+  if (role === 'student') {
+    if (typeof topicId === 'string' && isCustomTopicId(topicId)) {
+      const allowed = settings.customTopics.some((t) => t.id === topicId)
+      if (!allowed) {
+        redirect(`/dashboard/student?blocked=${encodeURIComponent(topicIdKey(topicId))}`)
+      }
+      const row = await getCustomTopicById(topicId, userId)
+      if (!row || row.content_status !== 'ready') {
+        redirect('/dashboard/student?blocked=content-pending')
+      }
+    } else if (!isTopicAllowed(settings, topicId)) {
+      redirect(`/dashboard/student?blocked=${encodeURIComponent(topicIdKey(topicId))}`)
+    }
   }
+
   return settings
 }
 

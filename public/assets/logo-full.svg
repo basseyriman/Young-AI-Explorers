@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1024" height="280" viewBox="0 0 1024 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <title>Young AI Explorers</title>
+  <rect width="1024" height="280" fill="#FAF8F5"/>
+  <g transform="translate(72,72) scale(4.5)">
+    <path d="M10 10L38 38" stroke="#C9A04E" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"/>
+    <path d="M38 10L10 38" stroke="#C9A04E" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"/>
+    <path d="M24 6V42" stroke="#C9A04E" stroke-width="2.5" stroke-linecap="square"/>
+    <path d="M38 10H42M42 10V38M38 38H42" stroke="#C9A04E" stroke-width="2.5" stroke-linecap="square" stroke-linejoin="miter"/>
+  </g>
+  <text x="268" y="132" fill="#4A2D6E" font-family="Montserrat, system-ui, sans-serif" font-size="52" font-weight="600" letter-spacing="-0.5">Young AI</text>
+  <text x="268" y="168" fill="#C9A04E" font-family="Montserrat, system-ui, sans-serif" font-size="13" font-weight="500" letter-spacing="6">EXPLORERS</text>
+</svg>

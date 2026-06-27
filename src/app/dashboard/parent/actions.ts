@@ -10,6 +10,9 @@ import {
   syncCurriculumToLinkedChildren,
   approveCustomTopic,
   rejectCustomTopic,
+  resolveCustomTopicOwnerId,
+  getProfile,
+  ensureOwnProfile,
 } from '@/lib/db/platform'
 import type { CurriculumSettings } from '@/data/curriculum'
 import { parseCurriculumSettings } from '@/lib/curriculum-utils'
@@ -35,11 +38,15 @@ export async function addCustomTopicAction(title: string, description: string) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  const result = await addCustomTopicToDb(user.id, {
+  const profile = await getProfile(user.id)
+  const ownerResult = await resolveCustomTopicOwnerId(user.id, profile?.role ?? 'parent')
+  if ('error' in ownerResult) return { error: ownerResult.error }
+
+  const result = await addCustomTopicToDb(ownerResult.ownerId, {
     title,
     description,
     createdBy: 'parent',
-  }, { isApproved: true })
+  }, { isApproved: true, generateContent: true })
 
   revalidatePath('/dashboard/parent')
   revalidatePath('/dashboard/student')
@@ -51,14 +58,42 @@ export async function createCustomTopicViaVee(title: string, description: string
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
 
-  const result = await addCustomTopicToDb(user.id, {
+  const profile = await getProfile(user.id)
+  const role = profile?.role ?? 'student'
+
+  const ensured = await ensureOwnProfile()
+  if ('error' in ensured) return { error: ensured.error }
+
+  const ownerResult = await resolveCustomTopicOwnerId(user.id, role)
+  if ('error' in ownerResult) return { error: ownerResult.error }
+
+  const createdBy = role === 'parent' ? 'parent' : role === 'student' ? 'student' : 'vision_vee'
+  const isApproved = role === 'parent'
+
+  const result = await addCustomTopicToDb(ownerResult.ownerId, {
     title,
     description,
-    createdBy: 'vision_vee',
-  }, { isApproved: false })
+    createdBy: createdBy === 'parent' ? 'parent' : 'vision_vee',
+  }, { isApproved, generateContent: true })
 
   revalidatePath('/dashboard/parent')
   revalidatePath('/dashboard/student')
+
+  if (result.success && !isApproved) {
+    return {
+      ...result,
+      pendingApproval: true,
+      message: 'Topic created! Vision Vee generated a lesson and quiz — a parent needs to approve it before it appears in your journey.',
+    }
+  }
+
+  if (result.success && isApproved) {
+    return {
+      ...result,
+      message: 'Topic added to the curriculum with a full lesson, fun facts, and quiz!',
+    }
+  }
+
   return result
 }
 

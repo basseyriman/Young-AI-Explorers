@@ -59,10 +59,10 @@ export function TrustAndStandards() {
               We welcome partnerships with departments of education, high commissioners, and school networks. Request a pilot programme, curriculum mapping document, or data processing agreement for institutional deployment.
             </p>
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link href="/signup" className="px-6 py-3 rounded-full bg-brand-gold text-brand-purple-dark font-semibold text-sm text-center hover:opacity-90 transition-opacity">
+              <Link href="/school/pilot" className="px-6 py-3 rounded-full bg-brand-gold text-brand-purple-dark font-semibold text-sm text-center hover:opacity-90 transition-opacity">
                 Request School Pilot
               </Link>
-              <Link href="/dashboard/parent" className="px-6 py-3 rounded-full border border-brand-gold/30 font-semibold text-sm text-center hover:bg-brand-gold/10 transition-colors">
+              <Link href="/signup?role=parent" className="px-6 py-3 rounded-full border border-brand-gold/30 font-semibold text-sm text-center hover:bg-brand-gold/10 transition-colors">
                 Parent Dashboard
               </Link>
             </div>

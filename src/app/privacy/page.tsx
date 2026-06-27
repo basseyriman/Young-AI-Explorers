@@ -1,4 +1,5 @@
 import { LegalPageLayout } from '@/components/LegalPageLayout'
+import { PLATFORM_OPERATOR_NOTICE, PLATFORM_AUDIENCE_LINE } from '@/data/legal'
 
 export default function PrivacyPage() {
   return (
@@ -9,7 +10,7 @@ export default function PrivacyPage() {
 
       <h2>1. Who We Are</h2>
       <p>
-        Young AI Explorers is an educational platform operated by Bassey Riman / RimanTech, designed for children aged 9–14 to learn about artificial intelligence, robotics, and future technologies.
+        {PLATFORM_OPERATOR_NOTICE}, {PLATFORM_AUDIENCE_LINE}
       </p>
 
       <h2>2. Information We Collect</h2>

@@ -28,7 +28,7 @@ export function Book3D() {
 
           <div className="relative z-20 flex flex-col items-center w-full px-6 text-center">
             <div className="flex gap-2 mb-4">
-              <span className="bg-black/40 backdrop-blur-md border border-brand-gold/20 text-brand-cream px-2 py-1 rounded-full text-[6px] sm:text-[7px] font-bold tracking-widest uppercase">Ages 9–12</span>
+              <span className="bg-black/40 backdrop-blur-md border border-brand-gold/20 text-brand-cream px-2 py-1 rounded-full text-[6px] sm:text-[7px] font-bold tracking-widest uppercase">For Kids</span>
               <span className="bg-brand-gold/90 text-brand-purple-dark px-2 py-1 rounded-full text-[6px] sm:text-[7px] font-bold tracking-widest uppercase">Future-Ready Edition</span>
             </div>
 
@@ -43,6 +43,7 @@ export function Book3D() {
             <div className="bg-brand-purple-dark/60 backdrop-blur-xl border border-brand-gold/15 px-4 py-3 rounded-2xl w-full max-w-[90%]">
               <p className="text-[6px] text-brand-cream/50 uppercase tracking-wider mb-1">Written & Designed by</p>
               <h3 className="font-heading text-xs sm:text-sm text-brand-cream font-bold tracking-wide">Bassey Riman</h3>
+              <span className="text-[5px] sm:text-[6px] text-brand-gold/80 mt-0.5 block tracking-wider uppercase">RimansTech Industries</span>
               <span className="text-[5px] sm:text-[6px] text-brand-cream/40 mt-1 block">AI Engineer · Medical AI · AI in Education</span>
             </div>
           </div>

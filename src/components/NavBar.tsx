@@ -2,19 +2,23 @@
 
 import Link from "next/link";
 import { Menu, X, Sun, Moon } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useTheme } from "next-themes";
-import { Logo } from "@/components/Logo";
+import { useTheme } from "@/components/ThemeProvider";
+import { NavWordmark } from "@/components/Logo";
 
 export function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false,
+  );
+  const { resolvedTheme, setTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
-    setMounted(true);
     const handleScroll = () => setIsScrolled(window.scrollY > 16);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -22,8 +26,8 @@ export function NavBar() {
 
   const navLinks = [
     { name: "Explore", href: "#topics" },
-    { name: "Topics", href: "#topics" },
-    { name: "Assistant", href: "#assistant" },
+    { name: "Starter Paths", href: "#topics" },
+    { name: "Vision Vee", href: "#assistant" },
     { name: "Book", href: "#book" },
     { name: "Schools", href: "#schools" },
     { name: "Community", href: "#community" },
@@ -33,7 +37,7 @@ export function NavBar() {
 
   return (
     <motion.nav
-      initial={{ y: -80, opacity: 0 }}
+      initial={false}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -43,8 +47,8 @@ export function NavBar() {
       }`}
     >
       <div className="container mx-auto px-6 flex items-center justify-between">
-        <Link href="/" className="group">
-          <Logo showWordmark size="md" />
+        <Link href="/" className="group shrink-0 min-w-0" aria-label="Young AI Explorers home" suppressHydrationWarning>
+          <NavWordmark />
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
@@ -61,11 +65,12 @@ export function NavBar() {
 
         <div className="hidden lg:flex items-center gap-3">
           <button
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            onClick={() => setTheme(isDark ? "light" : "dark")}
             className="p-2.5 rounded-full border border-brand-purple/10 dark:border-brand-gold/15 hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-all text-brand-purple/60 dark:text-brand-gold/70 hover:text-brand-purple dark:hover:text-brand-gold"
             aria-label="Toggle theme"
+            suppressHydrationWarning
           >
-            {mounted && theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            {mounted && isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
           <Link
@@ -113,13 +118,13 @@ export function NavBar() {
               <hr className="border-brand-purple/10 dark:border-brand-gold/10 my-3" />
               <button
                 onClick={() => {
-                  setTheme(theme === "dark" ? "light" : "dark");
+                  setTheme(isDark ? "light" : "dark");
                   setMobileMenuOpen(false);
                 }}
                 className="flex items-center gap-2 text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 py-3 px-2"
               >
-                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-                {theme === "dark" ? "Light Mode" : "Dark Mode"}
+                {mounted && isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
+                {mounted && isDark ? "Light Mode" : "Dark Mode"}
               </button>
               <Link
                 href="/login"
