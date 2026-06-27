@@ -1,8 +1,9 @@
 'use server'
 
-import { createClient } from '@/utils/supabase/server'
 import { revalidatePath } from 'next/cache'
-import { CurriculumSettings, DEFAULT_CURRICULUM } from '@/data/curriculum'
+import { createClient } from '@/utils/supabase/server'
+import { saveCurriculumToDb, addCustomTopicToDb, removeCustomTopicFromDb, linkChildToParent } from '@/lib/db/platform'
+import type { CurriculumSettings } from '@/data/curriculum'
 import { parseCurriculumSettings } from '@/lib/curriculum-utils'
 
 export async function saveCurriculumSettings(settings: CurriculumSettings) {
@@ -11,19 +12,12 @@ export async function saveCurriculumSettings(settings: CurriculumSettings) {
   if (!user) return { error: 'Not authenticated' }
 
   const payload = parseCurriculumSettings(settings)
-
-  const { error } = await supabase.auth.updateUser({
-    data: {
-      curriculum_settings: payload,
-      // Template parents can share with linked child accounts (future)
-      family_curriculum_template: payload,
-    },
-  })
-
-  if (error) return { error: error.message }
+  await saveCurriculumToDb(user.id, payload)
+  await supabase.auth.updateUser({ data: { curriculum_settings: payload } })
 
   revalidatePath('/dashboard/parent')
   revalidatePath('/dashboard/student')
+  revalidatePath('/community')
   return { success: true }
 }
 
@@ -31,49 +25,51 @@ export async function createCustomTopicViaVee(title: string, description: string
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
-
-  const current = parseCurriculumSettings(user.user_metadata?.curriculum_settings ?? DEFAULT_CURRICULUM)
-  const newTopic = {
-    id: `vee-${Date.now()}`,
-    title,
-    description,
-    createdBy: 'vision_vee' as const,
-    createdAt: new Date().toISOString(),
-  }
-
-  const updated: CurriculumSettings = {
-    ...current,
-    customTopics: [...current.customTopics, newTopic],
-  }
-
-  const { error } = await supabase.auth.updateUser({
-    data: { curriculum_settings: updated },
-  })
-
-  if (error) return { error: error.message }
+  const result = await addCustomTopicToDb(user.id, { title, description, createdBy: 'vision_vee' })
   revalidatePath('/dashboard/parent')
   revalidatePath('/dashboard/student')
-  return { success: true, topic: newTopic }
+  return result
+}
+
+export async function removeCustomTopicAction(topicId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  return removeCustomTopicFromDb(user.id, topicId)
 }
 
 export async function applyCurriculumToChildEmail(childEmail: string) {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return { error: 'Not authenticated' }
+  return linkChildToParent(user.id, childEmail)
+}
 
-  const template = parseCurriculumSettings(user.user_metadata?.curriculum_settings ?? DEFAULT_CURRICULUM)
+export async function joinMatchQuizAction(countryCode: string, nickname: string, topicId?: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
 
-  // Store intent — full child linking requires Supabase admin/service role in production
-  const linked = Array.isArray(user.user_metadata?.linked_children)
-    ? user.user_metadata.linked_children
-    : []
+  const profile = await supabase.from('profiles').select('allow_match_quiz').eq('id', user.id).single()
+  if (profile.data?.allow_match_quiz === false) return { error: 'Match Quiz disabled by parent' }
 
-  const { error } = await supabase.auth.updateUser({
-    data: {
-      linked_children: [...linked, { email: childEmail, curriculum: template, linkedAt: new Date().toISOString() }],
-    },
-  })
+  const { joinMatchQueue } = await import('@/lib/db/platform')
+  return joinMatchQueue(user.id, countryCode, nickname, topicId)
+}
 
-  if (error) return { error: error.message }
-  return { success: true, message: `Curriculum plan saved for ${childEmail}. Child will sync on next login.` }
+export async function leaveMatchQueueAction() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const { leaveMatchQueue } = await import('@/lib/db/platform')
+  await leaveMatchQueue(user.id)
+  return { success: true }
+}
+
+export async function postIdeaAction(countryCode: string, topicTitle: string, ideaText: string, nickname: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const { postCommunityIdea } = await import('@/lib/db/platform')
+  return postCommunityIdea(user.id, countryCode, topicTitle, ideaText, nickname)
 }

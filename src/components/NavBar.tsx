@@ -27,6 +27,7 @@ export function NavBar() {
     { name: "Book", href: "#book" },
     { name: "Schools", href: "#schools" },
     { name: "Community", href: "#community" },
+    { name: "Trust", href: "#trust" },
     { name: "Parents", href: "#parents" },
   ];
 

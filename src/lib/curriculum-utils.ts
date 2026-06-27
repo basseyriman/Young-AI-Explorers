@@ -1,25 +1,22 @@
-import {
-  CurriculumSettings,
-  DEFAULT_CURRICULUM,
-  type CustomTopic,
-  type ExplorerRegionId,
-  type TopicId,
-} from "@/data/curriculum";
+import type { CurriculumSettings, TopicId } from '@/data/curriculum'
+import { DEFAULT_CURRICULUM } from '@/data/curriculum'
 
 export function parseCurriculumSettings(raw: unknown): CurriculumSettings {
-  if (!raw || typeof raw !== "object") return DEFAULT_CURRICULUM;
-  const data = raw as Partial<CurriculumSettings>;
+  if (!raw || typeof raw !== 'object') return DEFAULT_CURRICULUM
+  const data = raw as Partial<CurriculumSettings>
+  const countryCode = data.countryCode ?? data.region ?? 'GB'
   return {
-    region: (data.region as ExplorerRegionId) ?? DEFAULT_CURRICULUM.region,
+    countryCode,
+    region: countryCode,
     disabledTopics: Array.isArray(data.disabledTopics) ? data.disabledTopics : [],
     customTopics: Array.isArray(data.customTopics) ? data.customTopics : [],
     sharingLevel: data.sharingLevel ?? DEFAULT_CURRICULUM.sharingLevel,
     allowMatchQuiz: data.allowMatchQuiz ?? true,
-  };
+  }
 }
 
 export function curriculumFromUserMetadata(metadata: Record<string, unknown> | undefined): CurriculumSettings {
-  return parseCurriculumSettings(metadata?.curriculum_settings);
+  return parseCurriculumSettings(metadata?.curriculum_settings)
 }
 
 export function toggleTopicDisabled(
@@ -27,29 +24,30 @@ export function toggleTopicDisabled(
   topicId: TopicId,
   disabled: boolean
 ): CurriculumSettings {
-  const key = String(topicId);
-  const without = settings.disabledTopics.filter((t) => String(t) !== key);
-  return {
-    ...settings,
-    disabledTopics: disabled ? [...without, topicId] : without,
-  };
+  const key = String(topicId)
+  const without = settings.disabledTopics.filter((t) => String(t) !== key)
+  return { ...settings, disabledTopics: disabled ? [...without, topicId] : without }
 }
 
 export function addCustomTopic(
   settings: CurriculumSettings,
-  topic: Omit<CustomTopic, "id" | "createdAt">
+  topic: { title: string; description: string; createdBy: 'parent' | 'vision_vee' }
 ): CurriculumSettings {
-  const newTopic: CustomTopic = {
-    ...topic,
-    id: `custom-${Date.now()}`,
-    createdAt: new Date().toISOString(),
-  };
-  return { ...settings, customTopics: [...settings.customTopics, newTopic] };
+  return {
+    ...settings,
+    customTopics: [
+      ...settings.customTopics,
+      {
+        id: `local-${Date.now()}`,
+        title: topic.title,
+        description: topic.description,
+        createdBy: topic.createdBy,
+        createdAt: new Date().toISOString(),
+      },
+    ],
+  }
 }
 
 export function removeCustomTopic(settings: CurriculumSettings, topicId: string): CurriculumSettings {
-  return {
-    ...settings,
-    customTopics: settings.customTopics.filter((t) => t.id !== topicId),
-  };
+  return { ...settings, customTopics: settings.customTopics.filter((t) => t.id !== topicId) }
 }

@@ -24,34 +24,24 @@ export interface CustomTopic {
 }
 
 export interface CurriculumSettings {
-  region: ExplorerRegionId;
-  /** Topics explicitly disabled by parent/guardian */
+  /** ISO country code from registration or parent settings */
+  countryCode: string;
+  /** @deprecated use countryCode — kept for compatibility */
+  region: string;
   disabledTopics: TopicId[];
-  /** Parent or Vision Vee created topics added to curriculum */
   customTopics: CustomTopic[];
-  /** Parent-approved sharing level for regional community */
   sharingLevel: "private" | "region" | "global";
   allowMatchQuiz: boolean;
 }
 
 export const DEFAULT_CURRICULUM: CurriculumSettings = {
-  region: "global",
+  countryCode: "GB",
+  region: "GB",
   disabledTopics: [],
   customTopics: [],
   sharingLevel: "region",
   allowMatchQuiz: true,
 };
-
-export const EXPLORER_REGIONS = [
-  { id: "uk", label: "United Kingdom", flag: "🇬🇧", explorers: 1240 },
-  { id: "nigeria", label: "Nigeria", flag: "🇳🇬", explorers: 2180 },
-  { id: "ghana", label: "Ghana", flag: "🇬🇭", explorers: 890 },
-  { id: "uganda", label: "Uganda", flag: "🇺🇬", explorers: 640 },
-  { id: "tanzania", label: "Tanzania", flag: "🇹🇿", explorers: 520 },
-  { id: "global", label: "Global", flag: "🌍", explorers: 8400 },
-] as const;
-
-export type ExplorerRegionId = (typeof EXPLORER_REGIONS)[number]["id"];
 
 export const BOOK_LESSONS: BookLesson[] = [
   { id: "intro", title: "Welcome to the Future", category: "AI Foundations", description: "Your AI adventure begins here." },
@@ -108,39 +98,6 @@ export const WORLDS = [
   { id: "creativity-innovation", title: "Creativity & Future Innovation", lessonCount: 9, topicIds: [17, 18, 30, 32, 33, 6, 31, 8, 37] as TopicId[] },
 ];
 
-/** Aggregated, privacy-safe regional activity — no personal child data exposed */
-export const REGIONAL_TRENDING: Record<ExplorerRegionId, { topic: string; explorers: number; idea: string }[]> = {
-  uk: [
-    { topic: "AI Ethics", explorers: 312, idea: "Should AI homework helpers be allowed in schools?" },
-    { topic: "Robotics", explorers: 287, idea: "Building a robot arm from cardboard" },
-    { topic: "Cybersecurity", explorers: 245, idea: "How to create a strong password" },
-  ],
-  nigeria: [
-    { topic: "AI in Agriculture", explorers: 428, idea: "Smart farming for cassava yields" },
-    { topic: "Machine Learning", explorers: 391, idea: "Predicting rainfall with data" },
-    { topic: "AI in Education", explorers: 356, idea: "Learning Yoruba with AI translation" },
-  ],
-  ghana: [
-    { topic: "Computer Vision", explorers: 198, idea: "Identifying local fruits with AI" },
-    { topic: "AI in Music", explorers: 176, idea: "Afrobeats patterns and AI" },
-    { topic: "Self-Driving Cars", explorers: 154, idea: "Future transport in Accra" },
-  ],
-  uganda: [
-    { topic: "AI in Healthcare", explorers: 167, idea: "Telemedicine for rural clinics" },
-    { topic: "Weather Prediction", explorers: 143, idea: "Forecasting Lake Victoria storms" },
-    { topic: "Natural Language Processing", explorers: 128, idea: "Luganda voice assistants" },
-  ],
-  tanzania: [
-    { topic: "AI & Planet Earth", explorers: 134, idea: "Protecting Serengeti wildlife with sensors" },
-    { topic: "Deep Learning", explorers: 121, idea: "Image recognition for animals" },
-    { topic: "AI in Space Exploration", explorers: 109, idea: "Satellites over East Africa" },
-  ],
-  global: [
-    { topic: "AI Chatbots", explorers: 1240, idea: "Designing a friendly classroom bot" },
-    { topic: "AI in Games", explorers: 1180, idea: "Training AI to play tic-tac-toe" },
-    { topic: "Virtual Assistants", explorers: 1095, idea: "What makes Vision Vee helpful?" },
-  ],
-};
 
 export function topicIdKey(id: TopicId): string {
   return String(id);

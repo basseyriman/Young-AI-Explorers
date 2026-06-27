@@ -11,6 +11,7 @@ import { AssistantTriggerCard } from "@/components/AssistantTriggerCard";
 import { NavBar } from "@/components/NavBar";
 import { AnimatedCounter } from "@/components/AnimatedCounter";
 import { Logo } from "@/components/Logo";
+import { TrustAndStandards } from "@/components/TrustAndStandards";
 import { RegionalCommunities } from "@/components/RegionalCommunities";
 import { BASE_LESSON_COUNT, TOPIC_COUNT_LABEL, QUIZ_QUESTION_COUNT } from "@/data/curriculum";
 
@@ -449,6 +450,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <TrustAndStandards />
 
       {/* FOOTER */}
       <footer className="pt-24 pb-12 relative z-10">
