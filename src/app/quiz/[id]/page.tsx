@@ -5,7 +5,11 @@ import { ArrowLeft } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/Logo'
 import QuizClient from './QuizClient'
-import { ALL_LESSONS, ALL_QUIZZES } from '@/data/lessons'
+import { ALL_LESSONS, ALL_QUIZZES, type LessonData, type QuizQuestion } from '@/data/lessons'
+import { requireTopicAccess, getUserRoleFromProfile } from '@/lib/curriculum-access'
+import type { TopicId } from '@/data/curriculum'
+
+type LessonView = Pick<LessonData, 'title' | 'topic_number'> & { id: number | string }
 
 export default async function QuizPage({
   params,
@@ -23,8 +27,12 @@ export default async function QuizPage({
     return redirect('/login')
   }
 
-  let lesson: any = null
-  let questions: any[] = []
+  const topicId: TopicId = id === 'intro' ? 'intro' : parseInt(id, 10)
+  const role = await getUserRoleFromProfile(user.id, user.user_metadata)
+  await requireTopicAccess(user.id, topicId, role, user.user_metadata)
+
+  let lesson: LessonView | null = null
+  let questions: QuizQuestion[] = []
 
   if (id === 'intro') {
     lesson = { id: 'intro', title: "Welcome to the Future – Your AI Adventure Begins!", topic_number: 0 }
@@ -43,7 +51,7 @@ export default async function QuizPage({
         <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
           <div className="p-8 rounded-2xl bg-white border border-slate-200 text-center max-w-md shadow-lg">
             <h1 className="text-2xl font-bold mb-2 text-slate-900">Lesson Not Found</h1>
-            <p className="text-slate-500 mb-6">We couldn't find quiz #{id}.</p>
+            <p className="text-slate-500 mb-6">We couldn&apos;t find quiz #{id}.</p>
             <Link href="/dashboard/student">
               <Button className="bg-slate-900 text-white rounded-full px-8">Return to Dashboard</Button>
             </Link>

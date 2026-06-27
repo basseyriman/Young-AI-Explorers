@@ -10,6 +10,8 @@ export default async function CommunityPage() {
   const defaultCode = user ? (await getProfile(user.id))?.country_code ?? "GB" : "GB";
   const trending = await getCountryTrending(defaultCode);
   const profile = user ? await getProfile(user.id) : null;
+  const sharingLevel = profile?.sharing_level ?? "region";
+  const canShareIdeas = sharingLevel !== "private";
 
   return (
     <CommunityClient
@@ -18,6 +20,8 @@ export default async function CommunityPage() {
       initialCountryCode={defaultCode}
       userNickname={profile?.nickname ?? profile?.full_name?.split(" ")[0]}
       isLoggedIn={!!user}
+      canShareIdeas={canShareIdeas}
+      sharingLevel={sharingLevel}
     />
   );
 }

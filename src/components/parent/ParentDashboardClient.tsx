@@ -11,20 +11,22 @@ import { Logo } from "@/components/Logo";
 import { CountrySelect } from "@/components/CountrySelect";
 import {
   BOOK_LESSONS,
-  BASE_LESSON_COUNT,
   TOPIC_COUNT_LABEL,
+  TOPIC_MARKETING,
   topicIdKey,
   type CurriculumSettings,
 } from "@/data/curriculum";
-import type { CountryRow } from "@/lib/db/platform";
+import type { CountryRow, LinkedChildRow, PendingCustomTopicRow } from "@/lib/db/platform";
 import {
   toggleTopicDisabled,
-  addCustomTopic,
 } from "@/lib/curriculum-utils";
 import {
   saveCurriculumSettings,
   applyCurriculumToChildEmail,
   removeCustomTopicAction,
+  addCustomTopicAction,
+  approveCustomTopicAction,
+  rejectCustomTopicAction,
 } from "@/app/dashboard/parent/actions";
 
 interface Props {
@@ -32,14 +34,24 @@ interface Props {
   userName: string;
   initialSettings: CurriculumSettings;
   countries: CountryRow[];
+  linkedChildren: LinkedChildRow[];
+  pendingTopics: PendingCustomTopicRow[];
 }
 
-export function ParentDashboardClient({ userEmail, userName, initialSettings, countries }: Props) {
+export function ParentDashboardClient({
+  userEmail,
+  userName,
+  initialSettings,
+  countries,
+  linkedChildren,
+  pendingTopics: initialPending,
+}: Props) {
   const [settings, setSettings] = useState(initialSettings);
   const [childEmail, setChildEmail] = useState("");
   const [customTitle, setCustomTitle] = useState("");
   const [customDesc, setCustomDesc] = useState("");
   const [message, setMessage] = useState<string | null>(null);
+  const [pendingTopics, setPendingTopics] = useState(initialPending);
   const [pending, startTransition] = useTransition();
 
   const enabledCount = BOOK_LESSONS.filter((l) => !settings.disabledTopics.some((d) => topicIdKey(d) === topicIdKey(l.id))).length;
@@ -56,7 +68,7 @@ export function ParentDashboardClient({ userEmail, userName, initialSettings, co
   const handleLinkChild = () => {
     if (!childEmail.trim()) return;
     startTransition(async () => {
-      const result = await applyCurriculumToChildEmail(childEmail.trim());
+      const result = await applyCurriculumToChildEmail(childEmail.trim(), settings);
       setMessage('error' in result ? (result.error ?? 'Something went wrong.') : ('message' in result ? result.message : "Linked."));
     });
   };
@@ -64,23 +76,54 @@ export function ParentDashboardClient({ userEmail, userName, initialSettings, co
   const handleAddCustom = () => {
     if (!customTitle.trim()) return;
     startTransition(async () => {
-      setSettings(addCustomTopic(settings, {
-        title: customTitle.trim(),
-        description: customDesc.trim() || "A custom topic added to your child's curriculum.",
-        createdBy: "parent",
-      }));
+      const result = await addCustomTopicAction(customTitle.trim(), customDesc.trim() || "A custom topic added to your child's curriculum.");
+      if ('error' in result && result.error) {
+        setMessage(result.error);
+        return;
+      }
+      const topic = 'topic' in result ? result.topic : null;
+      if (topic) {
+        setSettings({
+          ...settings,
+          customTopics: [
+            ...settings.customTopics,
+            {
+              id: topic.id,
+              title: topic.title,
+              description: topic.description ?? '',
+              createdBy: 'parent',
+              createdAt: topic.created_at,
+            },
+          ],
+        });
+      }
       setCustomTitle("");
       setCustomDesc("");
-      await saveCurriculumSettings({
-        ...settings,
-        customTopics: [...settings.customTopics, {
-          id: `pending-${Date.now()}`,
-          title: customTitle.trim(),
-          description: customDesc.trim(),
-          createdBy: "parent",
-          createdAt: new Date().toISOString(),
-        }],
-      });
+      setMessage("Custom topic added and approved.");
+    });
+  };
+
+  const handleApproveTopic = (topicId: string) => {
+    startTransition(async () => {
+      const result = await approveCustomTopicAction(topicId);
+      if ('error' in result && result.error) {
+        setMessage(result.error);
+        return;
+      }
+      setPendingTopics((prev) => prev.filter((t) => t.id !== topicId));
+      setMessage("Topic approved — it now appears in your child's curriculum.");
+    });
+  };
+
+  const handleRejectTopic = (topicId: string) => {
+    startTransition(async () => {
+      const result = await rejectCustomTopicAction(topicId);
+      if ('error' in result && result.error) {
+        setMessage(result.error);
+        return;
+      }
+      setPendingTopics((prev) => prev.filter((t) => t.id !== topicId));
+      setMessage("Topic request declined.");
     });
   };
 
@@ -105,7 +148,7 @@ export function ParentDashboardClient({ userEmail, userName, initialSettings, co
           <p className="text-sm font-semibold uppercase tracking-wider text-brand-gold mb-2">Parent Dashboard</p>
           <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2">Welcome, {userName}</h1>
           <p className="text-brand-purple/60 dark:text-brand-cream/60 max-w-2xl">
-            Manage your child&apos;s {TOPIC_COUNT_LABEL} curriculum. All settings are stored securely in Supabase — no mock data.
+            Manage your child&apos;s ever-growing curriculum — {TOPIC_MARKETING.platformLine} All settings stored securely in Supabase.
           </p>
         </div>
 
@@ -115,10 +158,10 @@ export function ParentDashboardClient({ userEmail, userName, initialSettings, co
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {[
-            { label: "Core Topics", value: `${BASE_LESSON_COUNT}+` },
+            { label: "Topics to Explore", value: TOPIC_COUNT_LABEL },
             { label: "Enabled", value: String(enabledCount) },
             { label: "Custom Added", value: String(settings.customTopics.length) },
-            { label: "Total", value: `${totalWithCustom}+` },
+            { label: "Can Grow To", value: "∞" },
           ].map((s) => (
             <div key={s.label} className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10">
               <div className="text-2xl font-bold">{s.value}</div>
@@ -197,10 +240,43 @@ export function ParentDashboardClient({ userEmail, userName, initialSettings, co
           </div>
         </section>
 
+        <section className="p-6 md:p-8 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/25 space-y-6">
+          <div className="flex items-center gap-3">
+            <Sparkles className="h-5 w-5 text-brand-gold" strokeWidth={1.5} />
+            <h2 className="text-xl font-heading font-bold">Pending Vision Vee Topics</h2>
+          </div>
+          <p className="text-sm text-brand-purple/60 dark:text-brand-cream/60">
+            Topics suggested by Vision Vee or your child require your approval before they appear in their learning path.
+          </p>
+          {pendingTopics.length === 0 ? (
+            <p className="text-sm text-brand-purple/45 dark:text-brand-cream/45 italic">No topics awaiting approval.</p>
+          ) : (
+            pendingTopics.map((t) => (
+              <div key={t.id} className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
+                <div>
+                  <div className="font-semibold text-sm">{t.title}</div>
+                  <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
+                  <div className="text-[10px] uppercase tracking-wider text-brand-purple/40 mt-2">
+                    For {t.child_name} · via {t.created_by === 'vision_vee' ? 'Vision Vee' : t.created_by}
+                  </div>
+                </div>
+                <div className="flex gap-2 shrink-0">
+                  <Button size="sm" onClick={() => handleApproveTopic(t.id)} disabled={pending} className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700">
+                    Approve
+                  </Button>
+                  <Button size="sm" variant="outline" onClick={() => handleRejectTopic(t.id)} disabled={pending} className="rounded-full">
+                    Decline
+                  </Button>
+                </div>
+              </div>
+            ))
+          )}
+        </section>
+
         <section className="p-6 md:p-8 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 space-y-6">
           <div className="flex items-center gap-3">
             <Plus className="h-5 w-5 text-brand-gold" strokeWidth={1.5} />
-            <h2 className="text-xl font-heading font-bold">Custom Topics (38+)</h2>
+            <h2 className="text-xl font-heading font-bold">Custom Topics — Unlimited</h2>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <input value={customTitle} onChange={(e) => setCustomTitle(e.target.value)} placeholder="Topic title" className="flex-1 px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
@@ -225,9 +301,22 @@ export function ParentDashboardClient({ userEmail, userName, initialSettings, co
 
         <section className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 space-y-4">
           <h2 className="text-xl font-heading font-bold">Link Child Account</h2>
+          <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55">
+            Enter your child&apos;s registered email. Your curriculum settings will sync to their account automatically.
+          </p>
+          {linkedChildren.length > 0 && (
+            <div className="space-y-2">
+              <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Linked explorers</p>
+              {linkedChildren.map((c) => (
+                <div key={c.child_id} className="text-sm p-3 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10">
+                  {c.nickname ?? c.full_name ?? 'Explorer'} · {c.email ?? 'No email on file'}
+                </div>
+              ))}
+            </div>
+          )}
           <div className="flex gap-3">
             <input value={childEmail} onChange={(e) => setChildEmail(e.target.value)} placeholder="child@email.com" className="flex-1 px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
-            <Button onClick={handleLinkChild} disabled={pending} variant="outline" className="rounded-xl shrink-0">Apply Plan</Button>
+            <Button onClick={handleLinkChild} disabled={pending} variant="outline" className="rounded-xl shrink-0">Link & Sync</Button>
           </div>
         </section>
 

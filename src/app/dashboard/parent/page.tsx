@@ -1,17 +1,25 @@
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
 import { ParentDashboardClient } from "@/components/parent/ParentDashboardClient";
-import { getCountries, getCurriculumFromDb, mergeCurriculumWithFallback } from "@/lib/db/platform";
+import {
+  getCountries,
+  getCurriculumFromDb,
+  getLinkedChildren,
+  getPendingCustomTopicsForParent,
+  mergeCurriculumWithFallback,
+} from "@/lib/db/platform";
+import { requireRole } from "@/lib/auth/dashboard-access";
 
 export default async function ParentDashboardPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) redirect("/login");
+  const { user } = await requireRole(["parent", "admin"]);
 
   const countries = await getCountries();
   let dbSettings = null;
+  let linkedChildren: Awaited<ReturnType<typeof getLinkedChildren>> = [];
+  let pendingTopics: Awaited<ReturnType<typeof getPendingCustomTopicsForParent>> = [];
+
   try {
     dbSettings = await getCurriculumFromDb(user.id);
+    linkedChildren = await getLinkedChildren(user.id);
+    pendingTopics = await getPendingCustomTopicsForParent(user.id);
   } catch { /* tables may not exist yet */ }
 
   const settings = mergeCurriculumWithFallback(dbSettings, user.user_metadata);
@@ -23,6 +31,8 @@ export default async function ParentDashboardPage() {
       userName={userName}
       initialSettings={settings}
       countries={countries}
+      linkedChildren={linkedChildren}
+      pendingTopics={pendingTopics}
     />
   );
 }

@@ -15,7 +15,7 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({
             request,
           })
@@ -34,13 +34,68 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Here we can check the user and redirect if needed
-  // For example, if they are trying to access /dashboard but have no user:
-  // if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
-  //   const url = request.nextUrl.clone()
-  //   url.pathname = '/login'
-  //   return NextResponse.redirect(url)
-  // }
+  if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  if (!user && request.nextUrl.pathname.startsWith('/lesson')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  if (!user && request.nextUrl.pathname.startsWith('/quiz')) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/login'
+    return NextResponse.redirect(url)
+  }
+
+  const pathname = request.nextUrl.pathname
+  const isStudentRoute =
+    pathname.startsWith('/dashboard/student') ||
+    pathname.startsWith('/lesson') ||
+    pathname.startsWith('/quiz') ||
+    pathname.startsWith('/match-quiz')
+
+  const publicWhenUnverified = [
+    '/',
+    '/login',
+    '/signup',
+    '/signup/verify-email',
+    '/auth/callback',
+    '/privacy',
+    '/terms',
+    '/cookies',
+  ]
+
+  if (
+    user &&
+    !user.email_confirmed_at &&
+    (user.user_metadata?.role === 'student' || !user.user_metadata?.role) &&
+    isStudentRoute
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/signup/verify-email'
+    url.searchParams.set('email', user.email ?? '')
+    url.searchParams.set('role', 'student')
+    return NextResponse.redirect(url)
+  }
+
+  if (
+    user &&
+    !user.email_confirmed_at &&
+    !publicWhenUnverified.some((p) => pathname === p || pathname.startsWith(p + '/')) &&
+    !pathname.startsWith('/api') &&
+    !pathname.startsWith('/_next') &&
+    (user.user_metadata?.role === 'student' || !user.user_metadata?.role)
+  ) {
+    const url = request.nextUrl.clone()
+    url.pathname = '/signup/verify-email'
+    url.searchParams.set('email', user.email ?? '')
+    return NextResponse.redirect(url)
+  }
 
   return supabaseResponse
 }

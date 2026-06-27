@@ -23,10 +23,46 @@ export interface ProfileRow {
   role: string
   full_name: string | null
   nickname: string | null
+  email: string | null
   country_code: string | null
   sharing_level: string
   allow_match_quiz: boolean
+  parent_consent_at: string | null
+  parent_email: string | null
+  birth_year: number | null
 }
+
+export interface LinkedChildRow {
+  child_id: string
+  full_name: string | null
+  nickname: string | null
+  email: string | null
+}
+
+export interface PendingCustomTopicRow {
+  id: string
+  user_id: string
+  title: string
+  description: string | null
+  created_by: string
+  created_at: string
+  child_name: string | null
+}
+
+const FALLBACK_COUNTRIES: CountryRow[] = [
+  { code: 'GLOBAL', name: 'Global / International', flag_emoji: '🌍', is_featured: true, explorer_count: 0 },
+  { code: 'GB', name: 'United Kingdom', flag_emoji: '🇬🇧', is_featured: true, explorer_count: 0 },
+  { code: 'NG', name: 'Nigeria', flag_emoji: '🇳🇬', is_featured: true, explorer_count: 0 },
+  { code: 'GH', name: 'Ghana', flag_emoji: '🇬🇭', is_featured: true, explorer_count: 0 },
+  { code: 'UG', name: 'Uganda', flag_emoji: '🇺🇬', is_featured: true, explorer_count: 0 },
+  { code: 'US', name: 'United States', flag_emoji: '🇺🇸', is_featured: true, explorer_count: 0 },
+  { code: 'IN', name: 'India', flag_emoji: '🇮🇳', is_featured: true, explorer_count: 0 },
+  { code: 'CA', name: 'Canada', flag_emoji: '🇨🇦', is_featured: true, explorer_count: 0 },
+  { code: 'AU', name: 'Australia', flag_emoji: '🇦🇺', is_featured: true, explorer_count: 0 },
+  { code: 'ZA', name: 'South Africa', flag_emoji: '🇿🇦', is_featured: true, explorer_count: 0 },
+  { code: 'KE', name: 'Kenya', flag_emoji: '🇰🇪', is_featured: true, explorer_count: 0 },
+  { code: 'IE', name: 'Ireland', flag_emoji: '🇮🇪', is_featured: true, explorer_count: 0 },
+]
 
 export async function getCountries(): Promise<CountryRow[]> {
   const supabase = await createClient()
@@ -43,7 +79,8 @@ export async function getCountries(): Promise<CountryRow[]> {
       .select('code, name, flag_emoji, is_featured')
       .order('is_featured', { ascending: false })
       .order('name')
-    return (fallback ?? []).map((c) => ({ ...c, explorer_count: 0 }))
+    const rows = (fallback ?? []).map((c) => ({ ...c, explorer_count: 0 }))
+    return rows.length ? rows : FALLBACK_COUNTRIES
   }
   return data as CountryRow[]
 }
@@ -58,6 +95,105 @@ export async function getCountryTrending(countryCode: string, limit = 5): Promis
 
   if (error || !data?.length) return []
   return data as TrendingRow[]
+}
+
+/** Only include activity from users who opted into region/global sharing. */
+export async function shouldRecordPublicActivity(userId: string): Promise<boolean> {
+  const profile = await getProfile(userId)
+  const sharing = profile?.sharing_level ?? 'region'
+  return sharing === 'region' || sharing === 'global'
+}
+
+export async function getLinkedChildren(parentId: string): Promise<LinkedChildRow[]> {
+  const supabase = await createClient()
+  const { data: links } = await supabase
+    .from('family_links')
+    .select('child_id')
+    .eq('parent_id', parentId)
+
+  if (!links?.length) return []
+
+  const childIds = links.map((l) => l.child_id)
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, full_name, nickname, email')
+    .in('id', childIds)
+
+  return (profiles ?? []).map((p) => ({
+    child_id: p.id,
+    full_name: p.full_name,
+    nickname: p.nickname,
+    email: p.email,
+  }))
+}
+
+export async function parentCanManageChild(parentId: string, childId: string): Promise<boolean> {
+  const supabase = await createClient()
+  const { data: link } = await supabase
+    .from('family_links')
+    .select('id')
+    .eq('parent_id', parentId)
+    .eq('child_id', childId)
+    .maybeSingle()
+  if (link) return true
+
+  const { data: settings } = await supabase
+    .from('curriculum_settings')
+    .select('managed_by')
+    .eq('user_id', childId)
+    .maybeSingle()
+  return settings?.managed_by === parentId
+}
+
+export async function syncCurriculumToChild(
+  parentId: string,
+  childId: string,
+  settings: CurriculumSettings
+) {
+  const supabase = await createClient()
+
+  await supabase.from('profiles').update({
+    country_code: settings.countryCode,
+    sharing_level: settings.sharingLevel,
+    allow_match_quiz: settings.allowMatchQuiz,
+    updated_at: new Date().toISOString(),
+  }).eq('id', childId)
+
+  await supabase.from('curriculum_settings').upsert({
+    user_id: childId,
+    disabled_topic_ids: settings.disabledTopics,
+    allow_match_quiz: settings.allowMatchQuiz,
+    sharing_level: settings.sharingLevel,
+    managed_by: parentId,
+    updated_at: new Date().toISOString(),
+  })
+}
+
+export async function syncCurriculumToLinkedChildren(parentId: string, settings: CurriculumSettings) {
+  const children = await getLinkedChildren(parentId)
+  for (const child of children) {
+    await syncCurriculumToChild(parentId, child.child_id, settings)
+  }
+}
+
+export async function getPendingCustomTopicsForParent(parentId: string): Promise<PendingCustomTopicRow[]> {
+  const supabase = await createClient()
+  const children = await getLinkedChildren(parentId)
+  const childIds = children.map((c) => c.child_id)
+  if (!childIds.length) return []
+
+  const { data } = await supabase
+    .from('custom_topics')
+    .select('id, user_id, title, description, created_by, created_at')
+    .in('user_id', childIds)
+    .eq('is_approved', false)
+    .order('created_at', { ascending: false })
+
+  const nameById = new Map(children.map((c) => [c.child_id, c.nickname ?? c.full_name ?? 'Explorer']))
+  return (data ?? []).map((t) => ({
+    ...t,
+    child_name: nameById.get(t.user_id) ?? null,
+  })) as PendingCustomTopicRow[]
 }
 
 export async function getProfile(userId: string): Promise<ProfileRow | null> {
@@ -100,7 +236,7 @@ export async function getCurriculumFromDb(userId: string): Promise<CurriculumSet
   }
 }
 
-export async function saveCurriculumToDb(userId: string, settings: CurriculumSettings) {
+export async function saveCurriculumToDb(userId: string, settings: CurriculumSettings, managedBy?: string) {
   const supabase = await createClient()
 
   await supabase.from('profiles').update({
@@ -115,6 +251,7 @@ export async function saveCurriculumToDb(userId: string, settings: CurriculumSet
     disabled_topic_ids: settings.disabledTopics,
     allow_match_quiz: settings.allowMatchQuiz,
     sharing_level: settings.sharingLevel,
+    managed_by: managedBy ?? null,
     updated_at: new Date().toISOString(),
   })
 
@@ -123,18 +260,57 @@ export async function saveCurriculumToDb(userId: string, settings: CurriculumSet
 
 export async function addCustomTopicToDb(
   userId: string,
-  topic: { title: string; description: string; createdBy: 'parent' | 'vision_vee' | 'student' }
+  topic: { title: string; description: string; createdBy: 'parent' | 'vision_vee' | 'student' },
+  options?: { isApproved?: boolean }
 ) {
   const supabase = await createClient()
+  const isApproved = options?.isApproved ?? topic.createdBy === 'parent'
   const { data, error } = await supabase.from('custom_topics').insert({
     user_id: userId,
     title: topic.title,
     description: topic.description,
     created_by: topic.createdBy,
+    is_approved: isApproved,
   }).select().single()
 
   if (error) return { error: error.message }
   return { success: true, topic: data }
+}
+
+export async function approveCustomTopic(parentId: string, topicId: string) {
+  const supabase = await createClient()
+  const { data: topic } = await supabase
+    .from('custom_topics')
+    .select('user_id')
+    .eq('id', topicId)
+    .single()
+
+  if (!topic) return { error: 'Topic not found' }
+  if (!(await parentCanManageChild(parentId, topic.user_id))) {
+    return { error: 'Not authorized to approve this topic' }
+  }
+
+  const { error } = await supabase.from('custom_topics').update({ is_approved: true }).eq('id', topicId)
+  if (error) return { error: error.message }
+  return { success: true }
+}
+
+export async function rejectCustomTopic(parentId: string, topicId: string) {
+  const supabase = await createClient()
+  const { data: topic } = await supabase
+    .from('custom_topics')
+    .select('user_id')
+    .eq('id', topicId)
+    .single()
+
+  if (!topic) return { error: 'Topic not found' }
+  if (!(await parentCanManageChild(parentId, topic.user_id))) {
+    return { error: 'Not authorized to reject this topic' }
+  }
+
+  const { error } = await supabase.from('custom_topics').delete().eq('id', topicId)
+  if (error) return { error: error.message }
+  return { success: true }
 }
 
 export async function removeCustomTopicFromDb(userId: string, topicId: string) {
@@ -175,7 +351,10 @@ export async function saveBadgeToDb(userId: string, topicId: string | number) {
   })
 
   const profile = await getProfile(userId)
-  if (profile?.country_code) {
+  const sharing = profile?.sharing_level ?? 'region'
+  const canSharePublicly = sharing === 'region' || sharing === 'global'
+
+  if (canSharePublicly && profile?.country_code) {
     await supabase.from('topic_activity').upsert(
       { country_code: profile.country_code, topic_id: topicKey, topic_title: title, activity_count: 1, last_active: new Date().toISOString() },
       { onConflict: 'country_code,topic_id', ignoreDuplicates: false }
@@ -191,6 +370,13 @@ export async function postCommunityIdea(
   nickname: string
 ) {
   const supabase = await createClient()
+  const profile = await getProfile(userId)
+  const sharing = profile?.sharing_level ?? 'region'
+
+  if (sharing === 'private') {
+    return { error: 'Community sharing is disabled. Set sharing to Region or Global in your Parent Dashboard to share ideas.' }
+  }
+
   const { error } = await supabase.from('community_ideas').insert({
     user_id: userId,
     country_code: countryCode,
@@ -248,23 +434,51 @@ export async function leaveMatchQueue(userId: string) {
   await supabase.from('match_quiz_queue').delete().eq('user_id', userId)
 }
 
-export async function linkChildToParent(parentId: string, childEmail: string) {
+export async function linkChildToParent(parentId: string, childEmail: string, settings?: CurriculumSettings) {
   const supabase = await createClient()
-  const { data: childProfile } = await supabase
-    .from('profiles')
-    .select('id')
-    .eq('role', 'student')
-    .limit(1)
+  const normalizedEmail = childEmail.trim().toLowerCase()
 
-  const { error } = await supabase.from('family_links').insert({
-    parent_id: parentId,
-    child_id: childProfile?.[0]?.id ?? parentId,
-  })
-
-  if (error && !error.message.includes('duplicate')) {
-    return { success: true, message: `Curriculum template saved. Link ${childEmail} when they register with this email.` }
+  if (!normalizedEmail.includes('@')) {
+    return { error: 'Please enter a valid child email address.' }
   }
-  return { success: true, message: `Family link established for ${childEmail}.` }
+
+  const { data: childRows, error: lookupErr } = await supabase
+    .rpc('lookup_student_by_email', { child_email: normalizedEmail })
+
+  const childProfile = Array.isArray(childRows) ? childRows[0] : childRows
+
+  if (lookupErr) return { error: lookupErr.message }
+
+  if (!childProfile) {
+    return {
+      success: true,
+      pending: true,
+      message: `No student account found for ${childEmail} yet. When they sign up with this email, link them again from this dashboard.`,
+    }
+  }
+
+  if (childProfile.id === parentId) {
+    return { error: 'You cannot link your own account as a child.' }
+  }
+
+  const { error: linkErr } = await supabase.from('family_links').upsert(
+    { parent_id: parentId, child_id: childProfile.id },
+    { onConflict: 'parent_id,child_id', ignoreDuplicates: true }
+  )
+
+  if (linkErr && !linkErr.message.includes('duplicate')) {
+    return { error: linkErr.message }
+  }
+
+  if (settings) {
+    await syncCurriculumToChild(parentId, childProfile.id, settings)
+  }
+
+  const childName = childProfile.nickname ?? childProfile.full_name ?? 'your child'
+  return {
+    success: true,
+    message: `Linked to ${childName} (${childEmail}). Your curriculum settings now apply to their account.`,
+  }
 }
 
 export function mergeCurriculumWithFallback(
@@ -286,4 +500,29 @@ export function mergeCurriculumWithFallback(
     }
   }
   return { ...DEFAULT_CURRICULUM, countryCode: 'GB', region: 'GB' }
+}
+
+export interface SchoolInquiryRow {
+  id: string
+  inquiry_type: 'demo' | 'workshop' | 'pilot'
+  school_name: string
+  contact_name: string
+  contact_email: string
+  country_code: string | null
+  message: string | null
+  preferred_date: string | null
+  student_count: number | null
+  created_at: string
+}
+
+export async function getSchoolInquiries(limit = 50): Promise<SchoolInquiryRow[]> {
+  const supabase = await createClient()
+  const { data, error } = await supabase
+    .from('school_inquiries')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(limit)
+
+  if (error || !data) return []
+  return data as SchoolInquiryRow[]
 }

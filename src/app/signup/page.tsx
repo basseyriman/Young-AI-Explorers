@@ -1,11 +1,6 @@
-import { signup } from '@/app/login/actions'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Label } from '@/components/ui/label'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+import { SignupForm } from '@/components/SignupForm'
 import { ArrowLeft } from 'lucide-react'
 import { Logo } from '@/components/Logo'
-import { CountrySelect } from '@/components/CountrySelect'
 import { getCountries } from '@/lib/db/platform'
 import Link from 'next/link'
 
@@ -16,6 +11,8 @@ export default async function SignupPage({
 }) {
   const params = await searchParams
   const message = params.message as string
+  const roleParam = typeof params.role === 'string' ? params.role : 'student'
+  const defaultRole = ['student', 'parent', 'teacher'].includes(roleParam) ? roleParam : 'student'
   const countries = await getCountries()
 
   return (
@@ -42,47 +39,7 @@ export default async function SignupPage({
           </div>
         )}
 
-        <Card className="border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-surface dark:bg-brand-purple-dark shadow-xl rounded-2xl overflow-hidden">
-          <CardHeader className="border-b border-brand-purple/8 dark:border-brand-gold/8 pb-6">
-            <CardTitle className="text-2xl font-bold text-brand-purple dark:text-brand-cream">Create Account</CardTitle>
-            <CardDescription className="text-brand-purple/50 dark:text-brand-cream/50">38+ topics · Global explorer community</CardDescription>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <form action={signup} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="fullName" className="text-brand-purple dark:text-brand-cream font-semibold">Full Name</Label>
-                <Input id="fullName" name="fullName" type="text" placeholder="Your name" required className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="email" className="text-brand-purple dark:text-brand-cream font-semibold">Email</Label>
-                <Input id="email" name="email" type="email" placeholder="you@example.com" required className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="password" className="text-brand-purple dark:text-brand-cream font-semibold">Password</Label>
-                <Input id="password" name="password" type="password" required minLength={6} placeholder="At least 6 characters" className="h-12 rounded-xl border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50" />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-brand-purple dark:text-brand-cream font-semibold">Country / Region</Label>
-                <CountrySelect countries={countries.length ? countries : [{ code: 'GB', name: 'United Kingdom', flag_emoji: '🇬🇧', is_featured: true }]} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="role" className="text-brand-purple dark:text-brand-cream font-semibold">I am a…</Label>
-                <select id="role" name="role" required defaultValue="student" className="flex h-12 w-full rounded-xl border-2 border-brand-purple/15 dark:border-brand-gold/15 bg-brand-warm dark:bg-brand-purple-dark/50 px-3 text-sm font-medium text-brand-purple dark:text-brand-cream">
-                  <option value="student">Student</option>
-                  <option value="parent">Parent / Guardian</option>
-                  <option value="teacher">Teacher / Educator</option>
-                </select>
-              </div>
-              <Button type="submit" className="w-full h-12 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold mt-2">
-                Create Account
-              </Button>
-              <p className="text-center text-sm text-brand-purple/50 dark:text-brand-cream/50 pt-2">
-                Already have an account?{' '}
-                <Link href="/login" className="text-brand-gold font-semibold hover:underline">Sign in</Link>
-              </p>
-            </form>
-          </CardContent>
-        </Card>
+        <SignupForm countries={countries} defaultRole={defaultRole} />
       </div>
     </div>
   )

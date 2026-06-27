@@ -4,7 +4,11 @@ import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Star, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/Logo'
-import { ALL_LESSONS } from '@/data/lessons'
+import { ALL_LESSONS, type LessonData } from '@/data/lessons'
+import { requireTopicAccess, getUserRoleFromProfile } from '@/lib/curriculum-access'
+import type { TopicId } from '@/data/curriculum'
+
+type LessonView = LessonData & { id: number | string }
 
 export default async function LessonPage({
   params,
@@ -22,8 +26,12 @@ export default async function LessonPage({
     return redirect('/login')
   }
 
+  const topicId: TopicId = id === 'intro' ? 'intro' : parseInt(id, 10)
+  const role = await getUserRoleFromProfile(user.id, user.user_metadata)
+  await requireTopicAccess(user.id, topicId, role, user.user_metadata)
+
   // Load lesson from static data — instant, works without database
-  let lesson: any = null;
+  let lesson: LessonView | null = null;
 
   if (id === 'intro') {
     lesson = {
@@ -48,7 +56,7 @@ export default async function LessonPage({
       <div className="flex flex-col items-center justify-center min-h-screen bg-slate-50">
         <div className="p-8 rounded-2xl bg-white border border-slate-200 text-center max-w-md shadow-lg">
           <h1 className="text-2xl font-bold mb-2 text-slate-900">Lesson Not Found</h1>
-          <p className="text-slate-500 mb-6">We couldn't find lesson #{id}.</p>
+          <p className="text-slate-500 mb-6">We couldn&apos;t find lesson #{id}.</p>
           <Link href="/dashboard/student">
             <Button className="bg-slate-900 text-white rounded-full px-8">Return to Dashboard</Button>
           </Link>
@@ -57,15 +65,13 @@ export default async function LessonPage({
     )
   }
 
-  // All static lessons are unlocked
+  // Parent-disabled topics are blocked by requireTopicAccess above
   const isLocked = false;
 
   // Parse fields (static data is already arrays, but handle gracefully)
   let funFacts: string[] = []
-  let examples: any[] = []
   try {
     funFacts = typeof lesson.fun_facts === 'string' ? JSON.parse(lesson.fun_facts) : lesson.fun_facts || []
-    examples = typeof lesson.examples === 'string' ? JSON.parse(lesson.examples) : lesson.examples || []
   } catch (e) {
     console.error('Error parsing JSON fields', e)
   }
@@ -229,7 +235,7 @@ export default async function LessonPage({
             <div className="bg-white border border-slate-200 p-10 md:p-14 rounded-[24px] shadow-sm text-center">
                <h3 className="text-2xl font-semibold text-slate-800 mb-4 tracking-tight">Ready to test your knowledge?</h3>
                <p className="text-slate-600 mb-8 max-w-lg mx-auto text-lg">
-                 Show what you've learned and earn a new badge for your collection.
+                 Show what you&apos;ve learned and earn a new badge for your collection.
                </p>
                <Link href={`/quiz/${id}`}>
                  <Button size="lg" className="bg-slate-900 text-white hover:bg-slate-800 h-14 px-10 text-lg rounded-xl font-medium transition-colors">

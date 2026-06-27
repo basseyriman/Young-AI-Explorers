@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import { ArrowLeft, Globe, MessageSquare, Users, Zap, Send } from "lucide-react";
 import { Logo } from "@/components/Logo";
-import { TOPIC_COUNT_LABEL } from "@/data/curriculum";
+import { TOPIC_COUNT_LABEL, TOPIC_MARKETING } from "@/data/curriculum";
 import type { CountryRow, TrendingRow } from "@/lib/db/platform";
 import { postIdeaAction } from "@/app/dashboard/parent/actions";
 
@@ -14,9 +14,11 @@ interface Props {
   initialCountryCode: string;
   userNickname?: string;
   isLoggedIn: boolean;
+  canShareIdeas?: boolean;
+  sharingLevel?: string;
 }
 
-export function CommunityClient({ countries, initialTrending, initialCountryCode, userNickname, isLoggedIn }: Props) {
+export function CommunityClient({ countries, initialTrending, initialCountryCode, userNickname, isLoggedIn, canShareIdeas = true, sharingLevel = 'region' }: Props) {
   const [activeCountry, setActiveCountry] = useState(initialCountryCode);
   const [trending, setTrending] = useState(initialTrending);
   const [ideaTopic, setIdeaTopic] = useState("");
@@ -65,7 +67,7 @@ export function CommunityClient({ countries, initialTrending, initialCountryCode
         <div className="mb-10">
           <h1 className="text-3xl md:text-4xl font-heading font-bold mb-3">Explorer Communities</h1>
           <p className="text-brand-purple/60 dark:text-brand-cream/60 max-w-2xl">
-            Live data from Supabase — see what explorers in any country are learning. {TOPIC_COUNT_LABEL} topics, privacy-safe aggregated trends.
+            Live data from Supabase — see what explorers in any country are learning. {TOPIC_MARKETING.platformLine} Privacy-safe aggregated trends.
           </p>
         </div>
 
@@ -99,7 +101,7 @@ export function CommunityClient({ countries, initialTrending, initialCountryCode
             <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10">
               <Globe className="h-5 w-5 text-brand-gold mb-3" />
               <div className="text-2xl font-bold">{TOPIC_COUNT_LABEL}</div>
-              <div className="text-xs text-brand-purple/50">Topics Available</div>
+              <div className="text-xs text-brand-purple/50">Topics — Core + Custom</div>
             </div>
             <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10">
               <Zap className="h-5 w-5 text-brand-gold mb-3" />
@@ -139,15 +141,23 @@ export function CommunityClient({ countries, initialTrending, initialCountryCode
           </div>
         )}
 
-        {isLoggedIn ? (
+        {isLoggedIn && canShareIdeas ? (
           <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/20 mb-10 space-y-4">
             <h3 className="font-heading font-bold">Share an Idea</h3>
+            <p className="text-xs text-brand-purple/45">Sharing level: <span className="capitalize font-semibold">{sharingLevel}</span></p>
             {message && <p className="text-sm text-brand-gold">{message}</p>}
             <input value={ideaTopic} onChange={(e) => setIdeaTopic(e.target.value)} placeholder="Topic name" className="w-full px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
             <textarea value={ideaText} onChange={(e) => setIdeaText(e.target.value)} placeholder="Your learning idea (nickname only, no personal info)" rows={3} className="w-full px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
             <button type="button" onClick={handlePostIdea} disabled={pending} className="flex items-center gap-2 px-6 py-3 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold text-sm">
               <Send className="h-4 w-4" /> Share Idea
             </button>
+          </div>
+        ) : isLoggedIn ? (
+          <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 mb-10 text-center">
+            <p className="text-sm text-brand-purple/60 dark:text-brand-cream/60">
+              Community sharing is set to <strong className="capitalize">Private</strong>. A parent can enable Region or Global sharing in the{' '}
+              <Link href="/dashboard/parent" className="text-brand-gold hover:underline">Parent Dashboard</Link>.
+            </p>
           </div>
         ) : (
           <p className="text-sm text-brand-purple/50 mb-10">
