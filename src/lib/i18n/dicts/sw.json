@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "explore": "Gundua",
+    "starter_paths": "Njia za Kuanza",
+    "vision_vee": "Vision Vee",
+    "book": "Kitabu",
+    "schools": "Shule",
+    "community": "Jumuiya",
+    "trust": "Uaminifu",
+    "parents": "Wazazi",
+    "sign_in": "Ingia",
+    "start_learning": "Anza Kujifunza",
+    "educator_portal": "Tovuti ya Mwalimu"
+  },
+  "dashboard": {
+    "hello": "Habari,",
+    "active_lesson": "Somo Linaloendelea",
+    "start_lesson": "Anza Somo",
+    "your_progress": "Maendeleo Yako",
+    "of": "kati ya",
+    "enabled": "imewezeshwa",
+    "unlimited_custom": "bila kikomo na mada maalum",
+    "completed": "Kamilika",
+    "start": "Anza",
+    "preparing": "Inatayarisha...",
+    "my_learning_journey": "Safari Yangu ya Kujifunza",
+    "journey_subtitle": "Kamilisha kazi, pata beji, na ugundue visiwa vya AI!",
+    "badges": "Beji",
+    "badge_unlocked": "Imefunguliwa!",
+    "badge_locked": "Imefungwa",
+    "no_badges": "Kamilisha masomo ili upate beji!",
+    "match_quiz": "Quiz ya Mashindano",
+    "student_preview": "Hakikisho la Mwanafunzi",
+    "need_help": "Je, unahitaji msaada?",
+    "help_desc": "Wasiliana nasi kwa ramani ya mtaala, mikataba ya DPA, au leseni za shule kwa hello@youngaiexplorers.com",
+    "custom_topics_title": "Mada Maalum za Vision Vee",
+    "streak": "Mfululizo",
+    "xp": "XP",
+    "certificates": "Vyeti"
+  },
+  "lesson": {
+    "back_dashboard": "Rudi kwenye Dashibodi",
+    "chapter": "Sura",
+    "introduction": "Utangulizi",
+    "the_lesson": "Somo",
+    "did_you_know": "Je, Wajua?",
+    "quiz_cta_title": "Uko tayari kupima ujuzi wako?",
+    "quiz_cta_desc": "Onyesha ulichojifunza na upate beji mpya ya mkusanyiko wako.",
+    "take_quiz": "Fanya Quiz",
+    "not_found_title": "Somo Halikupatikana",
+    "not_found_desc": "Hatukuweza kupata somo ulilokuwa unatafuta.",
+    "return_dashboard": "Rudi kwenye Dashibodi",
+    "custom_topic": "Mada ya Vision Vee"
+  },
+  "general": {
+    "sign_out": "Ondoka",
+    "language": "Lugha",
+    "all_rights_reserved": "Haki zote zimehifadhiwa."
+  },
+  "landing": {
+    "hero_title_pre": "Mwongozo wa Mtoto Kuhusu",
+    "hero_title_post": "Kesho",
+    "hero_desc": "Kugundua Wakati Ujao, Wazo Moja kwa Wakati. Mfumo wa mwisho wa elimu kwa kizazi kijacho cha wavumbuzi.",
+    "start_exploring": "Anza Kugundua",
+    "unlimited_ai_learning": "Kujifunza kwa AI bila kikomo"
+  }
+}

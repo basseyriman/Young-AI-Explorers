@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "explore": "Explore",
+    "starter_paths": "Starter Paths",
+    "vision_vee": "Vision Vee",
+    "book": "Book",
+    "schools": "Schools",
+    "community": "Community",
+    "trust": "Trust",
+    "parents": "Parents",
+    "sign_in": "Sign In",
+    "start_learning": "Start Learning",
+    "educator_portal": "Educator Portal"
+  },
+  "dashboard": {
+    "hello": "Hello,",
+    "active_lesson": "Active Lesson",
+    "start_lesson": "Start Lesson",
+    "your_progress": "Your Progress",
+    "of": "of",
+    "enabled": "enabled",
+    "unlimited_custom": "unlimited with custom topics",
+    "completed": "Completed",
+    "start": "Start",
+    "preparing": "Preparing...",
+    "my_learning_journey": "My Learning Journey",
+    "journey_subtitle": "Complete tasks, earn badges, and explore AI islands!",
+    "badges": "Badges",
+    "badge_unlocked": "Unlocked!",
+    "badge_locked": "Locked",
+    "no_badges": "Complete lessons to earn badges!",
+    "match_quiz": "Match Quiz",
+    "student_preview": "Student Preview",
+    "need_help": "Need help?",
+    "help_desc": "Contact us for curriculum mapping, DPA agreements, or bulk school licences at hello@youngaiexplorers.com",
+    "custom_topics_title": "Vision Vee Custom Topics",
+    "streak": "Streak",
+    "xp": "XP",
+    "certificates": "Certificates"
+  },
+  "lesson": {
+    "back_dashboard": "Back to Dashboard",
+    "chapter": "Chapter",
+    "introduction": "Introduction",
+    "the_lesson": "The Lesson",
+    "did_you_know": "Did You Know?",
+    "quiz_cta_title": "Ready to test your knowledge?",
+    "quiz_cta_desc": "Show what you've learned and earn a new badge for your collection.",
+    "take_quiz": "Take the Quiz",
+    "not_found_title": "Lesson Not Found",
+    "not_found_desc": "We couldn't find the lesson you were looking for.",
+    "return_dashboard": "Return to Dashboard",
+    "custom_topic": "Vision Vee Topic"
+  },
+  "general": {
+    "sign_out": "Sign Out",
+    "language": "Language",
+    "all_rights_reserved": "All rights reserved."
+  },
+  "landing": {
+    "hero_title_pre": "A Kid's Guide to the",
+    "hero_title_post": "Future",
+    "hero_desc": "Exploring the Future, One Idea at a Time. The ultimate educational ecosystem for the next generation of innovators.",
+    "start_exploring": "Start Exploring",
+    "unlimited_ai_learning": "Unlimited AI learning"
+  }
+}

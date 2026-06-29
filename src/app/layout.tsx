@@ -3,6 +3,8 @@ import { Inter, Montserrat, Outfit } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { AIAssistantLoader } from "@/components/AIAssistantLoader";
+import { getLocale, getTranslations } from "@/lib/i18n/i18n";
+import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -25,14 +27,19 @@ export const metadata: Metadata = {
   description: "Exploring the Future, One Idea at a Time. The ultimate educational ecosystem for the next generation of innovators.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const dictionary = await getTranslations(locale);
+  const isRtl = locale === 'ar';
+
   return (
     <html
-      lang="en"
+      lang={locale}
+      dir={isRtl ? 'rtl' : 'ltr'}
       className={`${inter.variable} ${outfit.variable} ${montserrat.variable} h-full antialiased`}
       suppressHydrationWarning
     >
@@ -46,8 +53,10 @@ export default function RootLayout({
       </head>
       <body className="min-h-full flex flex-col font-sans bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:text-brand-cream transition-colors duration-300 overflow-x-hidden" suppressHydrationWarning>
         <ThemeProvider defaultTheme="light">
-          {children}
-          <AIAssistantLoader />
+          <LanguageProvider initialLocale={locale} initialDictionary={dictionary}>
+            {children}
+            <AIAssistantLoader />
+          </LanguageProvider>
         </ThemeProvider>
       </body>
     </html>

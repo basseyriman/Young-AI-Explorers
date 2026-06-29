@@ -15,6 +15,7 @@ import { RegionalCommunities } from "@/components/RegionalCommunities";
 import { SiteLink } from "@/components/SiteLink";
 import { HERO_STATS, TOPIC_MARKETING, EXPLORE_TOPICS_CTA, EXPLORER_MAP_LABEL, BOOK_TAGLINE } from "@/data/curriculum";
 import { LEGAL_OWNER } from "@/data/legal";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 function InitialsAvatar({ name, className = "" }: { name: string; className?: string }) {
   const initials = name.split(" ").map((n) => n[0]).join("");
@@ -27,6 +28,7 @@ function InitialsAvatar({ name, className = "" }: { name: string; className?: st
 
 export default function Home() {
   const [explorationMode, setExplorationMode] = useState<"map" | "grid" | null>(null);
+  const { t } = useTranslation();
 
   return (
     <main className="min-h-screen bg-transparent relative selection:bg-brand-gold/30">
@@ -49,17 +51,17 @@ export default function Home() {
             <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10 dark:border-brand-gold/15 mb-8">
               <span className="w-1.5 h-1.5 rounded-full bg-brand-gold animate-pulse" />
               <span className="text-sm font-medium text-brand-purple/70 dark:text-brand-cream/70 tracking-wide">
-                Unlimited AI learning · {BOOK_TAGLINE}
+                {t("landing.unlimited_ai_learning")} · {BOOK_TAGLINE}
               </span>
             </div>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-heading font-bold tracking-tight text-brand-purple dark:text-brand-cream mb-6 leading-[1.08]">
-              A Kid&apos;s Guide to the{" "}
-              <span className="text-gradient">Future</span>
+              {t("landing.hero_title_pre")}{" "}
+              <span className="text-gradient">{t("landing.hero_title_post")}</span>
             </h1>
 
             <p className="text-lg md:text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-10 max-w-xl font-light leading-relaxed mx-auto lg:mx-0">
-              {TOPIC_MARKETING.heroLine}
+              {t("landing.hero_desc")}
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-16">
@@ -67,7 +69,7 @@ export default function Home() {
                 href="/signup"
                 className="w-full sm:w-auto px-8 py-4 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-[0_8px_30px_rgba(74,45,110,0.2)] dark:shadow-[0_8px_30px_rgba(201,160,78,0.15)]"
               >
-                Start Learning <ArrowRight className="h-5 w-5" />
+                {t("nav.start_learning")} <ArrowRight className="h-5 w-5" />
               </SiteLink>
               <button
                 type="button"
@@ -77,7 +79,7 @@ export default function Home() {
                 }}
                 className="w-full sm:w-auto px-8 py-4 bg-transparent border border-brand-purple/20 dark:border-brand-gold/25 text-brand-purple dark:text-brand-cream rounded-full font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center"
               >
-                {EXPLORE_TOPICS_CTA}
+                {t("landing.start_exploring")}
               </button>
             </div>
 

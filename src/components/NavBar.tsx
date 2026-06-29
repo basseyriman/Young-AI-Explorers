@@ -7,6 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
 import { NavWordmark } from "@/components/Logo";
 import { SiteLink } from "@/components/SiteLink";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
+import { LanguageSelector } from "@/components/LanguageSelector";
 
 export function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -18,6 +20,7 @@ export function NavBar() {
   );
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
+  const { t } = useTranslation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 16);
@@ -26,14 +29,14 @@ export function NavBar() {
   }, []);
 
   const navLinks = [
-    { name: "Explore", href: "#topics" },
-    { name: "Starter Paths", href: "#topics" },
-    { name: "Vision Vee", href: "#assistant" },
-    { name: "Book", href: "#book" },
-    { name: "Schools", href: "#schools" },
-    { name: "Community", href: "#community" },
-    { name: "Trust", href: "#trust" },
-    { name: "Parents", href: "#parents" },
+    { name: t("nav.explore"), href: "#topics" },
+    { name: t("nav.starter_paths"), href: "#topics" },
+    { name: t("nav.vision_vee"), href: "#assistant" },
+    { name: t("nav.book"), href: "#book" },
+    { name: t("nav.schools"), href: "#schools" },
+    { name: t("nav.community"), href: "#community" },
+    { name: t("nav.trust"), href: "#trust" },
+    { name: t("nav.parents"), href: "#parents" },
   ];
 
   return (
@@ -65,6 +68,8 @@ export function NavBar() {
         </div>
 
         <div className="hidden lg:flex items-center gap-3">
+          <LanguageSelector showLabel={false} />
+
           <button
             onClick={() => setTheme(isDark ? "light" : "dark")}
             className="p-2.5 rounded-full border border-brand-purple/10 dark:border-brand-gold/15 hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-all text-brand-purple/60 dark:text-brand-gold/70 hover:text-brand-purple dark:hover:text-brand-gold"
@@ -78,13 +83,13 @@ export function NavBar() {
             href="/login"
             className="text-sm font-medium text-brand-purple/70 dark:text-brand-cream/70 hover:text-brand-purple dark:hover:text-brand-cream transition-colors px-4 py-2"
           >
-            Sign In
+            {t("nav.sign_in")}
           </SiteLink>
           <SiteLink
             href="/signup"
             className="px-6 py-2.5 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold text-sm rounded-full hover:opacity-90 transition-all shadow-[0_4px_20px_rgba(74,45,110,0.2)] dark:shadow-[0_4px_20px_rgba(201,160,78,0.15)]"
           >
-            Start Learning
+            {t("nav.start_learning")}
           </SiteLink>
         </div>
 
@@ -117,6 +122,12 @@ export function NavBar() {
                 </SiteLink>
               ))}
               <hr className="border-brand-purple/10 dark:border-brand-gold/10 my-3" />
+              
+              <div className="flex items-center justify-between py-2 px-2">
+                <span className="text-sm font-semibold text-brand-purple/60 dark:text-brand-cream/60">{t("general.language")}</span>
+                <LanguageSelector showLabel={true} />
+              </div>
+
               <button
                 onClick={() => {
                   setTheme(isDark ? "light" : "dark");
@@ -132,14 +143,14 @@ export function NavBar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 py-3 px-2"
               >
-                Sign In
+                {t("nav.sign_in")}
               </SiteLink>
               <SiteLink
                 href="/signup"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center rounded-full px-6 py-3.5 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold text-base mt-2"
               >
-                Start Learning
+                {t("nav.start_learning")}
               </SiteLink>
             </div>
           </motion.div>

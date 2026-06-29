@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "explore": "Explorer",
+    "starter_paths": "Parcours Initiaux",
+    "vision_vee": "Vision Vee",
+    "book": "Livre",
+    "schools": "Écoles",
+    "community": "Communauté",
+    "trust": "Confiance",
+    "parents": "Parents",
+    "sign_in": "Se connecter",
+    "start_learning": "Commencer à Apprendre",
+    "educator_portal": "Portail Éducateur"
+  },
+  "dashboard": {
+    "hello": "Bonjour,",
+    "active_lesson": "Leçon Active",
+    "start_lesson": "Démarrer la Leçon",
+    "your_progress": "Votre Progrès",
+    "of": "sur",
+    "enabled": "activés",
+    "unlimited_custom": "illimité avec des sujets personnalisés",
+    "completed": "Terminé",
+    "start": "Démarrer",
+    "preparing": "Préparation...",
+    "my_learning_journey": "Mon Voyage d'Apprentissage",
+    "journey_subtitle": "Terminez des tâches, gagnez des badges et explorez des îles d'IA !",
+    "badges": "Badges",
+    "badge_unlocked": "Débloqué !",
+    "badge_locked": "Verrouillé",
+    "no_badges": "Terminez les leçons pour gagner des badges !",
+    "match_quiz": "Quiz Duel",
+    "student_preview": "Aperçu de l'Élève",
+    "need_help": "Besoin d'aide ?",
+    "help_desc": "Contactez-nous pour la cartographie des programmes, les accords DPA ou les licences de groupe à hello@youngaiexplorers.com",
+    "custom_topics_title": "Sujets personnalisés de Vision Vee",
+    "streak": "Série",
+    "xp": "XP",
+    "certificates": "Certificats"
+  },
+  "lesson": {
+    "back_dashboard": "Retour au Tableau de Bord",
+    "chapter": "Chapitre",
+    "introduction": "Introduction",
+    "the_lesson": "La Leçon",
+    "did_you_know": "Le Saviez-Vous ?",
+    "quiz_cta_title": "Prêt à tester vos connaissances ?",
+    "quiz_cta_desc": "Montrez ce que vous avez appris et gagnez un nouveau badge pour votre collection.",
+    "take_quiz": "Faire le Quiz",
+    "not_found_title": "Leçon Non Trouvée",
+    "not_found_desc": "Nous n'avons pas pu trouver la leçon que vous cherchiez.",
+    "return_dashboard": "Retour au Tableau de Bord",
+    "custom_topic": "Sujet de Vision Vee"
+  },
+  "general": {
+    "sign_out": "Se déconnecter",
+    "language": "Langue",
+    "all_rights_reserved": "Tous droits réservés."
+  },
+  "landing": {
+    "hero_title_pre": "Le guide des enfants sur le",
+    "hero_title_post": "Futur",
+    "hero_desc": "Explorer le futur, une idée à la fois. L'écosystème éducatif ultime pour la prochaine génération d'innovateurs.",
+    "start_exploring": "Commencer à Explorer",
+    "unlimited_ai_learning": "Apprentissage illimité de l'IA"
+  }
+}

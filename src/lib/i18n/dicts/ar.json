@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "explore": "استكشف",
+    "starter_paths": "مسارات البداية",
+    "vision_vee": "فيجن في",
+    "book": "الكتاب",
+    "schools": "المدارس",
+    "community": "المجتمع",
+    "trust": "الأمان والخصوصية",
+    "parents": "أولياء الأمور",
+    "sign_in": "تسجيل الدخول",
+    "start_learning": "ابدأ التعلم",
+    "educator_portal": "بوابة المعلم"
+  },
+  "dashboard": {
+    "hello": "مرحباً،",
+    "active_lesson": "الدرس الحالي",
+    "start_lesson": "ابدأ الدرس",
+    "your_progress": "تقدمك الحالي",
+    "of": "من",
+    "enabled": "مفعّل",
+    "unlimited_custom": "غير محدود مع مواضيع مخصصة",
+    "completed": "مكتمل",
+    "start": "ابدأ",
+    "preparing": "جاري التحضير...",
+    "my_learning_journey": "رحلتي التعليمية",
+    "journey_subtitle": "أكمل المهام، واكسب الشارات، واستكشف جزر الذكاء الاصطناعي!",
+    "badges": "الشارات",
+    "badge_unlocked": "تم فتحها!",
+    "badge_locked": "مغلقة",
+    "no_badges": "أكمل الدروس لكسب الشارات!",
+    "match_quiz": "المسابقة الثنائية",
+    "student_preview": "معاينة الطالب",
+    "need_help": "هل تحتاج لمساعدة؟",
+    "help_desc": "تواصل معنا لتخطيط المناهج الدراسية، أو اتفاقيات حماية البيانات، أو تراخيص المدارس الجماعية عبر hello@youngaiexplorers.com",
+    "custom_topics_title": "مواضيع فيجن في المخصصة",
+    "streak": "المتابعة اليومية",
+    "xp": "XP",
+    "certificates": "الشهادات"
+  },
+  "lesson": {
+    "back_dashboard": "العودة إلى لوحة التحكم",
+    "chapter": "الفصل",
+    "introduction": "المقدمة",
+    "the_lesson": "الدرس",
+    "did_you_know": "هل تعلم؟",
+    "quiz_cta_title": "جاهز لاختبار معلوماتك؟",
+    "quiz_cta_desc": "أظهر ما تعلمته واكسب شارة جديدة لمجموعتك الخاصة.",
+    "take_quiz": "ابدأ الاختبار",
+    "not_found_title": "الدرس غير موجود",
+    "not_found_desc": "لم نتمكن من العثور على الدرس الذي تبحث عنه.",
+    "return_dashboard": "العودة إلى لوحة التحكم",
+    "custom_topic": "موضوع فيجن في"
+  },
+  "general": {
+    "sign_out": "تسجيل الخروج",
+    "language": "اللغة",
+    "all_rights_reserved": "جميع الحقوق محفوظة."
+  },
+  "landing": {
+    "hero_title_pre": "دليل الأطفال إلى",
+    "hero_title_post": "المستقبل",
+    "hero_desc": "استكشاف المستقبل، فكرة واحدة في كل مرة. النظام التعليمي الأمثل للجيل القادم من المبتكرين.",
+    "start_exploring": "ابدأ الاستكشاف",
+    "unlimited_ai_learning": "تعلم غير محدود للذكاء الاصطناعي"
+  }
+}

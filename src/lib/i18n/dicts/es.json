@@ -1,0 +1,67 @@
+{
+  "nav": {
+    "explore": "Explorar",
+    "starter_paths": "Rutas de Inicio",
+    "vision_vee": "Vision Vee",
+    "book": "Libro",
+    "schools": "Escuelas",
+    "community": "Comunidad",
+    "trust": "Confianza",
+    "parents": "Padres",
+    "sign_in": "Iniciar Sesión",
+    "start_learning": "Empezar a Aprender",
+    "educator_portal": "Portal del Educador"
+  },
+  "dashboard": {
+    "hello": "Hola,",
+    "active_lesson": "Lección Activa",
+    "start_lesson": "Comenzar Lección",
+    "your_progress": "Tu Progreso",
+    "of": "de",
+    "enabled": "habilitados",
+    "unlimited_custom": "ilimitado con temas personalizados",
+    "completed": "Completado",
+    "start": "Comenzar",
+    "preparing": "Preparando...",
+    "my_learning_journey": "Mi Viaje de Aprendizaje",
+    "journey_subtitle": "¡Completa tareas, gana insignias y explora islas de IA!",
+    "badges": "Insignias",
+    "badge_unlocked": "¡Desbloqueado!",
+    "badge_locked": "Bloqueado",
+    "no_badges": "¡Completa lecciones para ganar insignias!",
+    "match_quiz": "Quiz de Duelo",
+    "student_preview": "Vista del Estudiante",
+    "need_help": "¿Necesitas ayuda?",
+    "help_desc": "Contáctanos para mapeo de currículo, acuerdos DPA o licencias escolares masivas en hello@youngaiexplorers.com",
+    "custom_topics_title": "Temas personalizados de Vision Vee",
+    "streak": "Racha",
+    "xp": "XP",
+    "certificates": "Certificados"
+  },
+  "lesson": {
+    "back_dashboard": "Volver al Panel",
+    "chapter": "Capítulo",
+    "introduction": "Introducción",
+    "the_lesson": "La Lección",
+    "did_you_know": "¿Sabías Que?",
+    "quiz_cta_title": "¿Listo para probar tus conocimientos?",
+    "quiz_cta_desc": "Muestra lo que has aprendido y gana una nueva insignia para tu colección.",
+    "take_quiz": "Hacer el Quiz",
+    "not_found_title": "Lección No Encontrada",
+    "not_found_desc": "No pudimos encontrar la lección que estabas buscando.",
+    "return_dashboard": "Volver al Panel de Control",
+    "custom_topic": "Tema de Vision Vee"
+  },
+  "general": {
+    "sign_out": "Cerrar Sesión",
+    "language": "Idioma",
+    "all_rights_reserved": "Todos los derechos reservados."
+  },
+  "landing": {
+    "hero_title_pre": "Una guía infantil sobre el",
+    "hero_title_post": "Futuro",
+    "hero_desc": "Explorando el futuro, una idea a la vez. El ecosistema educativo definitivo para la próxima generación de innovadores.",
+    "start_exploring": "Comenzar a Explorar",
+    "unlimited_ai_learning": "Aprendizaje de IA ilimitado"
+  }
+}
