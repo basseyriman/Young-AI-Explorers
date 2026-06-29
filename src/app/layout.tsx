@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Inter, Montserrat, Outfit } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "@/components/ThemeProvider";
+import { AIAssistantLoader } from "@/components/AIAssistantLoader";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,9 +24,6 @@ export const metadata: Metadata = {
   title: "Young AI Explorers",
   description: "Exploring the Future, One Idea at a Time. The ultimate educational ecosystem for the next generation of innovators.",
 };
-
-import AIAssistant from "@/components/AIAssistant";
-import { ThemeProvider } from "@/components/ThemeProvider";
 
 export default function RootLayout({
   children,
@@ -48,7 +47,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col font-sans bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:text-brand-cream transition-colors duration-300 overflow-x-hidden" suppressHydrationWarning>
         <ThemeProvider defaultTheme="light">
           {children}
-          <AIAssistant />
+          <AIAssistantLoader />
         </ThemeProvider>
       </body>
     </html>

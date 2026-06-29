@@ -10,6 +10,7 @@ import {
   syncCurriculumToLinkedChildren,
   approveCustomTopic,
   rejectCustomTopic,
+  regenerateCustomTopicContent,
   resolveCustomTopicOwnerId,
   getProfile,
   ensureOwnProfile,
@@ -114,6 +115,17 @@ export async function rejectCustomTopicAction(topicId: string) {
   if (!user) return { error: 'Not authenticated' }
 
   const result = await rejectCustomTopic(user.id, topicId)
+  revalidatePath('/dashboard/parent')
+  revalidatePath('/dashboard/student')
+  return result
+}
+
+export async function regenerateCustomTopicAction(topicId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  const result = await regenerateCustomTopicContent(user.id, topicId)
   revalidatePath('/dashboard/parent')
   revalidatePath('/dashboard/student')
   return result

@@ -2,14 +2,18 @@ import { ParentDashboardClient } from "@/components/parent/ParentDashboardClient
 import {
   getCountries,
   getCurriculumFromDb,
+  getApprovedCustomTopicsForLinkedChildren,
   getLinkedChildren,
   getPendingCustomTopicsForParent,
   mergeCurriculumWithFallback,
+  syncFamilyLinksByEmail,
 } from "@/lib/db/platform";
 import { requireRole } from "@/lib/auth/dashboard-access";
 
 export default async function ParentDashboardPage() {
   const { user } = await requireRole(["parent", "admin"]);
+
+  await syncFamilyLinksByEmail(user.id);
 
   const countries = await getCountries();
   let dbSettings = null;
@@ -22,7 +26,10 @@ export default async function ParentDashboardPage() {
     pendingTopics = await getPendingCustomTopicsForParent(user.id);
   } catch { /* tables may not exist yet */ }
 
+  const childCustomTopics = await getApprovedCustomTopicsForLinkedChildren(user.id).catch(() => [] as Awaited<ReturnType<typeof getApprovedCustomTopicsForLinkedChildren>>);
+
   const settings = mergeCurriculumWithFallback(dbSettings, user.user_metadata);
+  settings.customTopics = childCustomTopics;
   const userName = user.user_metadata?.full_name?.split(" ")[0] || "Guardian";
 
   return (

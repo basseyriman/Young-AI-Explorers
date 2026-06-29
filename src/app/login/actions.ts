@@ -20,8 +20,9 @@ export async function login(formData: FormData) {
 
   const { data: { user } } = await supabase.auth.getUser()
   if (user) {
-    const { ensureOwnProfile } = await import('@/lib/db/platform')
+    const { ensureOwnProfile, syncFamilyLinksByEmail } = await import('@/lib/db/platform')
     await ensureOwnProfile()
+    await syncFamilyLinksByEmail(user.id)
     const role = await getUserRole(user.id, user.user_metadata)
     redirect(dashboardPathForRole(role))
   }
@@ -107,6 +108,9 @@ export async function signup(formData: FormData) {
   if (ensured.error) {
     console.error('[signup] profile ensure failed:', ensured.error)
   }
+
+  const { syncFamilyLinksByEmail } = await import('@/lib/db/platform')
+  await syncFamilyLinksByEmail(registered.userId)
 
   if (registered.sessionCreated) {
     await supabase.from('profiles').upsert({

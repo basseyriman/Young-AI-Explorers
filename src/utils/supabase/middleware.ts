@@ -68,6 +68,8 @@ export async function updateSession(request: NextRequest) {
     '/privacy',
     '/terms',
     '/cookies',
+    '/book/sample',
+    '/book-sample',
   ]
 
   if (

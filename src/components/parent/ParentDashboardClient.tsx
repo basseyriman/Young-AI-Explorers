@@ -4,10 +4,10 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import {
   Shield, Plus, Trash2, Sparkles, Globe, Lock, Users, Save,
-  CheckCircle2, XCircle, LogOut,
+  CheckCircle2, XCircle, Eye, ChevronUp, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { signOut } from "@/app/dashboard/actions";
+import { SignOutButton } from "@/components/SignOutButton";
 import { Logo } from "@/components/Logo";
 import { CountrySelect } from "@/components/CountrySelect";
 import {
@@ -28,7 +28,117 @@ import {
   addCustomTopicAction,
   approveCustomTopicAction,
   rejectCustomTopicAction,
+  regenerateCustomTopicAction,
 } from "@/app/dashboard/parent/actions";
+
+function PendingTopicReviewPanel({
+  topic,
+  onRegenerate,
+  regenerating,
+}: {
+  topic: PendingCustomTopicRow
+  onRegenerate: () => void
+  regenerating: boolean
+}) {
+  const lesson = topic.lesson_content;
+  const quiz = topic.quiz_content ?? [];
+
+  if (topic.content_status === 'generating') {
+    return (
+      <div className="rounded-xl border border-brand-gold/20 bg-brand-surface dark:bg-brand-purple-dark/60 p-5 flex items-center gap-3 text-sm text-brand-purple/70 dark:text-brand-cream/75">
+        <Loader2 className="h-4 w-4 animate-spin text-brand-gold shrink-0" />
+        Vision Vee is still writing the lesson and quiz. Check back in a moment, then approve when ready.
+      </div>
+    );
+  }
+
+  if (topic.content_status === 'failed') {
+    return (
+      <div className="rounded-xl border border-red-300/30 bg-red-50 dark:bg-red-950/20 p-5 space-y-3 text-sm text-red-700 dark:text-red-300">
+        <p>Vision Vee could not save the full lesson for this topic. Regenerate it, review the summary, or decline and ask your child to try again.</p>
+        <Button type="button" size="sm" variant="outline" disabled={regenerating} onClick={onRegenerate} className="rounded-full border-red-300/40 text-red-700 dark:text-red-200">
+          {regenerating ? <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Regenerating…</> : 'Regenerate lesson'}
+        </Button>
+        {topic.description && (
+          <p className="text-brand-purple/75 dark:text-brand-cream/80 leading-relaxed pt-1 border-t border-red-300/20">{topic.description}</p>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-xl border border-brand-purple/10 dark:border-brand-gold/20 bg-brand-surface dark:bg-brand-purple-dark/60 p-5 space-y-5 text-sm">
+      <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Full topic preview</p>
+
+      {topic.description && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-purple/50 dark:text-brand-cream/50 mb-1">Summary</p>
+          <p className="text-brand-purple/80 dark:text-brand-cream/85 leading-relaxed">{topic.description}</p>
+        </div>
+      )}
+
+      {lesson?.introduction && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-purple/50 dark:text-brand-cream/50 mb-1">Introduction</p>
+          <p className="text-brand-purple/80 dark:text-brand-cream/85 leading-relaxed">{lesson.introduction}</p>
+        </div>
+      )}
+
+      {lesson?.main_lesson && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-purple/50 dark:text-brand-cream/50 mb-1">Main lesson</p>
+          <p className="text-brand-purple/80 dark:text-brand-cream/85 leading-relaxed whitespace-pre-wrap">{lesson.main_lesson}</p>
+        </div>
+      )}
+
+      {lesson?.fun_facts && lesson.fun_facts.length > 0 && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-purple/50 dark:text-brand-cream/50 mb-2">Fun facts</p>
+          <ul className="space-y-2">
+            {lesson.fun_facts.map((fact, i) => (
+              <li key={i} className="text-brand-purple/75 dark:text-brand-cream/80 flex gap-2 leading-relaxed">
+                <span className="text-brand-gold shrink-0">✦</span>
+                <span>{fact}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {quiz.length > 0 && (
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-wider text-brand-purple/50 dark:text-brand-cream/50 mb-2">Quiz questions</p>
+          <ol className="space-y-3 list-decimal list-inside">
+            {quiz.map((q, i) => (
+              <li key={i} className="text-brand-purple/75 dark:text-brand-cream/80 leading-relaxed">
+                <span className="font-medium">{q.question}</span>
+                <ul className="mt-1.5 ml-4 space-y-0.5 list-disc list-inside text-xs text-brand-purple/60 dark:text-brand-cream/65">
+                  {q.options.map((opt) => (
+                    <li key={opt} className={opt === q.answer ? 'text-emerald-600 dark:text-emerald-400 font-medium' : undefined}>
+                      {opt}{opt === q.answer ? ' (correct)' : ''}
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {topic.badge_name && (
+        <p className="text-xs font-medium text-brand-gold pt-1 border-t border-brand-purple/10 dark:border-brand-gold/15">
+          Badge your child can earn: {topic.badge_name}
+        </p>
+      )}
+
+      {!lesson?.introduction && !lesson?.main_lesson && quiz.length === 0 && (
+        <p className="text-brand-purple/60 dark:text-brand-cream/60 italic">
+          Full lesson content is not available yet. You can still approve based on the summary above, or wait for Vision Vee to finish generating.
+        </p>
+      )}
+    </div>
+  );
+}
 
 interface Props {
   userEmail: string;
@@ -53,6 +163,8 @@ export function ParentDashboardClient({
   const [customDesc, setCustomDesc] = useState("");
   const [message, setMessage] = useState<string | null>(null);
   const [pendingTopics, setPendingTopics] = useState(initialPending);
+  const [expandedTopicId, setExpandedTopicId] = useState<string | null>(null);
+  const [regeneratingTopicId, setRegeneratingTopicId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
 
   const enabledCount = BOOK_LESSONS.filter((l) => !settings.disabledTopics.some((d) => topicIdKey(d) === topicIdKey(l.id))).length;
@@ -142,7 +254,22 @@ export function ParentDashboardClient({
         return;
       }
       setPendingTopics((prev) => prev.filter((t) => t.id !== topicId));
+      if (expandedTopicId === topicId) setExpandedTopicId(null);
       setMessage("Topic request declined.");
+    });
+  };
+
+  const handleRegenerateTopic = (topicId: string) => {
+    setRegeneratingTopicId(topicId);
+    startTransition(async () => {
+      const result = await regenerateCustomTopicAction(topicId);
+      setRegeneratingTopicId(null);
+      if ('error' in result && result.error) {
+        setMessage(result.error);
+        return;
+      }
+      setMessage('Lesson regenerated — open View full topic to review, then approve.');
+      window.location.reload();
     });
   };
 
@@ -162,11 +289,7 @@ export function ParentDashboardClient({
             <span className="text-sm text-brand-purple/60 dark:text-brand-cream/60 hidden sm:block truncate max-w-[200px] md:max-w-none">
               {userEmail}
             </span>
-            <form action={signOut}>
-              <Button type="submit" variant="ghost" className="rounded-full text-sm font-semibold text-brand-purple/60 dark:text-brand-cream/60 shrink-0">
-                <LogOut className="h-4 w-4 mr-2" /> Sign Out
-              </Button>
-            </form>
+            <SignOutButton />
           </div>
         </div>
       </header>
@@ -275,24 +398,41 @@ export function ParentDashboardClient({
           </div>
           <p className="text-sm text-brand-purple/60 dark:text-brand-cream/60">
             Topics suggested by Vision Vee or your child require your approval before they appear in their learning path.
+            Review the full lesson and quiz first, then approve or decline.
           </p>
           {pendingTopics.length === 0 ? (
             <p className="text-sm text-brand-purple/45 dark:text-brand-cream/45 italic">No topics awaiting approval.</p>
           ) : (
-            pendingTopics.map((t) => (
+            pendingTopics.map((t) => {
+              const isExpanded = expandedTopicId === t.id;
+              return (
               <div key={t.id} className="flex flex-col gap-4 p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
                 <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
                   <div className="flex-1">
-                    <div className="font-semibold text-sm">{t.title}</div>
-                    <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
-                    <div className="text-[10px] uppercase tracking-wider text-brand-purple/40 mt-2">
+                    <div className="font-semibold text-sm text-brand-purple dark:text-brand-cream">{t.title}</div>
+                    <div className="text-xs text-brand-purple/70 dark:text-brand-cream/80 mt-1 leading-relaxed line-clamp-2">{t.description}</div>
+                    <div className="text-[10px] uppercase tracking-wider text-brand-purple/55 dark:text-brand-cream/65 mt-2">
                       For {t.child_name} · via {t.created_by === 'vision_vee' ? 'Vision Vee' : t.created_by}
                       {t.content_status === 'generating' && ' · Generating lesson…'}
+                      {t.content_status === 'failed' && ' · Lesson needs regenerate'}
                       {t.content_status === 'ready' && t.badge_name && ` · Badge: ${t.badge_name}`}
                     </div>
                   </div>
-                  <div className="flex gap-2 shrink-0">
-                    <Button size="sm" onClick={() => handleApproveTopic(t.id)} disabled={pending || t.content_status === 'generating'} className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700">
+                  <div className="flex flex-wrap gap-2 shrink-0">
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setExpandedTopicId(isExpanded ? null : t.id)}
+                      className="rounded-full border-brand-gold/30 text-brand-purple dark:text-brand-cream"
+                    >
+                      {isExpanded ? (
+                        <><ChevronUp className="h-3.5 w-3.5 mr-1.5" /> Close preview</>
+                      ) : (
+                        <><Eye className="h-3.5 w-3.5 mr-1.5" /> View full topic</>
+                      )}
+                    </Button>
+                    <Button size="sm" onClick={() => handleApproveTopic(t.id)} disabled={pending || t.content_status === 'generating' || t.content_status === 'failed'} className="rounded-full bg-emerald-600 text-white hover:bg-emerald-700">
                       Approve
                     </Button>
                     <Button size="sm" variant="outline" onClick={() => handleRejectTopic(t.id)} disabled={pending} className="rounded-full">
@@ -300,28 +440,16 @@ export function ParentDashboardClient({
                     </Button>
                   </div>
                 </div>
-                {t.content_status === 'ready' && t.lesson_content && (
-                  <div className="rounded-xl border border-brand-purple/10 bg-brand-surface dark:bg-brand-purple-dark/50 p-4 space-y-3 text-sm">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Preview — Vision Vee generated</p>
-                    {t.lesson_content.introduction && (
-                      <p className="text-brand-purple/70 dark:text-brand-cream/70 leading-relaxed">{t.lesson_content.introduction}</p>
-                    )}
-                    {t.lesson_content.fun_facts && t.lesson_content.fun_facts.length > 0 && (
-                      <ul className="space-y-1.5">
-                        {t.lesson_content.fun_facts.slice(0, 2).map((fact, i) => (
-                          <li key={i} className="text-xs text-brand-purple/60 dark:text-brand-cream/60 flex gap-2">
-                            <span className="text-brand-gold">✦</span> {fact}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                    {t.badge_name && (
-                      <p className="text-xs font-medium text-brand-gold">Quiz badge: {t.badge_name}</p>
-                    )}
-                  </div>
+                {isExpanded && (
+                  <PendingTopicReviewPanel
+                    topic={t}
+                    regenerating={regeneratingTopicId === t.id}
+                    onRegenerate={() => handleRegenerateTopic(t.id)}
+                  />
                 )}
               </div>
-            ))
+            );
+            })
           )}
         </section>
 
@@ -341,8 +469,8 @@ export function ParentDashboardClient({
           {settings.customTopics.map((t) => (
             <div key={t.id} className="flex items-start justify-between p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
               <div>
-                <div className="font-semibold text-sm">{t.title}</div>
-                <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
+                <div className="font-semibold text-sm text-brand-purple dark:text-brand-cream">{t.title}</div>
+                <div className="text-xs text-brand-purple/70 dark:text-brand-cream/85 mt-1 leading-relaxed">{t.description}</div>
                 {t.badgeName && (
                   <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-2">Badge: {t.badgeName}</div>
                 )}
@@ -352,7 +480,7 @@ export function ParentDashboardClient({
                   </Link>
                 )}
               </div>
-              <button type="button" onClick={() => handleRemoveCustom(t.id)} className="text-brand-purple/40 hover:text-red-500 p-1">
+              <button type="button" onClick={() => handleRemoveCustom(t.id)} className="text-brand-purple/40 dark:text-brand-cream/50 hover:text-red-500 dark:hover:text-red-400 p-1">
                 <Trash2 className="h-4 w-4" />
               </button>
             </div>
@@ -362,7 +490,7 @@ export function ParentDashboardClient({
         <section className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 space-y-4">
           <h2 className="text-xl font-heading font-bold">Link Child Account</h2>
           <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55">
-            Enter your child&apos;s registered email. Your curriculum settings will sync to their account automatically.
+            Children who entered your email at signup are linked automatically. You can also enter your child&apos;s registered email below to link manually and sync curriculum settings.
           </p>
           {linkedChildren.length > 0 && (
             <div className="space-y-2">

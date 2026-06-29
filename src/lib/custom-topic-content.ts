@@ -6,6 +6,7 @@ export interface CustomTopicLessonContent {
   introduction: string
   main_lesson: string
   fun_facts: string[]
+  story_label?: string
   examples?: { type: string; content: string }[]
 }
 
@@ -21,6 +22,8 @@ export interface CustomTopicRow {
   lesson_content: CustomTopicLessonContent | null
   quiz_content: QuizQuestion[] | null
   badge_name: string | null
+  illustration_url: string | null
+  illustration_prompt: string | null
   generated_at: string | null
   created_at: string
 }

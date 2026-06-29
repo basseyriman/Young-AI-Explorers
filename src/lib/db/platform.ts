@@ -4,6 +4,8 @@ import { DEFAULT_CURRICULUM, BOOK_LESSONS } from '@/data/curriculum'
 import { ALL_COUNTRIES, mergeCountryLists } from '@/data/countries'
 import type { CustomTopicRow } from '@/lib/custom-topic-content'
 import { generateTopicContent } from '@/lib/vision-vee/generate-topic-content'
+import { generateTopicIllustration } from '@/lib/vision-vee/generate-topic-illustration'
+import type { DashboardRole } from '@/lib/auth/dashboard-access'
 
 export interface CountryRow {
   code: string
@@ -53,6 +55,7 @@ export interface PendingCustomTopicRow {
   content_status: string | null
   badge_name: string | null
   lesson_content: { introduction?: string; main_lesson?: string; fun_facts?: string[] } | null
+  quiz_content: { question: string; options: string[]; answer: string }[] | null
 }
 
 export async function getCountries(): Promise<CountryRow[]> {
@@ -174,6 +177,55 @@ export async function syncCurriculumToLinkedChildren(parentId: string, settings:
   }
 }
 
+/** Link parent ↔ student when student.parent_email matches parent account email. */
+export async function syncFamilyLinksByEmail(userId: string): Promise<void> {
+  const supabase = await createClient()
+  const { error } = await supabase.rpc('sync_family_links_for_user', { p_user_id: userId })
+  if (!error) return
+
+  const admin = (await import('@/utils/supabase/admin')).createAdminClient()
+  if (!admin) return
+
+  const { data: profile } = await admin
+    .from('profiles')
+    .select('role, email, parent_email')
+    .eq('id', userId)
+    .maybeSingle()
+  if (!profile) return
+
+  if (profile.role === 'student' && profile.parent_email?.trim()) {
+    const parentEmail = profile.parent_email.trim().toLowerCase()
+    const { data: parents } = await admin
+      .from('profiles')
+      .select('id')
+      .in('role', ['parent', 'admin'])
+      .ilike('email', parentEmail)
+    for (const parent of parents ?? []) {
+      await admin.from('family_links').upsert(
+        { parent_id: parent.id, child_id: userId },
+        { onConflict: 'parent_id,child_id', ignoreDuplicates: true }
+      )
+    }
+    return
+  }
+
+  if ((profile.role === 'parent' || profile.role === 'admin') && profile.email?.trim()) {
+    const parentEmail = profile.email.trim().toLowerCase()
+    const { data: students } = await admin
+      .from('profiles')
+      .select('id, parent_email')
+      .eq('role', 'student')
+    for (const student of students ?? []) {
+      if (student.parent_email?.trim().toLowerCase() === parentEmail) {
+        await admin.from('family_links').upsert(
+          { parent_id: userId, child_id: student.id },
+          { onConflict: 'parent_id,child_id', ignoreDuplicates: true }
+        )
+      }
+    }
+  }
+}
+
 export async function getPendingCustomTopicsForParent(parentId: string): Promise<PendingCustomTopicRow[]> {
   const supabase = await createClient()
   const children = await getLinkedChildren(parentId)
@@ -182,7 +234,7 @@ export async function getPendingCustomTopicsForParent(parentId: string): Promise
 
   const { data } = await supabase
     .from('custom_topics')
-    .select('id, user_id, title, description, created_by, created_at, content_status, badge_name, lesson_content')
+    .select('id, user_id, title, description, created_by, created_at, content_status, badge_name, lesson_content, quiz_content')
     .in('user_id', childIds)
     .eq('is_approved', false)
     .order('created_at', { ascending: false })
@@ -192,6 +244,92 @@ export async function getPendingCustomTopicsForParent(parentId: string): Promise
     ...t,
     child_name: nameById.get(t.user_id) ?? null,
   })) as PendingCustomTopicRow[]
+}
+
+function mapCustomTopicRow(t: {
+  id: string
+  title: string
+  description: string | null
+  created_by: string
+  created_at: string
+  world_id?: string | null
+  content_status?: string | null
+  badge_name?: string | null
+  illustration_url?: string | null
+}): CustomTopic {
+  return {
+    id: t.id,
+    title: t.title,
+    description: t.description ?? '',
+    createdBy: t.created_by as CustomTopic['createdBy'],
+    createdAt: t.created_at,
+    worldId: t.world_id ?? undefined,
+    contentStatus: (t.content_status as CustomTopic['contentStatus']) ?? undefined,
+    badgeName: t.badge_name ?? undefined,
+    illustrationUrl: t.illustration_url ?? undefined,
+  }
+}
+
+export async function getApprovedCustomTopicsForLinkedChildren(parentId: string): Promise<CustomTopic[]> {
+  const supabase = await createClient()
+  const children = await getLinkedChildren(parentId)
+  const childIds = children.map((c) => c.child_id)
+  if (!childIds.length) return []
+
+  const { data } = await supabase
+    .from('custom_topics')
+    .select('id, title, description, created_by, created_at, world_id, content_status, badge_name, illustration_url')
+    .in('user_id', childIds)
+    .eq('is_approved', true)
+    .order('created_at', { ascending: false })
+
+  return (data ?? []).map(mapCustomTopicRow)
+}
+
+export async function getCustomTopicForViewer(
+  topicId: string,
+  viewerId: string,
+  role: DashboardRole,
+  options?: { requireApproved?: boolean }
+): Promise<CustomTopicRow | null> {
+  const requireApproved = options?.requireApproved ?? true
+  const supabase = await createClient()
+
+  let query = supabase.from('custom_topics').select('*').eq('id', topicId)
+  if (requireApproved) {
+    query = query.eq('is_approved', true)
+  }
+  const { data: topic } = await query.maybeSingle()
+
+  const authorize = async (row: CustomTopicRow): Promise<CustomTopicRow | null> => {
+    if (role === 'student') {
+      return row.user_id === viewerId ? row : null
+    }
+    if (role === 'parent') {
+      if (row.user_id === viewerId) return row
+      return (await parentCanManageChild(viewerId, row.user_id)) ? row : null
+    }
+    if (role === 'teacher' || role === 'admin') {
+      return row
+    }
+    return null
+  }
+
+  if (topic) {
+    return authorize(topic as CustomTopicRow)
+  }
+
+  const admin = (await import('@/utils/supabase/admin')).createAdminClient()
+  if (!admin || (role !== 'parent' && role !== 'admin')) return null
+
+  let adminQuery = admin.from('custom_topics').select('*').eq('id', topicId)
+  if (requireApproved) {
+    adminQuery = adminQuery.eq('is_approved', true)
+  }
+  const { data: adminTopic } = await adminQuery.maybeSingle()
+  if (!adminTopic) return null
+
+  return authorize(adminTopic as CustomTopicRow)
 }
 
 export async function getProfile(userId: string): Promise<ProfileRow | null> {
@@ -230,6 +368,7 @@ export async function getCurriculumFromDb(userId: string): Promise<CurriculumSet
       worldId: t.world_id ?? undefined,
       contentStatus: t.content_status ?? undefined,
       badgeName: t.badge_name ?? undefined,
+      illustrationUrl: t.illustration_url ?? undefined,
     })),
     sharingLevel: (settings?.sharing_level ?? profile?.sharing_level ?? 'region') as CurriculumSettings['sharingLevel'],
     allowMatchQuiz: settings?.allow_match_quiz ?? profile?.allow_match_quiz ?? true,
@@ -293,6 +432,8 @@ export async function ensureOwnProfile(): Promise<{ ok: true } | { error: string
     allow_match_quiz: role !== 'student',
   })
 
+  await syncFamilyLinksByEmail(user.id)
+
   return { ok: true }
 }
 
@@ -324,16 +465,7 @@ export async function resolveCustomTopicOwnerId(actorId: string, role: string): 
 }
 
 export async function getCustomTopicById(topicId: string, userId: string): Promise<CustomTopicRow | null> {
-  const supabase = await createClient()
-  const { data } = await supabase
-    .from('custom_topics')
-    .select('*')
-    .eq('id', topicId)
-    .eq('user_id', userId)
-    .eq('is_approved', true)
-    .maybeSingle()
-
-  return (data as CustomTopicRow | null) ?? null
+  return getCustomTopicForViewer(topicId, userId, 'student', { requireApproved: true })
 }
 
 export async function generateCustomTopicContent(topicId: string): Promise<{ error?: string }> {
@@ -343,23 +475,38 @@ export async function generateCustomTopicContent(topicId: string): Promise<{ err
 
   await supabase.from('custom_topics').update({ content_status: 'generating' }).eq('id', topicId)
 
-  try {
-    const generated = await generateTopicContent(topic.title, topic.description ?? topic.title)
-    const { error } = await supabase.from('custom_topics').update({
-      lesson_content: generated.lesson,
-      quiz_content: generated.quiz,
-      badge_name: generated.badgeName,
-      content_status: 'ready',
-      generated_at: new Date().toISOString(),
-    }).eq('id', topicId)
+  const generated = await generateTopicContent(topic.title, topic.description ?? topic.title)
 
-    if (error) return { error: error.message }
-    return {}
-  } catch (e) {
-    const message = e instanceof Error ? e.message : 'Generation failed'
-    await supabase.from('custom_topics').update({ content_status: 'failed' }).eq('id', topicId)
-    return { error: message }
+  const illustration = await generateTopicIllustration(
+    topicId,
+    topic.title,
+    topic.description ?? topic.title,
+    generated.lesson.introduction
+  )
+
+  const payload = {
+    lesson_content: generated.lesson,
+    quiz_content: generated.quiz,
+    badge_name: generated.badgeName,
+    illustration_url: illustration.illustrationUrl,
+    illustration_prompt: illustration.illustrationPrompt,
+    content_status: 'ready' as const,
+    generated_at: new Date().toISOString(),
   }
+
+  const { error } = await supabase.from('custom_topics').update(payload).eq('id', topicId)
+
+  if (error) {
+    const admin = (await import('@/utils/supabase/admin')).createAdminClient()
+    if (admin) {
+      const { error: adminErr } = await admin.from('custom_topics').update(payload).eq('id', topicId)
+      if (!adminErr) return {}
+    }
+    await supabase.from('custom_topics').update({ content_status: 'failed' }).eq('id', topicId)
+    return { error: error.message }
+  }
+
+  return {}
 }
 
 export async function addCustomTopicToDb(
@@ -386,6 +533,22 @@ export async function addCustomTopicToDb(
   }
 
   return { success: true, topic: data }
+}
+
+export async function regenerateCustomTopicContent(parentId: string, topicId: string) {
+  const supabase = await createClient()
+  const { data: topic } = await supabase
+    .from('custom_topics')
+    .select('user_id')
+    .eq('id', topicId)
+    .single()
+
+  if (!topic) return { error: 'Topic not found' }
+  if (!(await parentCanManageChild(parentId, topic.user_id))) {
+    return { error: 'Not authorized to regenerate this topic' }
+  }
+
+  return generateCustomTopicContent(topicId)
 }
 
 export async function approveCustomTopic(parentId: string, topicId: string) {

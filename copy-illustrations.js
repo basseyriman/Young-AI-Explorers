@@ -1,10 +1,18 @@
+/**
+ * Copies printed-book illustrations from YoungAIExplorersBook into platform public/assets.
+ * Run: npm run copy-illustrations
+ */
 const fs = require('fs');
 const path = require('path');
 
-const srcDir = 'C:\\Users\\basse\\Documents\\RimanTech\\YoungAIExplorersBook\\assets\\Young_AI_Explorers_Illustrations';
-const destDir = 'C:\\Users\\basse\\Documents\\RimanTech\\LearnAi\\young-ai-explorers\\public\\assets';
+const bookAssetsRoot = path.join(
+  process.env.BOOK_ASSETS_DIR ||
+    'C:\\Users\\basse\\Documents\\RimanTech\\YoungAIExplorersBook\\assets'
+);
+const bookIllustrationsDir = path.join(bookAssetsRoot, 'Young_AI_Explorers_Illustrations');
+const destDir = path.join(__dirname, 'public', 'assets');
 
-const mapping = {
+const chapterMapping = {
   'computer_vision_illustration_1778768624464.png': 'computer_vision.png',
   'speech_recognition_illustration_1778768892651.png': 'speech_recognition.png',
   'ai_translation_illustration_1778768907335.png': 'ai_translation.png',
@@ -41,17 +49,54 @@ const mapping = {
   'ai_deep_learning_illustration_1778794470314.png': 'deep_learning.png',
   'ai_chatbots_illustration_1778794486913.png': 'ai_chatbots.png',
   'ai_emergency_illustration_1778794502593.png': 'ai_emergency_services.png',
-  'ai_archaeology_illustration_1778794531818.png': 'ai_archaeology.png'
+  'ai_archaeology_illustration_1778794531818.png': 'ai_archaeology.png',
 };
 
-Object.entries(mapping).forEach(([srcName, destName]) => {
-  const srcFile = path.join(srcDir, srcName);
+const extraCopies = [
+  { src: 'cover_illustration.png', dest: 'cover_illustration.png' },
+  { src: 'young-ai-explorers-book-cutout.png', dest: 'book_cover_amazon.png' },
+  { src: 'mascot_iconic_transparent.png', dest: 'vision_vee_mascot.png' },
+];
+
+function resolveSource(filename) {
+  const inSubfolder = path.join(bookIllustrationsDir, filename);
+  if (fs.existsSync(inSubfolder)) return inSubfolder;
+  const inRoot = path.join(bookAssetsRoot, filename);
+  if (fs.existsSync(inRoot)) return inRoot;
+  return null;
+}
+
+if (!fs.existsSync(destDir)) {
+  fs.mkdirSync(destDir, { recursive: true });
+}
+
+let copied = 0;
+let missing = 0;
+
+Object.entries(chapterMapping).forEach(([srcName, destName]) => {
+  const srcFile = resolveSource(srcName);
   const destFile = path.join(destDir, destName);
-  
-  if (fs.existsSync(srcFile)) {
+  if (srcFile) {
     fs.copyFileSync(srcFile, destFile);
-    console.log(`Copied ${srcName} to ${destName}`);
+    console.log(`✓ ${destName}`);
+    copied += 1;
   } else {
-    console.error(`Source file not found: ${srcFile}`);
+    console.error(`✗ missing: ${srcName}`);
+    missing += 1;
   }
 });
+
+extraCopies.forEach(({ src, dest }) => {
+  const srcFile = resolveSource(src) ?? path.join(destDir, src);
+  const destFile = path.join(destDir, dest);
+  if (srcFile) {
+    fs.copyFileSync(srcFile, destFile);
+    console.log(`✓ ${dest}`);
+    copied += 1;
+  } else {
+    console.error(`✗ missing: ${src}`);
+    missing += 1;
+  }
+});
+
+console.log(`\nDone: ${copied} copied, ${missing} missing.`);

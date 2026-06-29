@@ -112,7 +112,7 @@ interface LearningJourneyProps {
   completedLessonIds?: (number | string)[];
   activeLessonId?: number | string;
   disabledTopicIds?: (number | string)[];
-  customTopics?: { id: string; title: string; description: string; badgeName?: string; contentStatus?: string }[];
+  customTopics?: { id: string; title: string; description: string; badgeName?: string; contentStatus?: string; illustrationUrl?: string }[];
 }
 
 export function LearningJourney({
@@ -160,8 +160,13 @@ export function LearningJourney({
                   } ${!isReady ? 'opacity-60 pointer-events-none' : ''}`}
                 >
                   <div className="flex items-center gap-4 flex-1">
-                    <div className="shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-brand-purple/15 to-brand-gold/15 flex items-center justify-center text-xl border border-brand-gold/20">
-                      ✨
+                    <div className="shrink-0 h-12 w-12 rounded-xl overflow-hidden border border-brand-gold/20 bg-gradient-to-br from-brand-purple/15 to-brand-gold/15 flex items-center justify-center text-xl">
+                      {topic.illustrationUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={topic.illustrationUrl} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <span aria-hidden>✨</span>
+                      )}
                     </div>
                     <div>
                       <div className="font-bold text-sm md:text-base text-brand-purple dark:text-brand-cream flex items-center gap-2 flex-wrap">
@@ -171,7 +176,7 @@ export function LearningJourney({
                         {topic.title}
                         {isCompleted && <CheckCircle2 className="h-4 w-4 text-emerald-500" />}
                       </div>
-                      <div className="text-xs text-brand-purple/50 dark:text-brand-cream/50 mt-1 max-w-xl font-medium">
+                      <div className="text-xs text-brand-purple/70 dark:text-brand-cream/85 mt-1 max-w-xl font-medium leading-relaxed">
                         {topic.description}
                         {topic.badgeName && isReady && (
                           <span className="block mt-1 text-brand-gold">Earn the {topic.badgeName} badge</span>

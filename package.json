@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "copy-illustrations": "node copy-illustrations.js",
+    "split-cover": "python scripts/split-cover-spread.py",
+    "build-book-sample": "node scripts/build-book-sample.js"
   },
   "dependencies": {
     "@ai-sdk/groq": "^3.0.42",

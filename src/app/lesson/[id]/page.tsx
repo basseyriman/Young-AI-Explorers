@@ -4,10 +4,13 @@ import Link from 'next/link'
 import { ArrowLeft, ArrowRight, Star, Lock } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Logo } from '@/components/Logo'
-import { ALL_LESSONS, type LessonData } from '@/data/lessons'
+import { ALL_LESSONS, type LessonData, type QuizQuestion } from '@/data/lessons'
 import { requireTopicAccess, getUserRoleFromProfile } from '@/lib/curriculum-access'
-import { getCustomTopicById } from '@/lib/db/platform'
+import { getCustomTopicForViewer } from '@/lib/db/platform'
 import { customTopicToLessonView, isCustomTopicId } from '@/lib/custom-topic-content'
+import { dashboardPathForRole } from '@/lib/auth/dashboard-access'
+import { BOOK_COVER_ILLUSTRATION, bookIllustrationFilename } from '@/data/book-illustrations'
+import { BookStyleCustomLesson } from '@/components/BookStyleCustomLesson'
 import type { TopicId } from '@/data/curriculum'
 
 type LessonView = LessonData & { id: number | string }
@@ -31,17 +34,24 @@ export default async function LessonPage({
   const topicId: TopicId = id === 'intro' ? 'intro' : isCustomTopicId(id) ? id : parseInt(id, 10)
   const role = await getUserRoleFromProfile(user.id, user.user_metadata)
   await requireTopicAccess(user.id, topicId, role, user.user_metadata)
+  const dashboardHref = dashboardPathForRole(role)
 
   let lesson: LessonView | null = null
   let isCustomTopic = false
   let customBadgeName: string | null = null
+  let customIllustrationUrl: string | null = null
+  let customStoryLabel: string | null = null
+  let customQuizPreview: QuizQuestion | null = null
 
   if (isCustomTopicId(id)) {
-    const customRow = await getCustomTopicById(id, user.id)
+    const customRow = await getCustomTopicForViewer(id, user.id, role)
     if (customRow?.content_status === 'ready') {
       lesson = customTopicToLessonView(customRow)
       isCustomTopic = true
       customBadgeName = customRow.badge_name
+      customIllustrationUrl = customRow.illustration_url
+      customStoryLabel = customRow.lesson_content?.story_label ?? null
+      customQuizPreview = customRow.quiz_content?.[0] ?? null
     }
   } else if (id === 'intro') {
     lesson = {
@@ -67,7 +77,7 @@ export default async function LessonPage({
         <div className="p-8 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 text-center max-w-md shadow-lg">
           <h1 className="text-2xl font-bold mb-2 text-brand-purple dark:text-brand-cream">Lesson Not Found</h1>
           <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6">We couldn&apos;t find lesson #{id}.</p>
-          <Link href="/dashboard/student">
+          <Link href={dashboardHref}>
             <Button className="bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full px-8">Return to Dashboard</Button>
           </Link>
         </div>
@@ -86,53 +96,11 @@ export default async function LessonPage({
     console.error('Error parsing JSON fields', e)
   }
 
-  // Image Mapping
-  const imageMap = [
-    "", // 0
-    "computer_vision.png", // 1
-    "speech_recognition.png", // 2
-    "ai_translation.png", // 3
-    "ai_decision_making.png", // 4
-    "ai_healthcare.png", // 5
-    "ai_games.png", // 6
-    "self_driving_cars.png", // 7
-    "ai_space.png", // 8
-    "neural_networks.png", // 9
-    "ai_environment.png", // 10
-    "machine_learning.png", // 11
-    "nlp.png", // 12
-    "robotics.png", // 13
-    "recommendation_systems.png", // 14
-    "facial_recognition.png", // 15
-    "virtual_assistants.png", // 16
-    "ai_art.png", // 17
-    "ai_music.png", // 18
-    "ai_sports.png", // 19
-    "ai_agriculture.png", // 20
-    "ai_weather.png", // 21
-    "ai_education.png", // 22
-    "ai_transportation.png", // 23
-    "ai_banking.png", // 24
-    "ai_shopping.png", // 25
-    "ai_social_media.png", // 26
-    "ai_ethics.png", // 27
-    "ai_manufacturing.png", // 28
-    "ai_cybersecurity.png", // 29
-    "ai_photography.png", // 30
-    "ai_food.png", // 31
-    "ai_fashion.png", // 32
-    "ai_movies.png", // 33
-    "deep_learning.png", // 34
-    "ai_chatbots.png", // 35
-    "ai_emergency_services.png", // 36
-    "ai_archaeology.png" // 37
-  ];
-
   const lessonImage = isCustomTopic
     ? null
     : lesson.topic_number === 0
-      ? 'cover_illustration.png'
-      : imageMap[lesson.topic_number] || null
+      ? BOOK_COVER_ILLUSTRATION
+      : bookIllustrationFilename(lesson.topic_number)
 
   const chapterLabel = isCustomTopic
     ? 'Vision Vee Topic'
@@ -149,7 +117,7 @@ export default async function LessonPage({
       <nav className="relative z-50 flex items-center justify-between border-b border-brand-purple/10 dark:border-brand-gold/10 bg-brand-surface/90 dark:bg-brand-purple-dark/80 px-6 py-4 backdrop-blur-xl">
         <div className="flex items-center gap-6">
           <Link 
-            href="/dashboard/student"
+            href={dashboardHref}
             className="flex items-center gap-2 text-sm font-semibold text-brand-purple/60 dark:text-brand-cream/60 transition-colors hover:text-brand-gold"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -189,11 +157,35 @@ export default async function LessonPage({
             <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 max-w-lg mx-auto mb-8 font-medium leading-relaxed">
               {lesson.introduction}
             </p>
-            <Link href="/dashboard/student">
+            <Link href={dashboardHref}>
               <Button variant="outline" className="border-2 border-brand-purple/15 bg-brand-surface text-brand-purple hover:bg-brand-warm rounded-full px-8 h-12 font-bold shadow-sm transition-all duration-300 hover:-translate-y-1">
                 Explore Available Lessons
               </Button>
             </Link>
+          </div>
+        ) : isCustomTopic ? (
+          <div className="space-y-8">
+            <BookStyleCustomLesson
+              title={lesson.title}
+              storyLabel={customStoryLabel}
+              introduction={lesson.introduction}
+              mainLesson={lesson.main_lesson}
+              funFacts={funFacts}
+              illustrationUrl={customIllustrationUrl}
+              quizPreview={customQuizPreview}
+              badgeName={customBadgeName}
+            />
+            <div className="mx-auto w-full max-w-[210mm] bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 p-8 md:p-10 rounded-2xl shadow-sm text-center">
+              <h3 className="text-xl font-semibold text-brand-purple dark:text-brand-cream mb-3 tracking-tight">Ready to test your knowledge?</h3>
+              <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6 text-base">
+                Show what you&apos;ve learned and earn the {customBadgeName ? `"${customBadgeName}"` : 'new'} badge.
+              </p>
+              <Link href={`/quiz/${id}`}>
+                <Button size="lg" className="bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark hover:opacity-90 h-12 px-8 text-base rounded-full font-semibold transition-opacity">
+                  Take the Quiz <ArrowRight className="ml-2 h-5 w-5" />
+                </Button>
+              </Link>
+            </div>
           </div>
         ) : (
           <div className="space-y-12">
@@ -209,15 +201,7 @@ export default async function LessonPage({
             </div>
 
             {/* Main Illustration Hero */}
-            {isCustomTopic ? (
-              <div className="relative w-full max-w-4xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-brand-purple/10 border-4 border-brand-gold/25 bg-gradient-to-br from-brand-purple/10 via-brand-warm to-brand-gold/10 aspect-[5/4] md:aspect-[4/3] flex flex-col items-center justify-center p-10 text-center">
-                <div className="text-6xl mb-4" aria-hidden>✨</div>
-                <p className="text-sm font-semibold uppercase tracking-widest text-brand-gold mb-2">Vision Vee Custom Topic</p>
-                <p className="text-lg text-brand-purple/70 dark:text-brand-cream/70 max-w-md">
-                  {customBadgeName ? `Earn the "${customBadgeName}" badge when you pass the quiz.` : 'Illustration coming soon — your lesson is ready to explore!'}
-                </p>
-              </div>
-            ) : lessonImage ? (
+            {lessonImage ? (
               <div className="relative w-full max-w-4xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-brand-purple/10 border-4 border-brand-surface group bg-brand-warm aspect-[5/4] md:aspect-[4/3]">
                 <img 
                   src={`/assets/${lessonImage}`} 

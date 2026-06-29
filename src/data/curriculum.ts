@@ -62,6 +62,7 @@ export interface CustomTopic {
   worldId?: string;
   contentStatus?: "pending" | "generating" | "ready" | "failed";
   badgeName?: string;
+  illustrationUrl?: string;
 }
 
 export interface CurriculumSettings {

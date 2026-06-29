@@ -12,6 +12,7 @@ import { NavBar } from "@/components/NavBar";
 import { Logo } from "@/components/Logo";
 import { TrustAndStandards } from "@/components/TrustAndStandards";
 import { RegionalCommunities } from "@/components/RegionalCommunities";
+import { SiteLink } from "@/components/SiteLink";
 import { HERO_STATS, TOPIC_MARKETING, EXPLORE_TOPICS_CTA, EXPLORER_MAP_LABEL, BOOK_TAGLINE } from "@/data/curriculum";
 import { LEGAL_OWNER } from "@/data/legal";
 
@@ -62,18 +63,22 @@ export default function Home() {
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start mb-16">
-              <Link
+              <SiteLink
                 href="/signup"
                 className="w-full sm:w-auto px-8 py-4 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-[0_8px_30px_rgba(74,45,110,0.2)] dark:shadow-[0_8px_30px_rgba(201,160,78,0.15)]"
               >
                 Start Learning <ArrowRight className="h-5 w-5" />
-              </Link>
-              <Link
-                href="#topics"
+              </SiteLink>
+              <button
+                type="button"
+                onClick={() => {
+                  setExplorationMode("grid");
+                  document.getElementById("topics")?.scrollIntoView({ behavior: "smooth", block: "start" });
+                }}
                 className="w-full sm:w-auto px-8 py-4 bg-transparent border border-brand-purple/20 dark:border-brand-gold/25 text-brand-purple dark:text-brand-cream rounded-full font-semibold hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center"
               >
                 {EXPLORE_TOPICS_CTA}
-              </Link>
+              </button>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-brand-purple/10 dark:border-brand-gold/10">
@@ -206,18 +211,16 @@ export default function Home() {
 
       {/* THE BOOK */}
       <section id="book" className="py-28 relative z-10 border-y border-brand-purple/8 dark:border-brand-gold/8 bg-brand-surface/40 dark:bg-brand-purple-dark/20">
-        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center gap-16">
-          <div className="flex-1 w-full flex justify-center">
+        <div className="container mx-auto px-6 flex flex-col md:flex-row items-center md:items-center gap-12 md:gap-16 lg:gap-20">
+          <div className="flex-1 w-full flex justify-center md:justify-end md:pr-4 lg:pr-8 max-w-xl md:max-w-none">
             <Book3D />
           </div>
-          <div className="flex-1 text-center md:text-left">
-            <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
-              <div className="flex gap-0.5">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="w-3.5 h-3.5 rounded-sm bg-brand-gold" />
-                ))}
-              </div>
-              <span className="text-brand-purple/50 dark:text-brand-cream/50 text-sm font-medium">100+ Amazon Reviews</span>
+          <div className="flex-1 text-center md:text-left md:pl-2 lg:pl-4">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-4">
+              <span className="bg-brand-gold/15 border border-brand-gold/25 text-brand-gold px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
+                New Release
+              </span>
+              <span className="text-brand-purple/50 dark:text-brand-cream/50 text-sm font-medium">Now on Amazon · Paperback</span>
             </div>
             <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">The Published Book</h2>
             <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-3 font-light">
@@ -241,9 +244,12 @@ export default function Home() {
               >
                 Buy on Amazon <ArrowUpRight className="h-5 w-5" />
               </Link>
-              <Link href="#book" className="w-full sm:w-auto px-8 py-4 text-brand-purple dark:text-brand-cream border border-brand-purple/20 dark:border-brand-gold/20 rounded-full hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center gap-2">
+              <a
+                href="/book-sample/index.html"
+                className="w-full sm:w-auto px-8 py-4 text-brand-purple dark:text-brand-cream border border-brand-purple/20 dark:border-brand-gold/20 rounded-full hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center gap-2"
+              >
                 Read Sample
-              </Link>
+              </a>
             </div>
           </div>
         </div>

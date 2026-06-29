@@ -7,8 +7,9 @@ import { Logo } from '@/components/Logo'
 import QuizClient from './QuizClient'
 import { ALL_LESSONS, ALL_QUIZZES, type LessonData, type QuizQuestion } from '@/data/lessons'
 import { requireTopicAccess, getUserRoleFromProfile } from '@/lib/curriculum-access'
-import { getCustomTopicById } from '@/lib/db/platform'
+import { getCustomTopicForViewer } from '@/lib/db/platform'
 import { isCustomTopicId } from '@/lib/custom-topic-content'
+import { dashboardPathForRole } from '@/lib/auth/dashboard-access'
 import type { TopicId } from '@/data/curriculum'
 
 type LessonView = Pick<LessonData, 'title' | 'topic_number'> & { id: number | string }
@@ -32,20 +33,21 @@ export default async function QuizPage({
   const topicId: TopicId = id === 'intro' ? 'intro' : isCustomTopicId(id) ? id : parseInt(id, 10)
   const role = await getUserRoleFromProfile(user.id, user.user_metadata)
   await requireTopicAccess(user.id, topicId, role, user.user_metadata)
+  const dashboardHref = dashboardPathForRole(role)
 
   let lesson: LessonView | null = null
   let questions: QuizQuestion[] = []
   let badgeName: string | undefined
 
   if (isCustomTopicId(id)) {
-    const customRow = await getCustomTopicById(id, user.id)
+    const customRow = await getCustomTopicForViewer(id, user.id, role)
     if (!customRow || customRow.content_status !== 'ready') {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-brand-gradient dark:bg-brand-gradient-dark">
           <div className="p-8 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 text-center max-w-md shadow-lg">
             <h1 className="text-2xl font-bold mb-2 text-brand-purple dark:text-brand-cream">Quiz Not Ready</h1>
             <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6">Vision Vee is still preparing this topic.</p>
-            <Link href="/dashboard/student">
+            <Link href={dashboardHref}>
               <Button className="bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full px-8">Return to Dashboard</Button>
             </Link>
           </div>
@@ -73,7 +75,7 @@ export default async function QuizPage({
           <div className="p-8 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 text-center max-w-md shadow-lg">
             <h1 className="text-2xl font-bold mb-2 text-brand-purple dark:text-brand-cream">Lesson Not Found</h1>
             <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6">We couldn&apos;t find quiz #{id}.</p>
-            <Link href="/dashboard/student">
+            <Link href={dashboardHref}>
               <Button className="bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full px-8">Return to Dashboard</Button>
             </Link>
           </div>

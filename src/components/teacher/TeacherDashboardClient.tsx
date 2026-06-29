@@ -7,7 +7,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
-import { signOut } from "@/app/dashboard/actions";
+import { SignOutButton } from "@/components/SignOutButton";
 import {
   BOOK_LESSONS,
   TOPIC_MARKETING,
@@ -35,11 +35,7 @@ export function TeacherDashboardClient({ userEmail, userName, countryName, count
               </span>
             )}
             <span className="text-sm text-brand-purple/60 dark:text-brand-cream/60 hidden sm:block">{userEmail}</span>
-            <form action={signOut}>
-              <Button type="submit" variant="ghost" className="rounded-full text-sm font-semibold">
-                <LogOut className="h-4 w-4 mr-2" /> Sign Out
-              </Button>
-            </form>
+            <SignOutButton />
           </div>
         </div>
       </header>

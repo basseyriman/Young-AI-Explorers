@@ -6,6 +6,7 @@ import { useState, useEffect, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
 import { NavWordmark } from "@/components/Logo";
+import { SiteLink } from "@/components/SiteLink";
 
 export function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -53,13 +54,13 @@ export function NavBar() {
 
         <div className="hidden lg:flex items-center gap-1">
           {navLinks.map((link) => (
-            <Link
+            <SiteLink
               key={link.name}
               href={link.href}
               className="px-4 py-2 text-sm font-medium text-brand-purple/70 dark:text-brand-cream/70 hover:text-brand-purple dark:hover:text-brand-cream transition-colors rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5"
             >
               {link.name}
-            </Link>
+            </SiteLink>
           ))}
         </div>
 
@@ -73,18 +74,18 @@ export function NavBar() {
             {mounted && isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           </button>
 
-          <Link
+          <SiteLink
             href="/login"
             className="text-sm font-medium text-brand-purple/70 dark:text-brand-cream/70 hover:text-brand-purple dark:hover:text-brand-cream transition-colors px-4 py-2"
           >
             Sign In
-          </Link>
-          <Link
+          </SiteLink>
+          <SiteLink
             href="/signup"
             className="px-6 py-2.5 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold text-sm rounded-full hover:opacity-90 transition-all shadow-[0_4px_20px_rgba(74,45,110,0.2)] dark:shadow-[0_4px_20px_rgba(201,160,78,0.15)]"
           >
             Start Learning
-          </Link>
+          </SiteLink>
         </div>
 
         <button
@@ -106,14 +107,14 @@ export function NavBar() {
           >
             <div className="flex flex-col px-6 py-6 gap-1">
               {navLinks.map((link) => (
-                <Link
+                <SiteLink
                   key={link.name}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className="text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 hover:text-brand-purple dark:hover:text-brand-cream py-3 px-2 rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors"
                 >
                   {link.name}
-                </Link>
+                </SiteLink>
               ))}
               <hr className="border-brand-purple/10 dark:border-brand-gold/10 my-3" />
               <button
@@ -126,20 +127,20 @@ export function NavBar() {
                 {mounted && isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 {mounted && isDark ? "Light Mode" : "Dark Mode"}
               </button>
-              <Link
+              <SiteLink
                 href="/login"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 py-3 px-2"
               >
                 Sign In
-              </Link>
-              <Link
+              </SiteLink>
+              <SiteLink
                 href="/signup"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-center rounded-full px-6 py-3.5 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold text-base mt-2"
               >
                 Start Learning
-              </Link>
+              </SiteLink>
             </div>
           </motion.div>
         )}

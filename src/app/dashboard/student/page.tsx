@@ -1,13 +1,13 @@
-import { PlayCircle, LogOut, Flame, Medal, Award, Star, Compass, ArrowRight, Globe, Swords } from 'lucide-react'
+import { PlayCircle, Flame, Medal, Award, Star, Compass, ArrowRight, Globe, Swords } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import OpenAIAssistantButton from '@/components/OpenAIAssistantButton'
 import { LearningJourney } from '@/components/LearningJourney'
 import { Logo } from '@/components/Logo'
+import { SignOutButton } from '@/components/SignOutButton'
 import { BOOK_LESSONS, getTotalTopicCount, isTopicEnabled, TOPIC_MARKETING, EXPLORER_MAP_LABEL } from '@/data/curriculum'
 import { getCurriculumFromDb, getUserBadges, getCountries, mergeCurriculumWithFallback, getProfile } from '@/lib/db/platform'
 import { requireRole } from '@/lib/auth/dashboard-access'
-import { signOut } from '@/app/dashboard/actions'
 
 export default async function StudentDashboard() {
   const { user } = await requireRole(['student', 'teacher', 'admin'])
@@ -44,11 +44,7 @@ export default async function StudentDashboard() {
                 {country.flag_emoji} {country.name}
               </span>
             )}
-            <form action={signOut}>
-              <Button type="submit" variant="ghost" className="rounded-full text-sm font-semibold text-brand-purple/60 dark:text-brand-cream/60">
-                <LogOut className="h-4 w-4 mr-2" /> Sign Out
-              </Button>
-            </form>
+            <SignOutButton />
           </div>
         </div>
       </header>
@@ -91,11 +87,11 @@ export default async function StudentDashboard() {
                   return (
                     <div key={t.id} className="p-4 rounded-xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                       <div>
-                        <div className="font-semibold text-sm flex items-center gap-2">
+                        <div className="font-semibold text-sm flex items-center gap-2 text-brand-purple dark:text-brand-cream">
                           {t.title}
                           {isDone && <span className="text-[10px] uppercase text-emerald-600 font-bold">Completed</span>}
                         </div>
-                        <div className="text-xs text-brand-purple/55 mt-1">{t.description}</div>
+                        <div className="text-xs text-brand-purple/70 dark:text-brand-cream/85 mt-1 leading-relaxed">{t.description}</div>
                         {t.badgeName && isReady && (
                           <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-1">Badge: {t.badgeName}</div>
                         )}
@@ -149,30 +145,31 @@ export default async function StudentDashboard() {
                   description: t.description,
                   badgeName: t.badgeName,
                   contentStatus: t.contentStatus,
+                  illustrationUrl: t.illustrationUrl,
                 }))}
               />
             </div>
           </div>
 
           <div className="w-full md:w-80 shrink-0 space-y-4">
-            <h3 className="font-heading font-bold text-lg px-2">Your Progress</h3>
-            <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 text-center">
+            <h3 className="font-heading font-bold text-lg px-2 text-brand-purple dark:text-brand-cream">Your Progress</h3>
+            <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 text-center">
               <div className="text-4xl font-bold text-gradient mb-1">{progressPct}%</div>
-              <div className="text-sm text-brand-purple/50">{completedCount} of {totalTopics} enabled · unlimited with custom topics</div>
+              <div className="text-sm text-brand-purple/50 dark:text-brand-cream/65">{completedCount} of {totalTopics} enabled · unlimited with custom topics</div>
             </div>
             {[
               { icon: Flame, label: 'Streak', value: '—', color: 'text-orange-500' },
               { icon: Medal, label: 'Badges', value: `${completedCount}/${totalTopics}+`, color: 'text-brand-gold' },
               { icon: Star, label: 'XP', value: String(completedCount * 120), color: 'text-brand-purple dark:text-brand-gold' },
-              { icon: Award, label: 'Certificates', value: String(Math.floor(completedCount / 6)), color: 'text-emerald-600' },
+              { icon: Award, label: 'Certificates', value: String(Math.floor(completedCount / 6)), color: 'text-emerald-600 dark:text-emerald-400' },
             ].map(({ icon: Icon, label, value, color }) => (
-              <div key={label} className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-brand-purple/5 flex items-center justify-center">
+              <div key={label} className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 flex items-center gap-4">
+                <div className="w-12 h-12 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/10 flex items-center justify-center">
                   <Icon className={`h-6 w-6 ${color}`} strokeWidth={1.5} />
                 </div>
                 <div>
-                  <div className="text-xs text-brand-purple/50">{label}</div>
-                  <div className="text-xl font-bold">{value}</div>
+                  <div className="text-xs font-medium text-brand-purple/50 dark:text-brand-cream/65">{label}</div>
+                  <div className="text-xl font-bold text-brand-purple dark:text-brand-cream">{value}</div>
                 </div>
               </div>
             ))}

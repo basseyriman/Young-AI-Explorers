@@ -2,16 +2,20 @@
 
 import { useChat } from '@ai-sdk/react';
 import { DefaultChatTransport } from 'ai';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useTransition } from 'react';
 import { Send, User, Mic, ChevronUp, Sparkles, Loader2, CheckCircle2 } from 'lucide-react';
+import Image from 'next/image';
+import { VISION_VEE_MASCOT } from '@/data/brand-assets';
 import { parseTopicProposalFromText, stripTopicProposalBlock } from '@/lib/custom-topic-content';
-import { createCustomTopicViaVee } from '@/app/dashboard/parent/actions';
+import { createClient } from '@/utils/supabase/client';
+import { visionVeeWelcomeLine } from '@/lib/vision-vee/system-prompt';
+import type { DashboardRole } from '@/lib/auth/dashboard-access';
 
 function VeeAvatar({ size = "md" }: { size?: "sm" | "md" }) {
-  const cls = size === "sm" ? "h-8 w-8 text-[10px]" : "h-12 w-12 text-xs";
+  const cls = size === "sm" ? "h-8 w-8" : "h-12 w-12";
   return (
-    <div className={`${cls} shrink-0 rounded-full bg-brand-purple dark:bg-brand-gold flex items-center justify-center font-bold text-brand-cream dark:text-brand-purple-dark border border-brand-gold/20`}>
-      VV
+    <div className={`${cls} shrink-0 relative rounded-full overflow-hidden bg-brand-gold/10 border border-brand-gold/25`}>
+      <Image src={VISION_VEE_MASCOT} alt="Vision Vee" fill unoptimized className="object-contain p-0.5" />
     </div>
   );
 }
@@ -23,8 +27,11 @@ function messageText(m: { parts?: { type: string; text?: string }[] }): string {
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState('');
+  const [viewerRole, setViewerRole] = useState<DashboardRole | 'guest'>('guest');
   const [topicAddState, setTopicAddState] = useState<Record<string, 'idle' | 'loading' | 'done' | 'error'>>({});
   const [topicAddMessage, setTopicAddMessage] = useState<Record<string, string>>({});
+  const [mounted, setMounted] = useState(false);
+  const [, startTopicTransition] = useTransition();
   const { messages, status, sendMessage, error } = useChat({
     transport: new DefaultChatTransport({ api: '/api/chat' }),
   });
@@ -43,21 +50,24 @@ export default function AIAssistant() {
     sendMessage({ text: prompt });
   };
 
-  const handleAddTopic = async (messageId: string, title: string, description: string) => {
+  const handleAddTopic = (messageId: string, title: string, description: string) => {
     setTopicAddState((s) => ({ ...s, [messageId]: 'loading' }));
-    const result = await createCustomTopicViaVee(title, description);
-    if ('error' in result && result.error) {
-      setTopicAddState((s) => ({ ...s, [messageId]: 'error' }));
-      setTopicAddMessage((s) => ({ ...s, [messageId]: result.error ?? 'Could not add topic.' }));
-      return;
-    }
-    setTopicAddState((s) => ({ ...s, [messageId]: 'done' }));
-    setTopicAddMessage((s) => ({
-      ...s,
-      [messageId]: 'message' in result && result.message
-        ? result.message
-        : 'Topic added to curriculum!',
-    }));
+    startTopicTransition(async () => {
+      const { createCustomTopicViaVee } = await import('@/app/dashboard/parent/actions');
+      const result = await createCustomTopicViaVee(title, description);
+      if ('error' in result && result.error) {
+        setTopicAddState((s) => ({ ...s, [messageId]: 'error' }));
+        setTopicAddMessage((s) => ({ ...s, [messageId]: result.error ?? 'Could not add topic.' }));
+        return;
+      }
+      setTopicAddState((s) => ({ ...s, [messageId]: 'done' }));
+      setTopicAddMessage((s) => ({
+        ...s,
+        [messageId]: 'message' in result && result.message
+          ? result.message
+          : 'Topic added to curriculum!',
+      }));
+    });
   };
 
   useEffect(() => {
@@ -70,12 +80,48 @@ export default function AIAssistant() {
     return () => window.removeEventListener('open-ai-assistant', handleOpenChat);
   }, []);
 
-  const suggestedPrompts = [
-    "How does AI work?",
-    "Create a custom topic about AI in Nigerian farming",
-    "What are explorers in Nigeria learning?",
-    "Can robots think?",
-  ];
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    const supabase = createClient();
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) {
+        setViewerRole('guest');
+        return;
+      }
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', user.id)
+        .maybeSingle();
+      const role = profile?.role ?? (user.user_metadata?.role as string | undefined);
+      if (role === 'parent' || role === 'teacher' || role === 'admin') {
+        setViewerRole(role);
+      } else {
+        setViewerRole('student');
+      }
+    });
+  }, [mounted]);
+
+  if (!mounted) return null;
+
+  const suggestedPrompts =
+    viewerRole === 'parent'
+      ? [
+          "How does AI work?",
+          "Create a custom topic about AI in farming for my child",
+          "What are explorers in Nigeria learning?",
+          "How do I approve a topic my child suggested?",
+        ]
+      : [
+          "How does AI work?",
+          "Create a custom topic about AI in Nigerian farming",
+          "What are explorers in Nigeria learning?",
+          "Can robots think?",
+        ];
 
   return (
     <>
@@ -84,10 +130,10 @@ export default function AIAssistant() {
           <button
             type="button"
             onClick={() => setIsOpen(true)}
-            className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark shadow-[0_8px_30px_rgba(74,45,110,0.25)] transition-transform duration-300 hover:scale-105 font-bold text-sm"
+            className="relative flex h-14 w-14 items-center justify-center rounded-full bg-brand-purple dark:bg-brand-gold shadow-[0_8px_30px_rgba(74,45,110,0.25)] transition-transform duration-300 hover:scale-105 overflow-hidden border-2 border-brand-gold/30"
             aria-label="Open Vision Vee assistant"
           >
-            VV
+            <Image src={VISION_VEE_MASCOT} alt="Vision Vee" fill unoptimized className="object-contain p-1.5" />
           </button>
         )}
       </div>
@@ -121,7 +167,7 @@ export default function AIAssistant() {
                 <div className="flex gap-4">
                   <VeeAvatar size="sm" />
                   <div className="rounded-2xl rounded-tl-sm px-4 py-3 text-sm leading-relaxed bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10 text-brand-purple/80 dark:text-brand-cream/80">
-                    Hi Explorer! I&apos;m Vision Vee. Ask me about AI, request new custom topics for your unlimited curriculum, or learn what explorers in your country are studying.
+                    {visionVeeWelcomeLine(viewerRole)}
                   </div>
                 </div>
                 <div className="grid grid-cols-1 gap-2 mt-4 ml-12">
@@ -166,7 +212,7 @@ export default function AIAssistant() {
                           ) : (
                             <Sparkles className="h-3.5 w-3.5" />
                           )}
-                          Add &ldquo;{proposal.title}&rdquo; to curriculum
+                          Add &ldquo;{proposal.title}&rdquo; to {viewerRole === 'parent' ? "child's curriculum" : 'curriculum'}
                         </button>
                       )}
                       {addState === 'done' && (
