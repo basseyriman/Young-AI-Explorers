@@ -68,6 +68,23 @@ export async function signup(formData: FormData) {
     }
   }
 
+  const inviteCode = (formData.get('inviteCode') as string)?.trim() || null
+  let schoolPilotId: string | null = null
+
+  if (role === 'teacher' && inviteCode) {
+    const { data: pilot, error: pilotErr } = await supabase
+      .from('school_pilots')
+      .select('id')
+      .eq('invite_code', inviteCode.toUpperCase())
+      .eq('status', 'active')
+      .maybeSingle()
+
+    if (pilotErr || !pilot) {
+      redirect('/signup?role=teacher&message=' + encodeURIComponent('Invalid or expired school pilot invite code.'))
+    }
+    schoolPilotId = pilot.id
+  }
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000'
 
   const metadata: Record<string, unknown> = {
@@ -76,6 +93,7 @@ export async function signup(formData: FormData) {
     country_code: countryCode,
     nickname,
     parent_email: parentEmail,
+    school_pilot_id: schoolPilotId,
   }
   if (role === 'student' && birthYear != null) {
     metadata.birth_year = birthYear
@@ -102,6 +120,7 @@ export async function signup(formData: FormData) {
     nickname,
     parentEmail,
     birthYear,
+    schoolPilotId,
   }
 
   const ensured = await ensureSignupProfile(profilePayload)

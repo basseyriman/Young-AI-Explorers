@@ -475,7 +475,16 @@ export async function generateCustomTopicContent(topicId: string): Promise<{ err
 
   await supabase.from('custom_topics').update({ content_status: 'generating' }).eq('id', topicId)
 
-  const generated = await generateTopicContent(topic.title, topic.description ?? topic.title)
+  // Query user's preferred language
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('preferred_language')
+    .eq('id', topic.user_id)
+    .single()
+
+  const locale = profile?.preferred_language ?? 'en'
+
+  const generated = await generateTopicContent(topic.title, topic.description ?? topic.title, locale)
 
   const illustration = await generateTopicIllustration(
     topicId,

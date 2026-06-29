@@ -1,16 +1,18 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   LogOut, Users, Globe, BookOpen, Shield, TrendingUp, Settings,
-  Mail, Building2, Calendar, Filter,
+  Mail, Building2, Calendar, Filter, Sparkles,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { SignOutButton } from "@/components/SignOutButton";
 import { TOPIC_MARKETING } from "@/data/curriculum";
 import type { CountryRow, SchoolInquiryRow } from "@/lib/db/platform";
+import { activateSchoolPilotAction } from "@/app/dashboard/teacher/actions";
+import { toast } from "sonner";
 
 interface PlatformStats {
   totalUsers: number;
@@ -173,13 +175,36 @@ export function AdminDashboardClient({ userEmail, userName, stats, countries, in
                         </p>
                       )}
                     </div>
-                    <a
-                      href={`mailto:${inquiry.contact_email}?subject=Young AI Explorers — ${TYPE_LABELS[inquiry.inquiry_type]} request`}
-                      className="inline-flex items-center gap-2 shrink-0 px-4 py-2 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark text-sm font-semibold hover:opacity-90 transition-opacity"
-                    >
-                      <Mail className="h-4 w-4" />
-                      Reply
-                    </a>
+                    <div className="flex flex-col sm:flex-row gap-2 shrink-0">
+                      <a
+                        href={`mailto:${inquiry.contact_email}?subject=Young AI Explorers — ${TYPE_LABELS[inquiry.inquiry_type]} request`}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full border border-brand-purple/15 dark:border-brand-gold/15 text-sm font-semibold hover:bg-brand-warm/30 transition-colors"
+                      >
+                        <Mail className="h-4 w-4" />
+                        Reply
+                      </a>
+                      <button
+                        onClick={async () => {
+                          if (confirm(`Approve pilot for ${inquiry.school_name}?`)) {
+                            try {
+                              const res = await activateSchoolPilotAction(inquiry.id);
+                              if (res.success && res.inviteCode) {
+                                alert(`Pilot Activated!\n\nInvite Code: ${res.inviteCode}\nShare this code with the school's teacher so they can register.`);
+                                window.location.reload();
+                              } else if (res.error) {
+                                toast.error(res.error);
+                              }
+                            } catch (e) {
+                              toast.error("Failed to activate pilot");
+                            }
+                          }
+                        }}
+                        className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark text-sm font-semibold hover:opacity-90 transition-opacity animate-bounce-short"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Approve Pilot
+                      </button>
+                    </div>
                   </div>
                 </article>
               ))}

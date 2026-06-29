@@ -219,6 +219,7 @@ export type SignupProfilePayload = {
   nickname: string
   parentEmail: string | null
   birthYear: number | null
+  schoolPilotId?: string | null
 }
 
 /** Create profile rows with service role (bypasses RLS when email confirm leaves no session). */
@@ -227,7 +228,7 @@ export async function ensureSignupProfile(payload: SignupProfilePayload): Promis
   const admin = createAdminClient()
   if (!admin) return {}
 
-  const { userId, email, fullName, role, countryCode, nickname, parentEmail, birthYear } = payload
+  const { userId, email, fullName, role, countryCode, nickname, parentEmail, birthYear, schoolPilotId } = payload
   const sharingLevel = role === 'student' ? 'private' : 'region'
   const allowMatchQuiz = role !== 'student'
 
@@ -243,6 +244,7 @@ export async function ensureSignupProfile(payload: SignupProfilePayload): Promis
     parent_email: role === 'student' ? parentEmail : null,
     parent_consent_at: role === 'student' && parentEmail ? new Date().toISOString() : null,
     birth_year: role === 'student' ? birthYear : null,
+    school_pilot_id: schoolPilotId || null,
   })
   if (profileErr) return { error: profileErr.message }
 

@@ -1,4 +1,4 @@
-import { PlayCircle, Flame, Medal, Award, Star, Compass, ArrowRight, Globe, Swords } from 'lucide-react'
+import { PlayCircle, Flame, Medal, Award, Star, Compass, ArrowRight, Globe, Swords, School } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import OpenAIAssistantButton from '@/components/OpenAIAssistantButton'
@@ -10,6 +10,8 @@ import { getCurriculumFromDb, getUserBadges, getCountries, mergeCurriculumWithFa
 import { requireRole } from '@/lib/auth/dashboard-access'
 import { getLocale, getTranslations, getLocalizedLesson } from '@/lib/i18n/i18n'
 import { LanguageSelector } from '@/components/LanguageSelector'
+import { JoinClassroomForm } from '@/components/JoinClassroomForm'
+import { getStudentClassroomsAction } from '@/app/dashboard/teacher/actions'
 
 export default async function StudentDashboard() {
   const { user } = await requireRole(['student', 'teacher', 'admin'])
@@ -23,6 +25,16 @@ export default async function StudentDashboard() {
     const dbBadges = await getUserBadges(user.id)
     if (dbBadges.length) earnedBadges = dbBadges
   } catch { /* fallback to metadata until migration applied */ }
+
+  let studentClassrooms: any[] = []
+  try {
+    const res = await getStudentClassroomsAction()
+    if (res.success && res.classrooms) {
+      studentClassrooms = res.classrooms
+    }
+  } catch (e) {
+    console.error('Failed to load linked classrooms:', e)
+  }
 
   const profile = await getProfile(user.id)
   const countries = await getCountries()
@@ -204,6 +216,23 @@ export default async function StudentDashboard() {
                 </div>
               </div>
             ))}
+            {studentClassrooms.length > 0 && (
+              <div className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 shadow-sm space-y-3">
+                <div className="flex items-center gap-2 text-brand-purple dark:text-brand-cream">
+                  <School className="h-5 w-5 text-brand-gold" />
+                  <h4 className="font-heading font-bold text-sm">Linked Classrooms</h4>
+                </div>
+                <div className="space-y-2">
+                  {studentClassrooms.map((link) => (
+                    <div key={link.classroom_id} className="text-xs font-semibold p-2.5 rounded-xl bg-brand-warm/30 dark:bg-brand-purple-dark/50 border border-brand-purple/5 flex justify-between items-center">
+                      <span className="truncate">{link.classrooms?.name}</span>
+                      <span className="text-[10px] font-mono text-brand-gold uppercase shrink-0 ml-2">{link.classrooms?.class_code}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+            <JoinClassroomForm />
             <OpenAIAssistantButton />
           </div>
         </div>

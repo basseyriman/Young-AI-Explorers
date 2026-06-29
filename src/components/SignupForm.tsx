@@ -85,6 +85,16 @@ export function SignupForm({ countries, defaultRole }: Props) {
             </div>
           )}
 
+          {role === 'teacher' && (
+            <div className="space-y-2 p-4 rounded-xl bg-brand-gold/5 border border-brand-gold/20">
+              <Label htmlFor="inviteCode" className="text-brand-purple dark:text-brand-cream font-semibold">School Pilot Invite Code (Optional)</Label>
+              <Input id="inviteCode" name="inviteCode" type="text" placeholder="e.g. PILOT-ABCDE" className={fieldClass} />
+              <p className="text-[10px] text-brand-purple/50 dark:text-brand-cream/55 leading-relaxed">
+                If your school has been approved for a pilot program, enter the code provided by your administrator.
+              </p>
+            </div>
+          )}
+
           <label className="flex items-start gap-3 text-sm cursor-pointer">
             <input type="checkbox" name="termsConsent" required className="mt-1 rounded" />
             <span className="text-brand-purple/70 dark:text-brand-cream/70">
