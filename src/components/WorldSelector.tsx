@@ -3,7 +3,8 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Brain, Eye, Bot, Home, Globe, Palette } from "lucide-react";
 import Link from "next/link";
-import { STARTER_PATHS, BOOK_CURRICULUM_LABEL, TOPIC_MARKETING } from "@/data/curriculum";
+import { STARTER_PATHS } from "@/data/curriculum";
+import { useTranslation } from "@/lib/i18n/LanguageContext";
 
 const containerVariants = {
   hidden: {},
@@ -20,6 +21,8 @@ const cardVariants = {
 } as const;
 
 export function WorldSelector() {
+  const { t } = useTranslation();
+
   return (
     <motion.div
       variants={containerVariants}
@@ -49,13 +52,15 @@ export function WorldSelector() {
               </div>
               <div className="px-6 pb-6 flex flex-col flex-grow">
                 <h3 className="font-heading font-bold text-lg text-brand-purple dark:text-brand-cream leading-snug mb-2 group-hover:text-brand-gold transition-colors">
-                  {path.title}
+                  {t(`worlds.${path.id}`)}
                 </h3>
                 <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55 mb-6 flex-grow">
-                  {path.lessonCount} book lessons in this path · {BOOK_CURRICULUM_LABEL} — {TOPIC_MARKETING.growsWithVisionVee}
+                  {path.lessonCount} {t("landing.lessons_in_path")}
                 </p>
                 <div className="flex items-center justify-between pt-4 border-t border-brand-purple/8 dark:border-brand-gold/10">
-                  <span className="text-xs font-semibold text-brand-purple/50 dark:text-brand-cream/50">Vision Vee can add more anytime</span>
+                  <span className="text-xs font-semibold text-brand-purple/50 dark:text-brand-cream/50">
+                    {t("landing.vee_add_anytime")}
+                  </span>
                   <div className={`w-9 h-9 rounded-full flex items-center justify-center group-hover:translate-x-0.5 transition-transform ${isGold ? "bg-brand-gold text-brand-purple-dark" : "bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark"}`}>
                     <ArrowRight className="h-4 w-4" strokeWidth={2} />
                   </div>

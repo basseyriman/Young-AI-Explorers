@@ -36,7 +36,8 @@
     "custom_topics_title": "Mada Maalum za Vision Vee",
     "streak": "Mfululizo",
     "xp": "XP",
-    "certificates": "Vyeti"
+    "certificates": "Vyeti",
+    "next_up": "Somo Linalofuata"
   },
   "lesson": {
     "back_dashboard": "Rudi kwenye Dashibodi",
@@ -62,6 +63,84 @@
     "hero_title_post": "Kesho",
     "hero_desc": "Kugundua Wakati Ujao, Wazo Moja kwa Wakati. Mfumo wa mwisho wa elimu kwa kizazi kijacho cha wavumbuzi.",
     "start_exploring": "Anza Kugundua",
-    "unlimited_ai_learning": "Kujifunza kwa AI bila kikomo"
+    "unlimited_ai_learning": "Kujifunza kwa AI bila kikomo",
+    "lessons_in_path": "masomo ya kitabu katika njia hii",
+    "vee_add_anytime": "Vision Vee anaweza kuongeza zaidi wakati wowote",
+    "click_to_explore": "Bonyeza ili uanze kujifunza",
+    "recognised_by": "Inatambuliwa Na",
+    "explorer_map_title": "Ramani Yako ya Ugunduzi",
+    "gate_title": "Anza Safari Yako",
+    "collapse": "Kunja",
+    "new_release": "Toleo Jipya",
+    "on_amazon": "Sasa inapatikana Amazon · Jalada Laini",
+    "published_book_title": "Kitabu Kilichochapishwa",
+    "book_companion_desc": "Pasipoti yako inayoaminika ya kujifunza AI — rafiki bora wa nje ya mtandao kwa jukwaa lisilo na kikomo.",
+    "buy_amazon": "Nunua Amazon",
+    "read_sample": "Soma Mfano",
+    "meet_vee_title": "Kutana na Vision Vee",
+    "meet_vee_desc": "Si AI tu. Mwenzi rafiki anayejibu maswali, anayeeleza mawazo magumu kwa mifano rahisi, na anayeunda mada mpya kulingana na mahitaji — kwa hivyo hakuna kikomo cha kile unachoweza kujifunza kwenye Young AI Explorers.",
+    "learning_journey_title": "Safari ya Kujifunza",
+    "learning_journey_subtitle": "Anza na masomo ya kitabu. Endelea na Vision Vee — milele.",
+    "step1_title": "Gundua Mada",
+    "step1_desc": "Soma masomo ya kuvutia na yenye picha.",
+    "step2_title": "Pima Ujuzi Wako",
+    "step2_desc": "Fanya mazoezi ya kufurahisha na ya mwingiliano.",
+    "step3_title": "Pata Beji",
+    "step3_desc": "Kusanya medali kwa mafanikio yako.",
+    "step4_title": "Pata Cheti",
+    "step4_desc": "Pakua Cheti chako rasmi cha Mgunduzi.",
+    "earn_badges_title": "Pata Beji",
+    "badges_desc": "Fungua mafanikio maalum unapokamilisha sura na mada maalum.",
+    "leaderboard_title": "Ubao wa Wanaoongoza",
+    "leaderboard_desc": "Shindana na wagunduzi wengine ulimwenguni au katika eneo lako.",
+    "vee_subtitle": "Mwenzi wako wa kujifunza AI"
+  },
+  "worlds": {
+    "ai-foundations": "Misingi ya AI",
+    "sees-hears-speaks": "AI Inayoona, Inayosikia na Inayoongea",
+    "robotics-machines": "Roboti & mashine zenye akili",
+    "everyday-life": "AI katika maisha ya kila siku",
+    "smart-world": "Ulimwengu wenye akili & jamii ya kidijitali",
+    "creativity-innovation": "Ubunifu & uvumbuzi wa baadaye"
+  },
+  "lessons": {
+    "intro": {
+      "title": "Karibu kwenye wakati ujao",
+      "desc": "Hapa ndipo kila mtoto anapoanzia. Utangulizi wa kusisimua wa teknolojia ya kesho."
+    },
+    "1": {
+      "title": "Computer Vision",
+      "desc": "Papatia kamera uwezo wa kutambua na kuweka lebo kwenye vitu ulimwenguni."
+    },
+    "2": {
+      "title": "Speech Recognition",
+      "desc": "Kutafsiri lugha ya mazungumzo kuwa maandishi ya kidijitali."
+    },
+    "3": {
+      "title": "Tafsiri ya AI",
+      "desc": "Jenga daraja la urafiki kwa kuvunja vikwazo vya lugha."
+    }
+  },
+  "trust": {
+    "tag": "Uaminifu & Viwango",
+    "title": "Imejengwa kwa Serikali. Inaaminika na Familia.",
+    "desc": "Young AI Explorers imeundwa kukidhi matarajio ya wizara za elimu, makamishna wakuu na walezi kote ulimwenguni — kukiwa na usalama wa daraja la kwanza na faragha ya mtoto kwanza.",
+    "assurances_title": "Dhamana za Jukwaa",
+    "leaders_title": "Kwa Viongozi wa Elimu",
+    "leaders_desc": "Tunakaribisha ushirikiano na idara za elimu, makamishna wakuu na mitandao ya shule. Omba mradi wa majaribio, hati ya ramani ya mtaala au makubaliano ya kuchakata data kwa ajili ya usambazaji wa taasisi.",
+    "pilot_cta": "Omba Mradi wa Majaribio wa Shule",
+    "parent_cta": "Dashibodi ya Mzazi"
+  },
+  "community_dict": {
+    "tag": "Mtandao wa Kimataifa wa Wagunduzi",
+    "title": "Young AI Explorers Duniani Kote",
+    "desc": "Chagua nchi yako wakati wa kujisajili — au taifa lolote duniani kote. Ungana na wagunduzi, shiriki mawazo salama na uwachangamkie marafiki kwenye Quiz ya Mashindano. Data ya moja kwa moja kutoka Supabase.",
+    "explorers": "wagunduzi",
+    "live_trends": "Mada Zinazovuma Hivi Sasa",
+    "no_trends": "Kamilisha somo ili uonekane kwenye mada zinazovuma za nchi yako — shughuli halisi, hakuna data ya uwongo.",
+    "explorers_plural": "wagunduzi",
+    "active_now": "Hai sasa hivi",
+    "secure_design": "Salama kwa Ubunifu",
+    "all_countries": "Tazama Nchi Zote"
   }
 }

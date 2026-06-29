@@ -84,14 +84,24 @@ export default function Home() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t border-brand-purple/10 dark:border-brand-gold/10">
-              {HERO_STATS.map((stat, i) => (
-                <div key={i}>
-                  <div className="text-2xl md:text-3xl font-bold text-brand-purple dark:text-brand-cream mb-1">
-                    {stat.display}
+              {HERO_STATS.map((stat, i) => {
+                const labels = [
+                  t("landing.stat_topics"),
+                  t("landing.stat_lessons"),
+                  t("landing.stat_fun_facts"),
+                  t("landing.stat_quizzes")
+                ];
+                return (
+                  <div key={i}>
+                    <div className="text-2xl md:text-3xl font-bold text-brand-purple dark:text-brand-cream mb-1">
+                      {stat.display}
+                    </div>
+                    <div className="text-xs text-brand-purple/50 dark:text-brand-cream/50 uppercase tracking-wider">
+                      {labels[i] || stat.label}
+                    </div>
                   </div>
-                  <div className="text-xs text-brand-purple/50 dark:text-brand-cream/50 uppercase tracking-wider">{stat.label}</div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </motion.div>
 
@@ -115,8 +125,8 @@ export default function Home() {
               <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-brand-purple-dark/40 to-transparent pointer-events-none" />
             </div>
             <div className="absolute -bottom-4 -left-4 md:-bottom-6 md:-left-6 bg-brand-cream dark:bg-brand-purple-dark rounded-2xl px-5 py-4 shadow-[0_8px_30px_rgba(74,45,110,0.1)] border border-brand-purple/10 dark:border-brand-gold/10">
-              <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold mb-0.5">Vision Vee</p>
-              <p className="text-sm font-medium text-brand-purple dark:text-brand-cream">Your AI learning companion</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold mb-0.5">{t("landing.vee_title")}</p>
+              <p className="text-sm font-medium text-brand-purple dark:text-brand-cream">{t("landing.vee_subtitle")}</p>
             </div>
           </motion.div>
         </div>
@@ -125,7 +135,7 @@ export default function Home() {
       {/* TRUST BANNER */}
       <section className="py-10 relative z-10 border-y border-brand-purple/8 dark:border-brand-gold/8 bg-brand-surface dark:bg-brand-purple-dark/40">
         <div className="container mx-auto px-6">
-          <p className="text-center text-xs text-brand-purple/40 dark:text-brand-cream/40 uppercase tracking-[0.25em] font-medium mb-6">Recognised By</p>
+          <p className="text-center text-xs text-brand-purple/40 dark:text-brand-cream/40 uppercase tracking-[0.25em] font-medium mb-6">{t("landing.recognised_by")}</p>
           <div className="flex flex-wrap justify-center items-center gap-10 md:gap-20">
             {["Amazon", "STEM Education", "Schools Worldwide"].map((name) => (
               <span key={name} className="font-heading text-lg md:text-xl font-semibold text-brand-purple/30 dark:text-brand-cream/30 tracking-wide hover:text-brand-purple/60 dark:hover:text-brand-cream/60 transition-colors">
@@ -145,7 +155,7 @@ export default function Home() {
               <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-purple/70 dark:text-brand-cream/70">{TOPIC_MARKETING.headline} · Published Book Curriculum · {TOPIC_MARKETING.growsWithVisionVee}</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4 leading-tight">
-              Your Explorer Map
+              {t("landing.explorer_map_title")}
             </h2>
             <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg leading-relaxed">
               {TOPIC_MARKETING.subline}
@@ -167,7 +177,7 @@ export default function Home() {
                     <Compass className="h-6 w-6 text-brand-purple dark:text-brand-gold" strokeWidth={1.5} />
                   </div>
                   <h3 className="text-2xl md:text-3xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-3">
-                    Start Your Adventure
+                    {t("landing.gate_title")}
                   </h3>
                   <p className="text-brand-purple/60 dark:text-brand-cream/60 text-base max-w-lg mx-auto mb-8 leading-relaxed">
                     {TOPIC_MARKETING.explorerMapLine}
@@ -176,7 +186,7 @@ export default function Home() {
                     onClick={() => setExplorationMode("grid")}
                     className="px-8 py-3.5 bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark rounded-full font-semibold hover:opacity-90 transition-opacity flex items-center justify-center gap-2 mx-auto shadow-[0_6px_24px_rgba(74,45,110,0.18)] group/btn"
                   >
-                    {EXPLORE_TOPICS_CTA} <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
+                    {t("landing.click_to_explore")} <ArrowRight className="h-5 w-5 transition-transform group-hover/btn:translate-x-1" />
                   </button>
                 </div>
               </motion.div>
@@ -195,7 +205,7 @@ export default function Home() {
                     onClick={() => setExplorationMode(null)}
                     className="px-4 py-2 rounded-full border border-brand-purple/15 dark:border-brand-gold/15 bg-brand-surface dark:bg-brand-purple-dark text-brand-purple/70 dark:text-brand-cream/70 hover:border-brand-gold/30 font-medium transition-colors text-sm"
                   >
-                    ← Collapse
+                    ← {t("landing.collapse")}
                   </button>
                   <span className="text-xs font-semibold uppercase tracking-[0.2em] text-brand-gold">{EXPLORER_MAP_LABEL}</span>
                 </div>
@@ -220,16 +230,16 @@ export default function Home() {
           <div className="flex-1 text-center md:text-left md:pl-2 lg:pl-4">
             <div className="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-4">
               <span className="bg-brand-gold/15 border border-brand-gold/25 text-brand-gold px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider">
-                New Release
+                {t("landing.new_release")}
               </span>
-              <span className="text-brand-purple/50 dark:text-brand-cream/50 text-sm font-medium">Now on Amazon · Paperback</span>
+              <span className="text-brand-purple/50 dark:text-brand-cream/50 text-sm font-medium">{t("landing.on_amazon")}</span>
             </div>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">The Published Book</h2>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">{t("landing.published_book_title")}</h2>
             <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-3 font-light">
               {TOPIC_MARKETING.bookCrossSell}
             </p>
             <p className="text-base text-brand-purple/50 dark:text-brand-cream/50 mb-6 max-w-lg mx-auto md:mx-0">
-              Your trusted passport into AI literacy — the perfect offline companion to the unlimited platform.
+              {t("landing.book_companion_desc")}
             </p>
             <div className="flex flex-wrap gap-3 justify-center md:justify-start mb-8">
               {["For Kids", "Worldwide Shipping", "Paperback", "Future eBook"].map((tag) => (
@@ -244,13 +254,13 @@ export default function Home() {
                 target="_blank"
                 className="w-full sm:w-auto px-8 py-4 bg-[#ff9900] text-black rounded-full font-semibold hover:opacity-90 transition-all flex items-center justify-center gap-2"
               >
-                Buy on Amazon <ArrowUpRight className="h-5 w-5" />
+                {t("landing.buy_amazon")} <ArrowUpRight className="h-5 w-5" />
               </Link>
               <a
                 href="/book-sample/index.html"
                 className="w-full sm:w-auto px-8 py-4 text-brand-purple dark:text-brand-cream border border-brand-purple/20 dark:border-brand-gold/20 rounded-full hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors flex items-center justify-center gap-2"
               >
-                Read Sample
+                {t("landing.read_sample")}
               </a>
             </div>
           </div>
@@ -267,9 +277,9 @@ export default function Home() {
             <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-brand-purple/8 dark:bg-brand-gold/10 border border-brand-purple/10 dark:border-brand-gold/15 mb-8">
               <MessageCircle className="h-7 w-7 text-brand-purple dark:text-brand-gold" strokeWidth={1.5} />
             </div>
-            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-6">Meet Vision Vee</h2>
+            <h2 className="text-4xl md:text-5xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-6">{t("landing.meet_vee_title")}</h2>
             <p className="text-xl text-brand-purple/60 dark:text-brand-cream/60 mb-8 font-light">
-              Not just an AI. A friendly companion that answers questions, explains complex ideas with simple analogies, and creates new topics on demand — so there&apos;s no limit to what you can learn on Young AI Explorers.
+              {t("landing.meet_vee_desc")}
             </p>
             <div className="p-6 rounded-2xl bg-brand-surface/80 dark:bg-brand-purple-dark/40 border border-brand-purple/10 dark:border-brand-gold/10 shadow-sm">
               <div className="flex gap-4 mb-4">
@@ -295,18 +305,18 @@ export default function Home() {
       <section className="py-28 relative z-10 bg-brand-surface/40 dark:bg-brand-purple-dark/20 border-y border-brand-purple/8 dark:border-brand-gold/8">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">The Learning Journey</h2>
-            <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg">Start with book lessons. Keep going with Vision Vee — forever.</p>
+            <h2 className="text-3xl md:text-4xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-4">{t("landing.learning_journey_title")}</h2>
+            <p className="text-brand-purple/60 dark:text-brand-cream/60 text-lg">{t("landing.learning_journey_subtitle")}</p>
           </div>
 
           <div className="max-w-3xl mx-auto relative">
             <div className="absolute left-1/2 top-0 bottom-0 w-px bg-brand-purple/10 dark:bg-brand-gold/10 -translate-x-1/2" />
 
             {[
-              { title: "Explore a Topic", desc: "Read engaging, illustrated lessons.", step: "01" },
-              { title: "Test Your Knowledge", desc: "Take fun, interactive quizzes.", step: "02" },
-              { title: "Earn a Badge", desc: "Collect medals for your achievements.", step: "03" },
-              { title: "Get Certified", desc: "Download your official Explorer Certificate.", step: "04" },
+              { title: t("landing.step1_title"), desc: t("landing.step1_desc"), step: "01" },
+              { title: t("landing.step2_title"), desc: t("landing.step2_desc"), step: "02" },
+              { title: t("landing.step3_title"), desc: t("landing.step3_desc"), step: "03" },
+              { title: t("landing.step4_title"), desc: t("landing.step4_desc"), step: "04" },
             ].map((step, i) => (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -333,7 +343,7 @@ export default function Home() {
       <section className="py-28 relative z-10">
         <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16">
           <div>
-            <h2 className="text-3xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-8">Earn Badges</h2>
+            <h2 className="text-3xl font-heading font-bold text-brand-purple dark:text-brand-cream mb-8">{t("landing.earn_badges_title")}</h2>
             <div className="grid grid-cols-2 gap-5">
               {[
                 { name: "Gold Explorer", tier: "gold" },

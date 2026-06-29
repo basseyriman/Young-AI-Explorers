@@ -36,7 +36,8 @@
     "custom_topics_title": "Sujets personnalisés de Vision Vee",
     "streak": "Série",
     "xp": "XP",
-    "certificates": "Certificats"
+    "certificates": "Certificats",
+    "next_up": "À suivre"
   },
   "lesson": {
     "back_dashboard": "Retour au Tableau de Bord",
@@ -62,6 +63,84 @@
     "hero_title_post": "Futur",
     "hero_desc": "Explorer le futur, une idée à la fois. L'écosystème éducatif ultime pour la prochaine génération d'innovateurs.",
     "start_exploring": "Commencer à Explorer",
-    "unlimited_ai_learning": "Apprentissage illimité de l'IA"
+    "unlimited_ai_learning": "Apprentissage illimité de l'IA",
+    "lessons_in_path": "leçons de livre dans ce parcours",
+    "vee_add_anytime": "Vision Vee peut en ajouter d'autres à tout moment",
+    "click_to_explore": "Cliquez pour commencer à apprendre",
+    "recognised_by": "Reconnu Par",
+    "explorer_map_title": "Votre Carte d'Explorateur",
+    "gate_title": "Commencez Votre Aventure",
+    "collapse": "Réduire",
+    "new_release": "Nouvelle Sortie",
+    "on_amazon": "Maintenant sur Amazon · Broché",
+    "published_book_title": "Le Livre Publié",
+    "book_companion_desc": "Votre passeport de confiance pour l'initiation à l'IA — le compagnon hors ligne idéal pour la plateforme illimitée.",
+    "buy_amazon": "Acheter sur Amazon",
+    "read_sample": "Lire un Extrait",
+    "meet_vee_title": "Rencontrez Vision Vee",
+    "meet_vee_desc": "Pas seulement une IA. Un compagnon amical qui répond aux questions, explique des idées complexes avec des analogies simples et crée de nouveaux sujets à la demande — il n'y a donc pas de limite à ce que vous pouvez apprendre sur Young AI Explorers.",
+    "learning_journey_title": "Le Voyage d'Apprentissage",
+    "learning_journey_subtitle": "Commencez avec les leçons du livre. Continuez avec Vision Vee — pour toujours.",
+    "step1_title": "Explorer un Sujet",
+    "step1_desc": "Lisez des leçons illustrées et attrayantes.",
+    "step2_title": "Testez Vos Connaissances",
+    "step2_desc": "Faites des quiz amusants et interactifs.",
+    "step3_title": "Gagnez un Badge",
+    "step3_desc": "Collectionnez des médailles pour vos réalisations.",
+    "step4_title": "Obtenez un Certificat",
+    "step4_desc": "Téléchargez votre certificat officiel d'explorateur.",
+    "earn_badges_title": "Gagner des Badges",
+    "badges_desc": "Débloquez des réalisations spéciales en terminant des chapitres et des sujets personnalisés.",
+    "leaderboard_title": "Tableau des Leaders",
+    "leaderboard_desc": "Rivalisez avec d'autres explorateurs dans le monde ou dans votre région.",
+    "vee_subtitle": "Votre compagnon d'apprentissage de l'IA"
+  },
+  "worlds": {
+    "ai-foundations": "Fondations de l'IA",
+    "sees-hears-speaks": "L'IA qui voit, entend et parle",
+    "robotics-machines": "Robotique & machines intelligentes",
+    "everyday-life": "L'IA au quotidien",
+    "smart-world": "Monde intelligent & société numérique",
+    "creativity-innovation": "Créativité & innovation future"
+  },
+  "lessons": {
+    "intro": {
+      "title": "Bienvenue dans le futur",
+      "desc": "C'est par là que chaque enfant commence. Une introduction passionnante aux technologies de demain."
+    },
+    "1": {
+      "title": "Vision par ordinateur",
+      "desc": "Donnez aux caméras le pouvoir de reconnaître et d'étiqueter les objets du monde."
+    },
+    "2": {
+      "title": "Reconnaissance vocale",
+      "desc": "Traduire la langue parlée en texte numérique."
+    },
+    "3": {
+      "title": "Traduction par l'IA",
+      "desc": "Construire des ponts d'amitié en brisant les barrières de la langue."
+    }
+  },
+  "trust": {
+    "tag": "Confiance & Normes",
+    "title": "Conçu pour les Gouvernements. Approuvé par les Familles.",
+    "desc": "Young AI Explorers est conçu pour répondre aux attentes des ministères de l'éducation, des hauts-commissariats et des tuteurs du monde entier — avec une sécurité de niveau entreprise et une confidentialité axée sur l'enfant.",
+    "assurances_title": "Assurances de la Plateforme",
+    "leaders_title": "Pour les Leaders de l'Éducation",
+    "leaders_desc": "Nous saluons les partenariats avec les ministères de l'éducation, les hauts-commissariats et les réseaux scolaires. Demandez un programme pilote, un document de cartographie des programmes ou un accord de traitement des données pour un déploiement institutionnel.",
+    "pilot_cta": "Demander un Projet Pilote",
+    "parent_cta": "Tableau de Bord Parent"
+  },
+  "community_dict": {
+    "tag": "Réseau Mondial d'Explorateurs",
+    "title": "Young AI Explorers dans le Monde",
+    "desc": "Choisissez votre pays lors de l'inscription — ou n'importe quel pays du monde. Connectez-vous avec d'autres explorateurs, partagez des idées en toute sécurité et défiez vos amis à un Quiz Duel. Données en direct de Supabase.",
+    "explorers": "explorateurs",
+    "live_trends": "Sujets Tendances en Direct",
+    "no_trends": "Terminez une leçon pour apparaître dans les tendances de votre pays — activité réelle, pas de données fictives.",
+    "explorers_plural": "explorateurs",
+    "active_now": "Actif maintenant",
+    "secure_design": "Sécurisé par Conception",
+    "all_countries": "Voir Tous les Pays"
   }
 }

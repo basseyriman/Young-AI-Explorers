@@ -36,7 +36,8 @@
     "custom_topics_title": "Vision Vee Custom Topics",
     "streak": "Streak",
     "xp": "XP",
-    "certificates": "Certificates"
+    "certificates": "Certificates",
+    "next_up": "Next up"
   },
   "lesson": {
     "back_dashboard": "Back to Dashboard",
@@ -62,6 +63,84 @@
     "hero_title_post": "Future",
     "hero_desc": "Exploring the Future, One Idea at a Time. The ultimate educational ecosystem for the next generation of innovators.",
     "start_exploring": "Start Exploring",
-    "unlimited_ai_learning": "Unlimited AI learning"
+    "unlimited_ai_learning": "Unlimited AI learning",
+    "lessons_in_path": "book lessons in this path",
+    "vee_add_anytime": "Vision Vee can add more anytime",
+    "click_to_explore": "Click to start learning",
+    "recognised_by": "Recognised By",
+    "explorer_map_title": "Your Explorer Map",
+    "gate_title": "Start Your Adventure",
+    "collapse": "Collapse",
+    "new_release": "New Release",
+    "on_amazon": "Now on Amazon · Paperback",
+    "published_book_title": "The Published Book",
+    "book_companion_desc": "Your trusted passport into AI literacy — the perfect offline companion to the unlimited platform.",
+    "buy_amazon": "Buy on Amazon",
+    "read_sample": "Read Sample",
+    "meet_vee_title": "Meet Vision Vee",
+    "meet_vee_desc": "Not just an AI. A friendly companion that answers questions, explains complex ideas with simple analogies, and creates new topics on demand — so there's no limit to what you can learn on Young AI Explorers.",
+    "learning_journey_title": "The Learning Journey",
+    "learning_journey_subtitle": "Start with book lessons. Keep going with Vision Vee — forever.",
+    "step1_title": "Explore a Topic",
+    "step1_desc": "Read engaging, illustrated lessons.",
+    "step2_title": "Test Your Knowledge",
+    "step2_desc": "Take fun, interactive quizzes.",
+    "step3_title": "Earn a Badge",
+    "step3_desc": "Collect medals for your achievements.",
+    "step4_title": "Get Certified",
+    "step4_desc": "Download your official Explorer Certificate.",
+    "earn_badges_title": "Earn Badges",
+    "badges_desc": "Unlock special achievements as you complete chapters and custom topics.",
+    "leaderboard_title": "Leaderboard",
+    "leaderboard_desc": "Compete with other explorers globally or in your region.",
+    "vee_subtitle": "Your AI learning companion"
+  },
+  "worlds": {
+    "ai-foundations": "AI Foundations",
+    "sees-hears-speaks": "AI That Sees, Hears & Speaks",
+    "robotics-machines": "Robotics & Intelligent Machines",
+    "everyday-life": "AI in Everyday Life",
+    "smart-world": "Smart World & Digital Society",
+    "creativity-innovation": "Creativity & Future Innovation"
+  },
+  "lessons": {
+    "intro": {
+      "title": "Welcome to the Future",
+      "desc": "This is where every child starts. An exciting intro to tomorrow's tech."
+    },
+    "1": {
+      "title": "Computer Vision",
+      "desc": "Give cameras the power to recognize and label objects in the world."
+    },
+    "2": {
+      "title": "Speech Recognition",
+      "desc": "Translating spoken language into digital text."
+    },
+    "3": {
+      "title": "AI Translation",
+      "desc": "Build bridges of friendship by breaking down language barriers."
+    }
+  },
+  "trust": {
+    "tag": "Trust & Standards",
+    "title": "Built for Governments. Trusted by Families.",
+    "desc": "Young AI Explorers is designed to meet the expectations of education ministries, high commissioners, and guardians worldwide — with enterprise-grade security and child-first privacy.",
+    "assurances_title": "Platform Assurances",
+    "leaders_title": "For Education Leaders",
+    "leaders_desc": "We welcome partnerships with departments of education, high commissioners, and school networks. Request a pilot programme, curriculum mapping document, or data processing agreement for institutional deployment.",
+    "pilot_cta": "Request School Pilot",
+    "parent_cta": "Parent Dashboard"
+  },
+  "community_dict": {
+    "tag": "Global Explorer Network",
+    "title": "Young AI Explorers Worldwide",
+    "desc": "Choose your country at registration — or any nation worldwide. Connect with explorers, share ideas safely, and challenge friends to a Match Quiz. Live data from Supabase.",
+    "explorers": "explorers",
+    "live_trends": "Live Trending Topics",
+    "no_trends": "Complete a lesson to appear in your country's trends — real activity, no mock data.",
+    "explorers_plural": "explorers",
+    "active_now": "Active now",
+    "secure_design": "Secure by Design",
+    "all_countries": "View All Countries"
   }
 }
