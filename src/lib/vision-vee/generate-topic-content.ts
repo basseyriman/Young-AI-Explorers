@@ -214,7 +214,8 @@ function parseGeneratedPayload(text: string, title: string, description: string,
       quiz: normalizeQuiz(parsed.quiz_questions, title, description, locale),
       badgeName: String(parsed.badge_name ?? getFallbackText(locale, 'badge', title)).slice(0, 48),
     }
-  } catch {
+  } catch (err) {
+    console.error("Failed to parse generated JSON payload from Groq:", err, "Raw text:", text)
     return buildFallbackTopicContent(title, description, locale)
   }
 }
@@ -246,26 +247,30 @@ Topic description: ${description}
 
 ${languagePrompt}
 
-Return ONLY valid JSON (no markdown) with this exact shape:
-{
-  "story_label": "Meet [Robot Name] — like Meet Vision Vee or Meet Echo Ed in the book",
-  "introduction": "2-4 sentences: young explorer + robot guide story scene (book style)",
-  "main_lesson": "3-4 short paragraphs separated by blank lines, explaining the topic simply with real-world examples",
-  "fun_facts": ["mind-blowing fact 1", "mind-blowing fact 2"],
-  "examples": [{ "type": "activity", "content": "one hands-on thinking activity" }],
-  "quiz_questions": [
-    { "question": "...", "options": ["A", "B", "C", "D"], "answer": "exact match to one option" },
-    { "question": "...", "options": ["True", "False"], "answer": "True" },
-    { "question": "...", "options": ["...", "...", "...", "..."], "answer": "..." }
-  ],
-  "badge_name": "Short badge name like Nigeria Farming Explorer"
-}
+    Return ONLY valid JSON (no markdown) with this exact shape:
+    {
+      "story_label": "Meet [Robot Name] — like Meet Vision Vee or Meet Echo Ed in the book",
+      "introduction": "2-4 sentences: young explorer + robot guide story scene (book style)",
+      "main_lesson": "A single string containing 3-4 short paragraphs separated by '\\n\\n'. Explain the topic simply with real-world examples. Do NOT close the quotes or start new JSON keys/lines for different paragraphs.",
+      "fun_facts": ["mind-blowing fact 1", "mind-blowing fact 2"],
+      "examples": [{ "type": "activity", "content": "one hands-on thinking activity" }],
+      "quiz_questions": [
+        { "question": "What is AI?", "options": ["A magical helper", "A type of vegetable", "A brand of shoe", "A cartoon dog"], "answer": "A magical helper" },
+        { "question": "True or False: Robots can learn.", "options": ["True", "False"], "answer": "True" },
+        { "question": "Where does AI work?", "options": ["Only in space", "Everywhere in smart tech", "Nowhere"], "answer": "Everywhere in smart tech" }
+      ],
+      "badge_name": "Short badge name like Space Explorer"
+    }
 
-Keep language simple, positive, and age-appropriate (8–12). The answer field must exactly match one option string.`,
+    CRITICAL RULES:
+    1. The "main_lesson" value MUST be a single, long string. Do NOT close the quote early or start separate JSON lines/keys for each paragraph. Use "\\n\\n" inside the string to separate paragraphs.
+    2. The "answer" field for each quiz question MUST be the EXACT string match of one of the options from the "options" array. NEVER use option letters like "A", "B", "C", "D" or indexes.
+    3. Keep language simple, positive, and age-appropriate (8–12).`,
     })
 
     return parseGeneratedPayload(text, title, description, locale)
-  } catch {
+  } catch (e) {
+    console.error("Error generating topic content from Groq:", e)
     return buildFallbackTopicContent(title, description, locale)
   }
 }

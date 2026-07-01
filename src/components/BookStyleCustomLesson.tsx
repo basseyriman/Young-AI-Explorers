@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import type { QuizQuestion } from '@/data/lessons'
-import { isPlaceholderIllustration } from '@/lib/vision-vee/generate-topic-illustration'
 
 type BookStyleCustomLessonProps = {
   title: string
@@ -31,7 +30,6 @@ export function BookStyleCustomLesson({
   badgeName,
 }: BookStyleCustomLessonProps) {
   const label = storyLabel?.trim() || extractStoryLabel(introduction)
-  const isPlaceholder = isPlaceholderIllustration(illustrationUrl)
   const paragraphs = mainLesson.split(/\n\n+/).filter(Boolean)
 
   return (
@@ -52,10 +50,10 @@ export function BookStyleCustomLesson({
         </header>
 
         <div className="relative w-full h-[min(52vw,420px)] mb-4 rounded-2xl overflow-hidden border-4 border-[#0EA5E9] bg-[#F8FAFC] shadow-[0_10px_25px_rgba(14,165,233,0.12)]">
-          {illustrationUrl && !isPlaceholder ? (
+          {illustrationUrl ? (
             illustrationUrl.startsWith('data:') ? (
               // eslint-disable-next-line @next/next/no-img-element
-              <img src={illustrationUrl} alt={title} className="w-full h-full object-cover object-[center_70%]" />
+              <img src={illustrationUrl} alt={title} className="w-full h-full object-cover" />
             ) : (
               <Image src={illustrationUrl} alt={title} fill className="object-cover object-[center_70%]" sizes="(max-width: 768px) 100vw, 800px" priority />
             )
