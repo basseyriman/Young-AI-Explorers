@@ -36,12 +36,13 @@ Example intro (AI Translation — from the book):
 `.trim()
 
 export const BOOK_ILLUSTRATION_STYLE_GUIDE = `
-Children's book illustration style matching Young AI Explorers:
-- Vibrant, friendly, diverse young explorers and cute AI robot mascots
-- Rich purple and gold RimansTech brand palette, soft gradients, rounded shapes
-- Full-scene educational illustration (not photorealistic), suitable for ages 8–12
-- No text or words in the image
-- Warm, hopeful, futuristic but approachable
+Vibrant, clean children's book illustration style matching the published "Young AI Explorers" printed book:
+- Style: Soft digital storybook illustration, friendly 2D vector-art cartoon style with clean soft outlines.
+- STRICTLY FORBIDDEN: Do NOT make it 3D, do NOT use CGI, do NOT use glossy metallic renders, do NOT use photorealism, raytracing, or high-contrast dramatic dark lighting.
+- Characters: Cute, friendly children with big warm eyes and simplified, cute, flat-colored cartoon robot companions.
+- Color Palette: Warm, optimistic, bright morning colors, soft gradients, pastel tones, incorporating friendly sky blues, purples, and gold accents.
+- Composition: Clean, full-scene educational storybook scene set in a bright, friendly, daytime environment (not a dark tech lab).
+- Text: Absolutely NO text, NO words, NO letters, NO speech bubbles, and NO dialogue boxes anywhere in the image.
 `.trim()
 
 export function buildCustomTopicIllustrationPrompt(title: string, description: string, storySnippet?: string): string {

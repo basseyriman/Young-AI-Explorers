@@ -15,7 +15,7 @@ const supabase = createClient(
 
 async function run() {
   const titleQuery = 'AI in Aviation Fuel Efficiency'
-  const imagePath = 'C:\\Users\\basse\\.gemini\\antigravity\\brain\\e64f2396-9b77-4bed-a589-5f3c51ca0937\\aviation_fuel_efficiency_illustration_1782947718125.png'
+  const imagePath = 'C:\\Users\\basse\\.gemini\\antigravity\\brain\\e64f2396-9b77-4bed-a589-5f3c51ca0937\\aviation_fuel_efficiency_illustrations_v2_1782947956319.png'
 
   console.log(`Searching for topic: "${titleQuery}"...`)
   const { data: topics, error: fetchErr } = await supabase
