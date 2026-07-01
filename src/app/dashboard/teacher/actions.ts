@@ -185,7 +185,12 @@ export async function getStudentClassroomsAction() {
     .eq('student_id', user.id)
 
   if (error) {
-    console.error('Error fetching student classrooms:', error)
+    console.error('Error fetching student classrooms detail:', {
+      message: error.message,
+      code: error.code,
+      details: error.details,
+      hint: error.hint,
+    })
     return { error: error.message }
   }
 
