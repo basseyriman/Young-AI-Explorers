@@ -48,11 +48,10 @@ async function generateWithOpenAI(prompt: string): Promise<Buffer | null> {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'dall-e-3',
+        model: 'gpt-image-1',
         prompt: prompt.slice(0, 4000),
         n: 1,
-        size: '1024x1024',
-        response_format: 'b64_json',
+        size: '1024x1024'
       }),
     })
 
@@ -66,7 +65,8 @@ async function generateWithOpenAI(prompt: string): Promise<Buffer | null> {
     if (!b64) return null
 
     return Buffer.from(b64, 'base64')
-  } catch {
+  } catch (err) {
+    console.error('[Vision Vee] generateWithOpenAI error:', err)
     return null
   }
 }
