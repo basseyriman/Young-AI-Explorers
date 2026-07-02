@@ -81,8 +81,8 @@ export default async function LessonPage({
     }
   }
 
-  // Mark topic as started for students
-  if (role === 'student' && topicId !== 'intro') {
+  // Mark topic as started for tracking progress (works for testing roles too)
+  if (topicId !== 'intro') {
     const { markTopicStarted } = await import('@/lib/db/platform')
     await markTopicStarted(user.id, topicId)
   }
