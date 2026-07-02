@@ -147,6 +147,7 @@ interface Props {
   countries: CountryRow[];
   linkedChildren: LinkedChildRow[];
   pendingTopics: PendingCustomTopicRow[];
+  childProgress?: Record<string, { topic_id: string; status: string }[]>;
 }
 
 export function ParentDashboardClient({
@@ -156,6 +157,7 @@ export function ParentDashboardClient({
   countries,
   linkedChildren,
   pendingTopics: initialPending,
+  childProgress = {},
 }: Props) {
   const [settings, setSettings] = useState(initialSettings);
   const [childEmail, setChildEmail] = useState("");
@@ -166,6 +168,14 @@ export function ParentDashboardClient({
   const [expandedTopicId, setExpandedTopicId] = useState<string | null>(null);
   const [regeneratingTopicId, setRegeneratingTopicId] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
+
+  const getTopicTitle = (topicId: string) => {
+    const staticLesson = BOOK_LESSONS.find((l) => String(l.id) === String(topicId));
+    if (staticLesson) return staticLesson.title;
+    const customTopic = settings.customTopics.find((t) => String(t.id) === String(topicId));
+    if (customTopic) return customTopic.title;
+    return topicId;
+  };
 
   const enabledCount = BOOK_LESSONS.filter((l) => !settings.disabledTopics.some((d) => topicIdKey(d) === topicIdKey(l.id))).length;
   const totalWithCustom = enabledCount + settings.customTopics.length;
@@ -493,13 +503,70 @@ export function ParentDashboardClient({
             Children who entered your email at signup are linked automatically. You can also enter your child&apos;s registered email below to link manually and sync curriculum settings.
           </p>
           {linkedChildren.length > 0 && (
-            <div className="space-y-2">
+            <div className="space-y-4">
               <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Linked explorers</p>
-              {linkedChildren.map((c) => (
-                <div key={c.child_id} className="text-sm p-3 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10">
-                  {c.nickname ?? c.full_name ?? 'Explorer'} · {c.email ?? 'No email on file'}
-                </div>
-              ))}
+              <div className="grid grid-cols-1 gap-4">
+                {linkedChildren.map((c) => {
+                  const progressList = childProgress[c.child_id] || [];
+                  const completed = progressList.filter((p) => p.status === 'completed');
+                  const inProgress = progressList.filter((p) => p.status === 'in_progress');
+
+                  return (
+                    <div key={c.child_id} className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 space-y-4 shadow-sm">
+                      <div className="flex flex-wrap justify-between items-center gap-2 border-b border-brand-purple/10 dark:border-brand-gold/10 pb-3">
+                        <div className="font-heading font-bold text-sm text-brand-purple dark:text-brand-cream">
+                          👤 {c.nickname ?? c.full_name ?? 'Explorer'}
+                        </div>
+                        <div className="text-xs text-brand-purple/60 dark:text-brand-cream/60">
+                          {c.email}
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+                        {/* Completed Section */}
+                        <div className="space-y-2">
+                          <div className="font-bold text-[10px] uppercase text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                            Completed ({completed.length})
+                          </div>
+                          {completed.length === 0 ? (
+                            <div className="text-brand-purple/45 dark:text-brand-cream/45 italic pl-3">No completed lessons yet.</div>
+                          ) : (
+                            <ul className="space-y-1.5 pl-3">
+                              {completed.map((p) => (
+                                <li key={p.topic_id} className="flex items-center gap-2 text-brand-purple/85 dark:text-brand-cream/80">
+                                  <span className="text-emerald-500 font-bold text-sm">✓</span>
+                                  <span className="truncate max-w-xs">{getTopicTitle(p.topic_id)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+
+                        {/* In Progress Section */}
+                        <div className="space-y-2">
+                          <div className="font-bold text-[10px] uppercase text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                            <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse" />
+                            In Progress ({inProgress.length})
+                          </div>
+                          {inProgress.length === 0 ? (
+                            <div className="text-brand-purple/45 dark:text-brand-cream/45 italic pl-3">No lessons in progress.</div>
+                          ) : (
+                            <ul className="space-y-1.5 pl-3">
+                              {inProgress.map((p) => (
+                                <li key={p.topic_id} className="flex items-center gap-2 text-brand-purple/85 dark:text-brand-cream/80">
+                                  <span className="text-amber-500 font-bold text-[10px]">●</span>
+                                  <span className="truncate max-w-xs">{getTopicTitle(p.topic_id)}</span>
+                                </li>
+                              ))}
+                            </ul>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
           )}
           <div className="flex gap-3">

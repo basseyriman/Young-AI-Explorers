@@ -107,12 +107,14 @@ export async function getClassroomsWithStudentsAction() {
             .select('badge_name')
             .eq('user_id', profile.id)
 
-          const completedLessons = progress?.filter((p) => p.completed_at) ?? []
+          const completedLessons = progress?.filter((p) => p.status === 'completed' || p.completed_at !== null) ?? []
+          const inProgressLessons = progress?.filter((p) => p.status === 'in_progress') ?? []
           const quizScores = progress?.filter((p) => p.quiz_score !== null) ?? []
 
           return {
             ...profile,
             lessonsCount: completedLessons.length,
+            inProgressCount: inProgressLessons.length,
             quizzesCount: quizScores.length,
             avgQuizScore: quizScores.length
               ? Math.round(quizScores.reduce((acc, q) => acc + (q.quiz_score ?? 0), 0) / quizScores.length)

@@ -9,6 +9,7 @@ import {
   syncFamilyLinksByEmail,
 } from "@/lib/db/platform";
 import { requireRole } from "@/lib/auth/dashboard-access";
+import { createClient } from "@/utils/supabase/server";
 
 export default async function ParentDashboardPage() {
   const { user } = await requireRole(["parent", "admin"]);
@@ -32,6 +33,33 @@ export default async function ParentDashboardPage() {
   settings.customTopics = childCustomTopics;
   const userName = user.user_metadata?.full_name?.split(" ")[0] || "Guardian";
 
+  // Fetch progress for all linked children
+  const childProgress: Record<string, { topic_id: string; status: string }[]> = {};
+  if (linkedChildren.length > 0) {
+    try {
+      const childIds = linkedChildren.map((c) => c.child_id);
+      const supabase = await createClient();
+      const { data: progress } = await supabase
+        .from("user_progress")
+        .select("user_id, topic_id, status")
+        .in("user_id", childIds);
+
+      if (progress) {
+        for (const row of progress) {
+          if (!childProgress[row.user_id]) {
+            childProgress[row.user_id] = [];
+          }
+          childProgress[row.user_id].push({
+            topic_id: row.topic_id,
+            status: row.status,
+          });
+        }
+      }
+    } catch (e) {
+      console.error("Failed to fetch linked children progress:", e);
+    }
+  }
+
   return (
     <ParentDashboardClient
       userEmail={user.email ?? ""}
@@ -40,6 +68,7 @@ export default async function ParentDashboardPage() {
       countries={countries}
       linkedChildren={linkedChildren}
       pendingTopics={pendingTopics}
+      childProgress={childProgress}
     />
   );
 }

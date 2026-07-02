@@ -20,6 +20,7 @@ interface StudentProgress {
   email: string | null;
   country_code: string | null;
   lessonsCount: number;
+  inProgressCount: number;
   quizzesCount: number;
   avgQuizScore: number | null;
   badgeNames: string[];
@@ -282,7 +283,7 @@ export function TeacherDashboardClient({ userEmail, userName, countryName, count
                         <thead>
                           <tr className="bg-brand-warm/20 dark:bg-brand-purple-dark/80 text-xs font-semibold text-brand-purple/60 dark:text-brand-cream/60 border-b border-brand-purple/10 dark:border-brand-gold/10">
                             <th className="p-4">Name / Nickname</th>
-                            <th className="p-4 text-center">Lessons</th>
+                            <th className="p-4 text-center">Lessons (Done / Started)</th>
                             <th className="p-4 text-center">Quizzes</th>
                             <th className="p-4 text-center">Avg Score</th>
                             <th className="p-4">Badges</th>
@@ -295,7 +296,11 @@ export function TeacherDashboardClient({ userEmail, userName, countryName, count
                                 <div>{student.full_name ?? student.nickname}</div>
                                 <div className="text-[10px] font-mono text-brand-purple/40 dark:text-brand-cream/40 mt-0.5">{student.email}</div>
                               </td>
-                              <td className="p-4 text-center tabular-nums">{student.lessonsCount}</td>
+                              <td className="p-4 text-center tabular-nums">
+                                <span className="font-semibold text-emerald-600 dark:text-emerald-400">{student.lessonsCount}</span>
+                                <span className="text-brand-purple/45 dark:text-brand-cream/45 mx-1">/</span>
+                                <span className="font-medium text-amber-600 dark:text-amber-400">{student.inProgressCount}</span>
+                              </td>
                               <td className="p-4 text-center tabular-nums">{student.quizzesCount}</td>
                               <td className="p-4 text-center tabular-nums font-semibold text-brand-gold">
                                 {student.avgQuizScore ? `${student.avgQuizScore}%` : "-"}
