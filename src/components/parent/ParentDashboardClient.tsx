@@ -4,7 +4,7 @@ import { useState, useTransition } from "react";
 import Link from "next/link";
 import {
   Shield, Plus, Trash2, Sparkles, Globe, Lock, Users, Save,
-  CheckCircle2, XCircle, Eye, ChevronUp, Loader2,
+  CheckCircle2, XCircle, Eye, ChevronUp, ChevronDown, Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/SignOutButton";
@@ -167,6 +167,7 @@ export function ParentDashboardClient({
   const [pendingTopics, setPendingTopics] = useState(initialPending);
   const [expandedTopicId, setExpandedTopicId] = useState<string | null>(null);
   const [regeneratingTopicId, setRegeneratingTopicId] = useState<string | null>(null);
+  const [showAllCustomTopics, setShowAllCustomTopics] = useState(false);
   const [pending, startTransition] = useTransition();
 
   const getTopicTitle = (topicId: string) => {
@@ -476,25 +477,53 @@ export function ParentDashboardClient({
           <button type="button" onClick={() => window.dispatchEvent(new CustomEvent("open-ai-assistant"))} className="flex items-center gap-2 text-sm font-semibold text-brand-gold hover:underline">
             <Sparkles className="h-4 w-4" /> Ask Vision Vee to create a custom topic
           </button>
-          {settings.customTopics.map((t) => (
-            <div key={t.id} className="flex items-start justify-between p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
-              <div>
-                <div className="font-semibold text-sm text-brand-purple dark:text-brand-cream">{t.title}</div>
-                <div className="text-xs text-brand-purple/70 dark:text-brand-cream/85 mt-1 leading-relaxed">{t.description}</div>
-                {t.badgeName && (
-                  <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-2">Badge: {t.badgeName}</div>
-                )}
-                {t.contentStatus === 'ready' && (
-                  <Link href={`/lesson/${t.id}`} className="text-xs font-semibold text-brand-gold hover:underline mt-2 inline-block">
-                    Preview lesson →
-                  </Link>
-                )}
-              </div>
-              <button type="button" onClick={() => handleRemoveCustom(t.id)} className="text-brand-purple/40 dark:text-brand-cream/50 hover:text-red-500 dark:hover:text-red-400 p-1">
-                <Trash2 className="h-4 w-4" />
-              </button>
+          {settings.customTopics.length === 0 ? (
+            <p className="text-sm text-brand-purple/45 dark:text-brand-cream/45 italic">No custom topics added yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {(showAllCustomTopics ? settings.customTopics : settings.customTopics.slice(0, 5)).map((t) => (
+                <div key={t.id} className="flex items-start justify-between p-4 rounded-xl border border-brand-gold/20 bg-brand-gold/5">
+                  <div>
+                    <div className="font-semibold text-sm text-brand-purple dark:text-brand-cream">{t.title}</div>
+                    <div className="text-xs text-brand-purple/70 dark:text-brand-cream/85 mt-1 leading-relaxed">{t.description}</div>
+                    {t.badgeName && (
+                      <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-2">Badge: {t.badgeName}</div>
+                    )}
+                    {t.contentStatus === 'ready' && (
+                      <Link href={`/lesson/${t.id}`} className="text-xs font-semibold text-brand-gold hover:underline mt-2 inline-block">
+                        Preview lesson →
+                      </Link>
+                    )}
+                  </div>
+                  <button type="button" onClick={() => handleRemoveCustom(t.id)} className="text-brand-purple/40 dark:text-brand-cream/50 hover:text-red-500 dark:hover:text-red-400 p-1">
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              ))}
+              
+              {settings.customTopics.length > 5 && (
+                <div className="flex justify-center pt-2">
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowAllCustomTopics(!showAllCustomTopics)}
+                    className="text-xs font-bold text-brand-purple/65 dark:text-brand-gold hover:bg-brand-purple/5 hover:text-brand-purple dark:hover:bg-brand-gold/10 rounded-full"
+                  >
+                    {showAllCustomTopics ? (
+                      <>
+                        <ChevronUp className="h-4 w-4 mr-1" /> Show Less
+                      </>
+                    ) : (
+                      <>
+                        <ChevronDown className="h-4 w-4 mr-1" /> Show More ({settings.customTopics.length - 5} more)
+                      </>
+                    )}
+                  </Button>
+                </div>
+              )}
             </div>
-          ))}
+          )}
         </section>
 
         <section className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 space-y-4">
