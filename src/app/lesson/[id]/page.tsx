@@ -183,7 +183,6 @@ export default async function LessonPage({
               mainLesson={lesson.main_lesson}
               funFacts={funFacts}
               illustrationUrl={customIllustrationUrl}
-              quizPreview={customQuizPreview}
               badgeName={customBadgeName}
             />
             <div className="mx-auto w-full max-w-[210mm] bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 p-8 md:p-10 rounded-2xl shadow-sm text-center">

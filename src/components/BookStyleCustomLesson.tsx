@@ -8,7 +8,6 @@ type BookStyleCustomLessonProps = {
   mainLesson: string
   funFacts: string[]
   illustrationUrl?: string | null
-  quizPreview?: QuizQuestion | null
   badgeName?: string | null
 }
 
@@ -26,7 +25,6 @@ export function BookStyleCustomLesson({
   mainLesson,
   funFacts,
   illustrationUrl,
-  quizPreview,
   badgeName,
 }: BookStyleCustomLessonProps) {
   const label = storyLabel?.trim() || extractStoryLabel(introduction)
@@ -89,20 +87,7 @@ export function BookStyleCustomLesson({
           </section>
         )}
 
-        {quizPreview && (
-          <section className="rounded-2xl border-l-[8px] border-[#10B981] bg-[#F8FAFC] px-4 py-3 mb-2">
-            <span className="block text-[9.5pt] font-bold uppercase tracking-wide text-[#10B981] mb-1">Mini-Quiz</span>
-            <p className="text-[11pt] font-medium text-[#334155] mb-2">{quizPreview.question}</p>
-            {quizPreview.options.slice(0, 3).map((opt, i) => (
-              <span
-                key={i}
-                className="block mt-1 rounded-lg border border-[#E2E8F0] bg-white px-3 py-1.5 text-[10.5pt] text-[#475569]"
-              >
-                {String.fromCharCode(65 + i)}) {opt}
-              </span>
-            ))}
-          </section>
-        )}
+
 
         <footer className="mt-auto pt-6 flex justify-between text-[10pt] text-[#94A3B8] border-t border-[#E2E8F0]">
           <span>Young AI Explorers</span>

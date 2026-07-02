@@ -15,8 +15,7 @@ const supabase = createClient(
 async function run() {
   const { data: topics, error } = await supabase
     .from('custom_topics')
-    .select('*')
-    .ilike('title', '%Space Exploration%')
+    .select('id, title, content_status, is_approved')
 
   console.log("Topics:", JSON.stringify(topics, null, 2))
   console.log("Error:", error)
