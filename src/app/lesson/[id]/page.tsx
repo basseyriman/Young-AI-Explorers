@@ -81,6 +81,12 @@ export default async function LessonPage({
     }
   }
 
+  // Mark topic as started for students
+  if (role === 'student' && topicId !== 'intro') {
+    const { markTopicStarted } = await import('@/lib/db/platform')
+    await markTopicStarted(user.id, topicId)
+  }
+
   if (!lesson) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-brand-gradient dark:bg-brand-gradient-dark">

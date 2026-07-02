@@ -25,7 +25,18 @@ export default async function StudentDashboard() {
     const dbBadges = await getUserBadges(user.id)
     if (dbBadges.length) earnedBadges = dbBadges
   } catch { /* fallback to metadata until migration applied */ }
-
+  let userProgress: any[] = []
+  try {
+    const { createClient } = await import('@/utils/supabase/server')
+    const supabaseClient = await createClient()
+    const { data: progress } = await supabaseClient
+      .from('user_progress')
+      .select('topic_id, status')
+      .eq('user_id', user.id)
+    if (progress) userProgress = progress
+  } catch (e) {
+    console.error('Failed to load user progress:', e)
+  }
   let studentClassrooms: any[] = []
   try {
     const res = await getStudentClassroomsAction()
@@ -125,22 +136,53 @@ export default async function StudentDashboard() {
                 {curriculum.customTopics.map((tCustom) => {
                   const isReady = tCustom.contentStatus === 'ready';
                   const isDone = earnedBadges.map(String).includes(tCustom.id);
+                  const progressRow = userProgress.find((p) => String(p.topic_id) === String(tCustom.id));
+                  const isInProgress = progressRow?.status === 'in_progress' && !isDone;
+
                   return (
                     <div key={tCustom.id} className="p-4 rounded-xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/15 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div>
+                      <div className="flex-1">
                         <div className="font-semibold text-sm flex items-center gap-2 text-brand-purple dark:text-brand-cream">
                           {tCustom.title}
                           {isDone && <span className="text-[10px] uppercase text-emerald-600 font-bold">{t('dashboard.completed')}</span>}
+                          {isInProgress && <span className="text-[10px] uppercase text-amber-500 font-bold">In Progress</span>}
                         </div>
                         <div className="text-xs text-brand-purple/70 dark:text-brand-cream/85 mt-1 leading-relaxed">{tCustom.description}</div>
                         {tCustom.badgeName && isReady && (
                           <div className="text-[10px] uppercase tracking-wider text-brand-gold mt-1">{t('dashboard.badges')}: {tCustom.badgeName}</div>
                         )}
+                        
+                        {/* Progress Bar / Indicator */}
+                        {isReady && (
+                          <div className="mt-2.5 max-w-xs">
+                            {isInProgress ? (
+                              <>
+                                <div className="flex justify-between items-center text-[10px] font-semibold text-amber-600 dark:text-amber-400 mb-1">
+                                  <span>In Progress</span>
+                                  <span>50%</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-brand-purple/10 dark:bg-brand-gold/10 rounded-full overflow-hidden">
+                                  <div className="h-full bg-amber-500 rounded-full w-1/2" />
+                                </div>
+                              </>
+                            ) : isDone ? (
+                              <>
+                                <div className="flex justify-between items-center text-[10px] font-semibold text-emerald-600 dark:text-emerald-400 mb-1">
+                                  <span>Completed</span>
+                                  <span>100%</span>
+                                </div>
+                                <div className="w-full h-1.5 bg-brand-purple/10 dark:bg-brand-gold/10 rounded-full overflow-hidden">
+                                  <div className="h-full bg-emerald-500 rounded-full w-full" />
+                                </div>
+                              </>
+                            ) : null}
+                          </div>
+                        )}
                       </div>
                       {isReady ? (
                         <Link href={`/lesson/${tCustom.id}`}>
-                          <Button size="sm" className="rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark shrink-0">
-                            <PlayCircle className="h-4 w-4 mr-1.5" /> {t('dashboard.start')}
+                          <Button size="sm" className={`rounded-full shrink-0 ${isDone ? 'bg-emerald-600 hover:bg-emerald-700 text-white' : isInProgress ? 'bg-amber-500 hover:bg-amber-600 text-white' : 'bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark'}`}>
+                            <PlayCircle className="h-4 w-4 mr-1.5" /> {isDone ? 'Review' : isInProgress ? 'Continue' : t('dashboard.start')}
                           </Button>
                         </Link>
                       ) : (

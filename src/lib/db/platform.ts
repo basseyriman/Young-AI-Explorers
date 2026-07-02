@@ -660,6 +660,30 @@ export async function saveBadgeToDb(userId: string, topicId: string | number) {
   }
 }
 
+export async function markTopicStarted(userId: string, topicId: string | number) {
+  const supabase = await createClient()
+  const topicKey = String(topicId)
+
+  // Check if already completed to avoid overriding progress
+  const { data: existing } = await supabase
+    .from('user_progress')
+    .select('status')
+    .eq('user_id', userId)
+    .eq('topic_id', topicKey)
+    .maybeSingle()
+
+  if (existing?.status === 'completed') {
+    return
+  }
+
+  await supabase.from('user_progress').upsert({
+    user_id: userId,
+    topic_id: topicKey,
+    status: 'in_progress',
+    completed_at: null
+  })
+}
+
 export async function postCommunityIdea(
   userId: string,
   countryCode: string,
