@@ -55,7 +55,7 @@ function PendingTopicReviewPanel({
   if (topic.content_status === 'failed') {
     return (
       <div className="rounded-xl border border-red-300/30 bg-red-50 dark:bg-red-950/20 p-5 space-y-3 text-sm text-red-700 dark:text-red-300">
-        <p>Vision Vee could not save the full lesson for this topic. Regenerate it, review the summary, or decline and ask your student to try again.</p>
+        <p>Vision Vee could not save the full lesson for this topic. Regenerate it, review the summary, or decline and ask your child to try again.</p>
         <Button type="button" size="sm" variant="outline" disabled={regenerating} onClick={onRegenerate} className="rounded-full border-red-300/40 text-red-700 dark:text-red-200">
           {regenerating ? <><Loader2 className="h-3.5 w-3.5 mr-1.5 animate-spin" /> Regenerating…</> : 'Regenerate lesson'}
         </Button>
@@ -127,7 +127,7 @@ function PendingTopicReviewPanel({
 
       {topic.badge_name && (
         <p className="text-xs font-medium text-brand-gold pt-1 border-t border-brand-purple/10 dark:border-brand-gold/15">
-          Badge your student can earn: {topic.badge_name}
+          Badge your child can earn: {topic.badge_name}
         </p>
       )}
 
@@ -199,7 +199,7 @@ export function ParentDashboardClient({
   const handleAddCustom = () => {
     if (!customTitle.trim()) return;
     startTransition(async () => {
-      const result = await addCustomTopicAction(customTitle.trim(), customDesc.trim() || "A custom topic added to your student's curriculum.");
+      const result = await addCustomTopicAction(customTitle.trim(), customDesc.trim() || "A custom topic added to your child's curriculum.");
       if ('error' in result && result.error) {
         setMessage(result.error);
         return;
@@ -252,7 +252,7 @@ export function ParentDashboardClient({
           ],
         });
       }
-      setMessage("Topic approved — it now appears in your student's curriculum.");
+      setMessage("Topic approved — it now appears in your child's curriculum.");
     });
   };
 
@@ -309,7 +309,7 @@ export function ParentDashboardClient({
           <p className="text-sm font-semibold uppercase tracking-wider text-brand-gold mb-2">Parent Dashboard</p>
           <h1 className="text-3xl md:text-4xl font-heading font-bold mb-2">Welcome, {userName}</h1>
           <p className="text-brand-purple/60 dark:text-brand-cream/60 max-w-2xl">
-            Manage your student&apos;s ever-growing curriculum — {TOPIC_MARKETING.platformLine} All settings stored securely in Supabase.
+            Manage your child&apos;s ever-growing curriculum — {TOPIC_MARKETING.platformLine} All settings stored securely in Supabase.
           </p>
         </div>
 
@@ -407,7 +407,7 @@ export function ParentDashboardClient({
             <h2 className="text-xl font-heading font-bold">Pending Vision Vee Topics</h2>
           </div>
           <p className="text-sm text-brand-purple/60 dark:text-brand-cream/60">
-            Topics suggested by Vision Vee or your student require your approval before they appear in their learning path.
+            Topics suggested by Vision Vee or your child require your approval before they appear in their learning path.
             Review the full lesson and quiz first, then approve or decline.
           </p>
           {pendingTopics.length === 0 ? (
@@ -498,13 +498,13 @@ export function ParentDashboardClient({
         </section>
 
         <section className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 space-y-4">
-          <h2 className="text-xl font-heading font-bold">Link Student Account</h2>
+          <h2 className="text-xl font-heading font-bold">Link Child Account</h2>
           <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55">
-            Students who entered your email at signup are linked automatically. You can also enter your student&apos;s registered email below to link manually and sync curriculum settings.
+            Children who entered your email at signup are linked automatically. You can also enter your child&apos;s registered email below to link manually and sync curriculum settings.
           </p>
           {linkedChildren.length > 0 && (
             <div className="space-y-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Linked Students</p>
+              <p className="text-xs font-semibold uppercase tracking-wider text-brand-gold">Linked explorers</p>
               <div className="grid grid-cols-1 gap-4">
                 {linkedChildren.map((c) => {
                   const progressList = childProgress[c.child_id] || [];
@@ -515,7 +515,7 @@ export function ParentDashboardClient({
                     <div key={c.child_id} className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 space-y-4 shadow-sm">
                       <div className="flex flex-wrap justify-between items-center gap-2 border-b border-brand-purple/10 dark:border-brand-gold/10 pb-3">
                         <div className="font-heading font-bold text-sm text-brand-purple dark:text-brand-cream">
-                          👤 {c.nickname ?? c.full_name ?? 'Student'}
+                          👤 {c.nickname ?? c.full_name ?? 'Explorer'}
                         </div>
                         <div className="text-xs text-brand-purple/60 dark:text-brand-cream/60">
                           {c.email}
@@ -570,7 +570,7 @@ export function ParentDashboardClient({
             </div>
           )}
           <div className="flex gap-3">
-            <input value={childEmail} onChange={(e) => setChildEmail(e.target.value)} placeholder="student@email.com" className="flex-1 px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
+            <input value={childEmail} onChange={(e) => setChildEmail(e.target.value)} placeholder="child@email.com" className="flex-1 px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
             <Button onClick={handleLinkChild} disabled={pending} variant="outline" className="rounded-xl shrink-0">Link & Sync</Button>
           </div>
         </section>
