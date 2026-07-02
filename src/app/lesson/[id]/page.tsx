@@ -119,7 +119,7 @@ export default async function LessonPage({
       : bookIllustrationFilename(lesson.topic_number)
 
   const chapterLabel = isCustomTopic
-    ? t('lesson.custom_topic')
+    ? (customBadgeName ? `${t('dashboard.badges')}: ${customBadgeName}` : t('lesson.custom_topic'))
     : id === 'intro'
       ? t('lesson.introduction')
       : `${t('lesson.chapter')} ${parseInt(id, 10) < 10 ? '0' + id : id}`
@@ -180,29 +180,6 @@ export default async function LessonPage({
               </Button>
             </Link>
           </div>
-        ) : isCustomTopic ? (
-          <div className="space-y-8">
-            <BookStyleCustomLesson
-              title={lesson.title}
-              storyLabel={customStoryLabel}
-              introduction={lesson.introduction}
-              mainLesson={lesson.main_lesson}
-              funFacts={funFacts}
-              illustrationUrl={customIllustrationUrl}
-              badgeName={customBadgeName}
-            />
-            <div className="mx-auto w-full max-w-[210mm] bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/10 p-8 md:p-10 rounded-2xl shadow-sm text-center">
-              <h3 className="text-xl font-semibold text-brand-purple dark:text-brand-cream mb-3 tracking-tight">{t('lesson.quiz_cta_title')}</h3>
-              <p className="text-brand-purple/60 dark:text-brand-cream/60 mb-6 text-base">
-                {t('lesson.quiz_cta_desc')}
-              </p>
-              <Link href={`/quiz/${id}`}>
-                <Button size="lg" className="bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark hover:opacity-90 h-12 px-8 text-base rounded-full font-semibold transition-opacity">
-                  {t('lesson.take_quiz')} <ArrowRight className="ml-2 h-5 w-5" />
-                </Button>
-              </Link>
-            </div>
-          </div>
         ) : (
           <div className="space-y-12">
             {/* Header Section */}
@@ -217,7 +194,15 @@ export default async function LessonPage({
             </div>
 
             {/* Main Illustration Hero */}
-            {lessonImage ? (
+            {customIllustrationUrl ? (
+              <div className="relative w-full max-w-4xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-brand-purple/10 border-4 border-brand-surface group bg-brand-warm aspect-[5/4] md:aspect-[4/3]">
+                <img 
+                  src={customIllustrationUrl} 
+                  alt={lesson.title} 
+                  className="w-full h-full object-cover object-center transition-transform duration-1000 group-hover:scale-105" 
+                />
+              </div>
+            ) : lessonImage ? (
               <div className="relative w-full max-w-4xl mx-auto rounded-[32px] overflow-hidden shadow-2xl shadow-brand-purple/10 border-4 border-brand-surface group bg-brand-warm aspect-[5/4] md:aspect-[4/3]">
                 <img 
                   src={`/assets/${lessonImage}`} 
