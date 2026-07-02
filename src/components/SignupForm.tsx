@@ -31,22 +31,28 @@ export function SignupForm({ countries, defaultRole }: Props) {
       </CardHeader>
       <CardContent className="pt-6">
         <form action={signup} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="fullName" className="text-brand-purple dark:text-brand-cream font-semibold">Full Name</Label>
-            <Input id="fullName" name="fullName" type="text" placeholder="Your name" required className={fieldClass} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="fullName" className="text-brand-purple dark:text-brand-cream font-semibold">Full Name</Label>
+              <Input id="fullName" name="fullName" type="text" placeholder="Your name" required className={fieldClass} />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="email" className="text-brand-purple dark:text-brand-cream font-semibold">Email</Label>
+              <Input id="email" name="email" type="email" placeholder="you@example.com" required className={fieldClass} />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="email" className="text-brand-purple dark:text-brand-cream font-semibold">Email</Label>
-            <Input id="email" name="email" type="email" placeholder="you@example.com" required className={fieldClass} />
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="password" className="text-brand-purple dark:text-brand-cream font-semibold">Password</Label>
+              <Input id="password" name="password" type="password" required minLength={6} placeholder="At least 6 characters" className={fieldClass} />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-brand-purple dark:text-brand-cream font-semibold">Country / Region</Label>
+              <CountrySelect countries={countries.length ? countries : [{ code: 'GB', name: 'United Kingdom', flag_emoji: '🇬🇧', is_featured: true }]} />
+            </div>
           </div>
-          <div className="space-y-2">
-            <Label htmlFor="password" className="text-brand-purple dark:text-brand-cream font-semibold">Password</Label>
-            <Input id="password" name="password" type="password" required minLength={6} placeholder="At least 6 characters" className={fieldClass} />
-          </div>
-          <div className="space-y-2">
-            <Label className="text-brand-purple dark:text-brand-cream font-semibold">Country / Region</Label>
-            <CountrySelect countries={countries.length ? countries : [{ code: 'GB', name: 'United Kingdom', flag_emoji: '🇬🇧', is_featured: true }]} />
-          </div>
+
           <div className="space-y-2">
             <Label htmlFor="role" className="text-brand-purple dark:text-brand-cream font-semibold">I am a…</Label>
             <select
@@ -66,13 +72,15 @@ export function SignupForm({ countries, defaultRole }: Props) {
           {isStudent && (
             <div className="space-y-4 p-4 rounded-xl bg-brand-gold/5 border border-brand-gold/20">
               <p className="text-sm font-semibold text-brand-purple dark:text-brand-cream">Parent / Guardian Consent (required for students)</p>
-              <div className="space-y-2">
-                <Label htmlFor="birthYear" className="text-brand-purple dark:text-brand-cream font-semibold">Birth Year</Label>
-                <Input id="birthYear" name="birthYear" type="number" min={1995} max={currentYear} placeholder="e.g. 2015" required={isStudent} className={fieldClass} />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="parentEmail" className="text-brand-purple dark:text-brand-cream font-semibold">Parent / Guardian Email</Label>
-                <Input id="parentEmail" name="parentEmail" type="email" placeholder="parent@example.com" required={isStudent} className={fieldClass} />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="birthYear" className="text-brand-purple dark:text-brand-cream font-semibold">Birth Year</Label>
+                  <Input id="birthYear" name="birthYear" type="number" min={1995} max={currentYear} placeholder="e.g. 2015" required={isStudent} className={fieldClass} />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="parentEmail" className="text-brand-purple dark:text-brand-cream font-semibold">Parent / Guardian Email</Label>
+                  <Input id="parentEmail" name="parentEmail" type="email" placeholder="parent@example.com" required={isStudent} className={fieldClass} />
+                </div>
               </div>
               <label className="flex items-start gap-3 text-sm cursor-pointer">
                 <input type="checkbox" name="parentConsent" required={isStudent} className="mt-1 rounded" />

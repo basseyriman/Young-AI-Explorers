@@ -22,7 +22,7 @@ export default async function SignupPage({
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,160,78,0.12),rgba(255,255,255,0))] dark:bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(201,160,78,0.08),rgba(26,15,46,0))]" />
       </div>
 
-      <div className="w-full max-w-md relative z-10">
+      <div className="w-full max-w-2xl relative z-10">
         <Link href="/" className="inline-flex items-center text-sm font-semibold text-brand-purple/50 hover:text-brand-gold dark:text-brand-cream/50 dark:hover:text-brand-gold mb-8 transition-colors">
           <ArrowLeft className="mr-2 h-4 w-4" /> Back to Home
         </Link>
