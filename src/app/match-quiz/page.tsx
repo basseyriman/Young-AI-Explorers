@@ -27,6 +27,7 @@ function MatchQuizContent() {
   const [pending, startTransition] = useTransition();
   const [nickname, setNickname] = useState("Explorer");
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [timeLeft, setTimeLeft] = useState(15);
 
   const questions = ALL_QUIZZES[topicId] ?? ALL_QUIZZES[11];
   const topicTitle = BOOK_LESSONS.find((l) => l.id === topicId)?.title ?? "Machine Learning";
@@ -124,6 +125,26 @@ function MatchQuizContent() {
     return () => clearInterval(interval);
   }, [phase, sessionId]);
 
+  // 1. Question timer countdown
+  useEffect(() => {
+    if (phase !== "playing" || selected !== null) return;
+    if (timeLeft <= 0) {
+      setSelected(-1); // Timed out
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      setTimeLeft((t) => t - 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [timeLeft, phase, selected]);
+
+  // 2. Reset timer when question index changes
+  useEffect(() => {
+    setTimeLeft(15);
+  }, [questionIdx]);
+
   return (
     <div className="min-h-screen bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:bg-brand-cream">
       <header className="border-b border-brand-purple/10 dark:border-brand-gold/10 bg-brand-surface/80 dark:bg-brand-purple-dark/60">
@@ -178,15 +199,58 @@ function MatchQuizContent() {
               <div className="text-sm font-bold">{opponent} · {theirScore}</div>
             </div>
             <div className="p-8 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10">
-              <p className="text-xs text-brand-gold uppercase tracking-wider mb-3">Question {questionIdx + 1} of {questions.length}</p>
+              {/* Question Countdown Timer bar */}
+              <div className="w-full bg-brand-purple/10 dark:bg-brand-gold/10 h-1.5 rounded-full overflow-hidden mb-6">
+                <div 
+                  className={`h-full transition-all duration-1000 ease-linear ${timeLeft <= 5 ? "bg-red-500 animate-pulse" : "bg-brand-gold"}`}
+                  style={{ width: `${(timeLeft / 15) * 100}%` }}
+                />
+              </div>
+
+              <div className="flex justify-between items-center mb-3">
+                <p className="text-xs text-brand-gold uppercase tracking-wider font-semibold">Question {questionIdx + 1} of {questions.length}</p>
+                <span className={`text-xs font-mono font-bold px-2 py-0.5 rounded ${timeLeft <= 5 ? "text-red-500 bg-red-500/10 animate-pulse" : "text-brand-gold bg-brand-gold/10"}`}>{timeLeft}s remaining</span>
+              </div>
+
               <h2 className="text-xl font-bold mb-6">{questions[questionIdx].question}</h2>
               <div className="space-y-3">
-                {questions[questionIdx].options.map((opt, i) => (
-                  <button key={i} type="button" disabled={selected !== null} onClick={() => setSelected(i)} className={`w-full text-left p-4 rounded-xl border transition-all ${selected === i ? "border-brand-gold bg-brand-gold/10" : "border-brand-purple/15 hover:border-brand-gold/40"}`}>
-                    {opt}
-                  </button>
-                ))}
+                {questions[questionIdx].options.map((opt, i) => {
+                  const correct = Number(questions[questionIdx]?.answer);
+                  const isCorrect = i === correct;
+                  const isSelected = selected === i;
+                  const showFeedback = selected !== null;
+                  
+                  let btnStyle = "border-brand-purple/15 hover:border-brand-gold/40 text-brand-purple dark:text-brand-cream";
+                  if (showFeedback) {
+                    if (isCorrect) {
+                      btnStyle = "border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold";
+                    } else if (isSelected) {
+                      btnStyle = "border-red-500 bg-red-500/10 text-red-600 dark:text-red-400 font-semibold";
+                    } else {
+                      btnStyle = "border-brand-purple/5 opacity-55";
+                    }
+                  }
+
+                  return (
+                    <button 
+                      key={i} 
+                      type="button" 
+                      disabled={selected !== null} 
+                      onClick={() => setSelected(i)} 
+                      className={`w-full text-left p-4 rounded-xl border transition-all ${btnStyle}`}
+                    >
+                      {opt}
+                    </button>
+                  );
+                })}
               </div>
+
+              {selected === -1 && (
+                <div className="mt-4 text-center text-sm font-semibold text-red-500 animate-pulse">
+                  ⏰ Time's up! Moving to next question...
+                </div>
+              )}
+            </div>
             </div>
           </div>
         )}
