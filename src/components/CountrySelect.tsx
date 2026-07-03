@@ -85,24 +85,6 @@ export function CountrySelect({ countries, name = "countryCode", defaultValue = 
           <span>{selectedCountry.name}</span>
         </div>
       )}
-      {!search && featured.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {featured.map((c) => (
-            <button
-              key={c.code}
-              type="button"
-              onClick={() => pickCountry(c.code)}
-              className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-                selected === c.code
-                  ? "bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark border-transparent"
-                  : "border-brand-purple/15 dark:border-brand-cream/25 text-brand-purple/80 dark:text-brand-cream/80 hover:border-brand-gold/40"
-              }`}
-            >
-              {c.flag_emoji} {c.name}
-            </button>
-          ))}
-        </div>
-      )}
       {!search && (
         <p className="text-xs text-brand-purple/45 dark:text-brand-cream/45">
           Type your country — e.g. Togo, Brazil, Japan — then click or press Enter.
