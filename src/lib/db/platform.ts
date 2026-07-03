@@ -348,12 +348,39 @@ export async function getCurriculumFromDb(userId: string): Promise<CurriculumSet
     .eq('user_id', userId)
     .single()
 
-  const { data: customTopics } = await supabase
+  // 1. Fetch classrooms student is enrolled in
+  const { data: enrollments } = await supabase
+    .from('classroom_students')
+    .select('classroom_id')
+    .eq('student_id', userId)
+
+  const teacherIds: string[] = []
+  if (enrollments && enrollments.length > 0) {
+    const classIds = enrollments.map((e) => e.classroom_id)
+    const { data: classes } = await supabase
+      .from('classrooms')
+      .select('teacher_id')
+      .in('id', classIds)
+    if (classes) {
+      classes.forEach((c) => {
+        if (c.teacher_id) teacherIds.push(c.teacher_id)
+      })
+    }
+  }
+
+  // 2. Query custom topics belonging to student OR their teachers
+  let customTopicsQuery = supabase
     .from('custom_topics')
     .select('*')
-    .eq('user_id', userId)
     .eq('is_approved', true)
-    .order('created_at', { ascending: false })
+
+  if (teacherIds.length > 0) {
+    customTopicsQuery = customTopicsQuery.or(`user_id.eq.${userId},user_id.in.(${teacherIds.join(',')})`)
+  } else {
+    customTopicsQuery = customTopicsQuery.eq('user_id', userId)
+  }
+
+  const { data: customTopics } = await customTopicsQuery.order('created_at', { ascending: false })
 
   return {
     region: profile?.country_code ?? 'GB',
