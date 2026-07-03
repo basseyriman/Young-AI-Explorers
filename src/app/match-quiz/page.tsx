@@ -7,7 +7,7 @@ import { ArrowLeft, Swords, Trophy, Clock } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { ALL_QUIZZES } from "@/data/lessons";
 import { BOOK_LESSONS, TOPIC_MARKETING } from "@/data/curriculum";
-import { joinMatchQuizAction, leaveMatchQueueAction } from "@/app/dashboard/parent/actions";
+import { joinMatchQuizAction, leaveMatchQueueAction, checkActiveMatchSessionAction, updateMatchScoreAction, getMatchSessionAction } from "@/app/dashboard/parent/actions";
 
 type MatchPhase = "lobby" | "matching" | "playing" | "results";
 
@@ -26,13 +26,19 @@ function MatchQuizContent() {
   const [error, setError] = useState<string | null>(null);
   const [pending, startTransition] = useTransition();
   const [nickname, setNickname] = useState("Explorer");
+  const [sessionId, setSessionId] = useState<string | null>(null);
 
   const questions = ALL_QUIZZES[topicId] ?? ALL_QUIZZES[11];
   const topicTitle = BOOK_LESSONS.find((l) => l.id === topicId)?.title ?? "Machine Learning";
 
+  const [pollIntervalId, setPollIntervalId] = useState<any>(null);
+
   useEffect(() => {
-    return () => { leaveMatchQueueAction(); };
-  }, []);
+    return () => {
+      leaveMatchQueueAction();
+      if (pollIntervalId) clearInterval(pollIntervalId);
+    };
+  }, [pollIntervalId]);
 
   const startMatch = () => {
     setPhase("matching");
@@ -49,24 +55,36 @@ function MatchQuizContent() {
         return;
       }
 
-      if (result.matched && result.opponentNickname) {
+      if (result.matched && result.opponentNickname && result.session) {
         setOpponent(result.opponentNickname);
+        setSessionId(result.session.id);
         setPhase("playing");
         setQuestionIdx(0);
         setMyScore(0);
         setTheirScore(0);
       } else {
-        setTimeout(async () => {
-          const retry = await joinMatchQuizAction(countryCode, nickname, String(randomTopic));
-          if (retry.matched && retry.opponentNickname) {
-            setOpponent(retry.opponentNickname);
-            setPhase("playing");
-          } else {
+        const startTime = Date.now();
+        const interval = setInterval(async () => {
+          if (Date.now() - startTime > 15000) {
+            clearInterval(interval);
             setError("Waiting for another explorer in your country. Try again in a moment.");
             setPhase("lobby");
             await leaveMatchQueueAction();
+            return;
           }
-        }, 3000);
+
+          const check = await checkActiveMatchSessionAction();
+          if ('matched' in check && check.matched && check.session && check.opponentNickname) {
+            clearInterval(interval);
+            setOpponent(check.opponentNickname);
+            setSessionId(check.session.id);
+            setPhase("playing");
+            setQuestionIdx(0);
+            setMyScore(0);
+            setTheirScore(0);
+          }
+        }, 1500);
+        setPollIntervalId(interval);
       }
     });
   };
@@ -76,8 +94,13 @@ function MatchQuizContent() {
     const timer = setTimeout(() => {
       const correct = questions[questionIdx]?.answer;
       const gotIt = selected === Number(correct);
-      setMyScore((s) => s + (gotIt ? 1 : 0));
-      setTheirScore((s) => s + (Math.random() > 0.4 ? 1 : 0));
+      const newScore = myScore + (gotIt ? 1 : 0);
+      setMyScore(newScore);
+
+      if (sessionId) {
+        updateMatchScoreAction(sessionId, newScore);
+      }
+
       if (questionIdx + 1 >= questions.length) {
         setPhase("results");
       } else {
@@ -86,10 +109,23 @@ function MatchQuizContent() {
       }
     }, 1200);
     return () => clearTimeout(timer);
-  }, [selected, phase, questionIdx, questions]);
+  }, [selected, phase, questionIdx, questions, sessionId, myScore]);
+
+  useEffect(() => {
+    if (phase !== "playing" || !sessionId) return;
+
+    const interval = setInterval(async () => {
+      const res = await getMatchSessionAction(sessionId);
+      if (res && res.success && res.theirScore !== undefined) {
+        setTheirScore(res.theirScore);
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, [phase, sessionId]);
 
   return (
-    <div className="min-h-screen bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:text-brand-cream">
+    <div className="min-h-screen bg-brand-gradient dark:bg-brand-gradient-dark text-brand-purple dark:bg-brand-cream">
       <header className="border-b border-brand-purple/10 dark:border-brand-gold/10 bg-brand-surface/80 dark:bg-brand-purple-dark/60">
         <div className="container mx-auto px-6 h-20 flex items-center justify-between">
           <Link href="/"><Logo showWordmark size="md" /></Link>

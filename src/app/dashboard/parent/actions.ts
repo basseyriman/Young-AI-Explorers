@@ -178,3 +178,27 @@ export async function postIdeaAction(countryCode: string, topicTitle: string, id
   const { postCommunityIdea } = await import('@/lib/db/platform')
   return postCommunityIdea(user.id, countryCode, topicTitle, ideaText, nickname)
 }
+
+export async function checkActiveMatchSessionAction() {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const { checkActiveMatchSession } = await import('@/lib/db/platform')
+  return checkActiveMatchSession(user.id)
+}
+
+export async function updateMatchScoreAction(sessionId: string, score: number) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const { updateMatchScore } = await import('@/lib/db/platform')
+  return updateMatchScore(user.id, sessionId, score)
+}
+
+export async function getMatchSessionAction(sessionId: string) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+  const { getMatchSession } = await import('@/lib/db/platform')
+  return getMatchSession(user.id, sessionId)
+}

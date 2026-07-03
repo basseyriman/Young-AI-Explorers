@@ -875,3 +875,71 @@ export async function getSchoolInquiries(limit = 50): Promise<SchoolInquiryRow[]
   if (error || !data) return []
   return data as SchoolInquiryRow[]
 }
+
+export async function checkActiveMatchSession(userId: string) {
+  const supabase = await createClient()
+  const { data: session } = await supabase
+    .from('match_quiz_sessions')
+    .select('*')
+    .or(`player_a.eq.${userId},player_b.eq.${userId}`)
+    .eq('status', 'active')
+    .order('created_at', { ascending: false })
+    .limit(1)
+    .maybeSingle()
+
+  if (session) {
+    const opponentId = session.player_a === userId ? session.player_b : session.player_a
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('nickname, full_name')
+      .eq('id', opponentId)
+      .single()
+    const opponentNickname = profile?.nickname ?? profile?.full_name?.split(' ')[0] ?? 'Explorer'
+    return { matched: true, session, opponentNickname }
+  }
+  return { matched: false }
+}
+
+export async function updateMatchScore(userId: string, sessionId: string, score: number) {
+  const supabase = await createClient()
+  
+  const { data: session } = await supabase
+    .from('match_quiz_sessions')
+    .select('player_a, player_b')
+    .eq('id', sessionId)
+    .single()
+
+  if (!session) return { error: 'Session not found' }
+
+  const isPlayerA = session.player_a === userId
+  const updateData = isPlayerA 
+    ? { player_a_score: score }
+    : { player_b_score: score }
+
+  const { data, error } = await supabase
+    .from('match_quiz_sessions')
+    .update(updateData)
+    .eq('id', sessionId)
+    .select()
+    .single()
+
+  if (error) return { error: error.message }
+  return { success: true, session: data }
+}
+
+export async function getMatchSession(userId: string, sessionId: string) {
+  const supabase = await createClient()
+  const { data: session, error } = await supabase
+    .from('match_quiz_sessions')
+    .select('*')
+    .eq('id', sessionId)
+    .single()
+
+  if (error || !session) return { error: error?.message ?? 'Session not found' }
+  
+  const isPlayerA = session.player_a === userId
+  const myScore = isPlayerA ? session.player_a_score : session.player_b_score
+  const theirScore = isPlayerA ? session.player_b_score : session.player_a_score
+
+  return { success: true, session, myScore, theirScore }
+}
