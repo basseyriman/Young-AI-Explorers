@@ -290,3 +290,21 @@ export async function activateSchoolPilotAction(inquiryId: string) {
   revalidatePath('/dashboard/admin')
   return { success: true, inviteCode }
 }
+
+export async function saveTeacherCurriculumAction(disabledTopics: string[]) {
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
+  if (!user) return { error: 'Not authenticated' }
+
+  // 1. Fetch current settings to preserve other keys
+  const { getCurriculumFromDb, saveCurriculumToDb } = await import('@/lib/db/platform')
+  const current = await getCurriculumFromDb(user.id)
+  current.disabledTopics = disabledTopics as any[]
+
+  // 2. Save
+  const result = await saveCurriculumToDb(user.id, current)
+
+  revalidatePath('/dashboard/teacher')
+  revalidatePath('/dashboard/student')
+  return result
+}
