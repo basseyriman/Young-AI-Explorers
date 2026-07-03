@@ -4,7 +4,7 @@ import { useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import {
   LogOut, Users, Globe, BookOpen, Shield, TrendingUp, Settings,
-  Mail, Building2, Calendar, Filter, Sparkles,
+  Mail, Building2, Calendar, Filter, Sparkles, Copy, Share2, Check, X,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
@@ -54,6 +54,43 @@ function formatDate(iso: string) {
 
 export function AdminDashboardClient({ userEmail, userName, stats, countries, inquiries }: Props) {
   const [filter, setFilter] = useState<"all" | SchoolInquiryRow["inquiry_type"]>("all");
+  const [activatedPilot, setActivatedPilot] = useState<{
+    inviteCode: string;
+    schoolName: string;
+    contactEmail: string;
+    contactName: string;
+  } | null>(null);
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code);
+      setCopied(true);
+      toast.success("Invite code copied to clipboard!");
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      toast.error("Failed to copy code");
+    }
+  };
+
+  const getMailtoLink = (pilot: { schoolName: string; inviteCode: string; contactEmail: string; contactName: string }) => {
+    const subject = encodeURIComponent(`Young AI Explorers — School Pilot Activated!`);
+    const body = encodeURIComponent(
+      `Hi ${pilot.contactName},\n\n` +
+      `Great news! We have approved and activated the school pilot program for ${pilot.schoolName} on the Young AI Explorers platform.\n\n` +
+      `Here is your unique teacher invite code:\n` +
+      `👉 ${pilot.inviteCode}\n\n` +
+      `To get started, follow these simple steps to register your Educator account:\n` +
+      `1. Go to ${window.location.origin}/signup\n` +
+      `2. Fill in your details and select "Teacher / Educator" as your role.\n` +
+      `3. Enter your unique invite code above in the "School Pilot Invite Code" field.\n\n` +
+      `Once registered, you'll be able to create classrooms, add students, and track their AI learning progress!\n\n` +
+      `Best regards,\n` +
+      `Young AI Explorers Team`
+    );
+    return `mailto:${pilot.contactEmail}?subject=${subject}&body=${body}`;
+  };
+
   const topCountries = countries.filter((c) => c.code !== "GLOBAL").slice(0, 8);
 
   const filtered = useMemo(
@@ -189,8 +226,12 @@ export function AdminDashboardClient({ userEmail, userName, stats, countries, in
                             try {
                               const res = await activateSchoolPilotAction(inquiry.id);
                               if (res.success && res.inviteCode) {
-                                alert(`Pilot Activated!\n\nInvite Code: ${res.inviteCode}\nShare this code with the school's teacher so they can register.`);
-                                window.location.reload();
+                                setActivatedPilot({
+                                  inviteCode: res.inviteCode,
+                                  schoolName: inquiry.school_name,
+                                  contactEmail: inquiry.contact_email,
+                                  contactName: inquiry.contact_name,
+                                });
                               } else if (res.error) {
                                 toast.error(res.error);
                               }
@@ -258,6 +299,81 @@ export function AdminDashboardClient({ userEmail, userName, stats, countries, in
             </div>
           </div>
         </div>
+        {/* Active Pilot Share Modal Overlay */}
+        {activatedPilot && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-brand-purple-dark/60 backdrop-blur-sm p-4">
+            <div className="w-full max-w-md rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-gold/30 p-6 shadow-2xl relative space-y-6">
+              <button 
+                type="button" 
+                onClick={() => {
+                  setActivatedPilot(null);
+                  window.location.reload();
+                }}
+                className="absolute top-4 right-4 text-brand-purple/40 dark:text-brand-cream/40 hover:text-brand-purple dark:hover:text-brand-cream transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+
+              <div className="text-center space-y-2">
+                <span className="inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand-gold/10 border border-brand-gold/20 text-brand-gold">
+                  <Sparkles className="h-6 w-6" />
+                </span>
+                <h3 className="text-xl font-heading font-bold text-brand-purple dark:text-brand-cream">School Pilot Activated!</h3>
+                <p className="text-sm text-brand-purple/65 dark:text-brand-cream/65 text-center">
+                  Invite code generated for <span className="font-semibold text-brand-purple dark:text-brand-cream">{activatedPilot.schoolName}</span>
+                </p>
+              </div>
+
+              <div className="p-4 rounded-xl bg-brand-warm dark:bg-brand-purple-dark/50 border border-brand-purple/10 dark:border-brand-gold/10 flex items-center justify-between gap-3">
+                <code className="text-lg font-mono font-bold tracking-wider text-brand-purple dark:text-brand-gold select-all">
+                  {activatedPilot.inviteCode}
+                </code>
+                <Button 
+                  onClick={() => handleCopyCode(activatedPilot.inviteCode)}
+                  variant="outline" 
+                  size="sm" 
+                  className="rounded-lg h-9 gap-1.5"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-4 w-4 text-emerald-600" />
+                      <span>Copied!</span>
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-4 w-4" />
+                      <span>Copy</span>
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              <p className="text-xs text-center text-brand-purple/50 dark:text-brand-cream/55 leading-normal">
+                Share this code with the teacher so they can complete their registration and start setting up classrooms.
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+                <a 
+                  href={getMailtoLink(activatedPilot)}
+                  className="flex-1 inline-flex items-center justify-center gap-2 h-11 px-4 rounded-xl bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-semibold hover:opacity-90 transition-opacity text-sm"
+                >
+                  <Share2 className="h-4 w-4" />
+                  Share via Email
+                </a>
+                <Button 
+                  onClick={() => {
+                    setActivatedPilot(null);
+                    window.location.reload();
+                  }}
+                  variant="outline"
+                  className="h-11 rounded-xl text-sm"
+                >
+                  Close & Refresh
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );
