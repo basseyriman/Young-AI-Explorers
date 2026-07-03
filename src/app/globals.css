@@ -186,4 +186,23 @@
     display: block;
     max-width: 100%;
   }
+  
+  /* Prevent browser autofill from overriding input styles and background colors */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #F5F0EB inset !important;
+    -webkit-text-fill-color: #4A2D6E !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  .dark input:-webkit-autofill,
+  .dark input:-webkit-autofill:hover, 
+  .dark input:-webkit-autofill:focus, 
+  .dark input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #2D1A42 inset !important;
+    -webkit-text-fill-color: #FAF8F5 !important;
+    transition: background-color 5000s ease-in-out 0s;
+  }
 }

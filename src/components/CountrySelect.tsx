@@ -80,7 +80,7 @@ export function CountrySelect({ countries, name = "countryCode", defaultValue = 
         />
       </div>
       {selectedCountry && !search && (
-        <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-brand-gold/10 border border-brand-gold/20 text-sm font-medium text-brand-purple dark:text-brand-cream">
+        <div className="flex items-center gap-2 h-12 px-4 rounded-xl bg-brand-gold/10 border border-brand-gold/20 text-sm font-semibold text-brand-purple dark:text-brand-cream">
           <span>{selectedCountry.flag_emoji}</span>
           <span>{selectedCountry.name}</span>
         </div>
