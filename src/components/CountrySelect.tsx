@@ -85,11 +85,7 @@ export function CountrySelect({ countries, name = "countryCode", defaultValue = 
           <span>{selectedCountry.name}</span>
         </div>
       )}
-      {!search && (
-        <p className="text-xs text-brand-purple/45 dark:text-brand-cream/45">
-          Type your country — e.g. Togo, Brazil, Japan — then click or press Enter.
-        </p>
-      )}
+
       {showResults && (
         <div className="max-h-48 overflow-y-auto rounded-xl border border-brand-purple/10 dark:border-brand-gold/10 divide-y divide-brand-purple/5 dark:divide-brand-gold/5 bg-brand-surface dark:bg-brand-purple-dark/80 shadow-lg">
           {visibleResults.map((c) => (
