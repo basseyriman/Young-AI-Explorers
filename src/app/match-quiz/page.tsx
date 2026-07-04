@@ -171,16 +171,28 @@ function MatchQuizContent() {
 
         {phase === "lobby" && (
           <div className="space-y-6">
-            <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 space-y-4">
-              <label className="text-sm font-semibold">Country Code</label>
-              <input value={countryCode} onChange={(e) => setCountryCode(e.target.value.toUpperCase())} className="w-full px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" placeholder="GB, NG, US…" />
-              <label className="text-sm font-semibold">Your Nickname</label>
-              <input value={nickname} onChange={(e) => setNickname(e.target.value)} className="w-full px-4 py-3 rounded-xl border border-brand-purple/15 bg-brand-warm dark:bg-brand-purple-dark/50 text-sm" />
+            <div className="p-6 rounded-2xl bg-brand-surface dark:bg-brand-warm/5 border border-brand-purple/10 dark:border-brand-gold/15 space-y-4 shadow-sm">
+              <label className="text-sm font-bold block text-brand-purple dark:text-brand-cream">Room Code or Country Code</label>
+              <p className="text-xs text-brand-purple/60 dark:text-brand-cream/65 leading-relaxed">
+                Enter your **Classroom Code** (e.g. `CLASS-ABCDE`) to play with a classmate, create a custom **Room Code** (e.g. `ROOM-101`), or enter a **Country Code** (e.g. `GB`, `US`, `NG`) to find global peers.
+              </p>
+              <input 
+                value={countryCode} 
+                onChange={(e) => setCountryCode(e.target.value.toUpperCase())} 
+                className="w-full px-4 py-3 rounded-xl border border-brand-purple/15 dark:border-brand-gold/20 bg-brand-warm/30 dark:bg-brand-purple-dark/50 text-sm focus:outline-none focus:border-brand-gold text-brand-purple dark:text-brand-cream font-semibold uppercase tracking-wider" 
+                placeholder="e.g. CLASS-R2XCV or GB" 
+              />
+              <label className="text-sm font-bold block text-brand-purple dark:text-brand-cream">Your Nickname</label>
+              <input 
+                value={nickname} 
+                onChange={(e) => setNickname(e.target.value)} 
+                className="w-full px-4 py-3 rounded-xl border border-brand-purple/15 dark:border-brand-gold/20 bg-brand-warm/30 dark:bg-brand-purple-dark/50 text-sm focus:outline-none focus:border-brand-gold text-brand-purple dark:text-brand-cream font-medium" 
+              />
             </div>
-            <button type="button" onClick={startMatch} disabled={pending} className="w-full py-4 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-bold text-lg hover:opacity-90 disabled:opacity-50">
-              Find Match in {countryCode}
+            <button type="button" onClick={startMatch} disabled={pending} className="w-full py-4 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-bold text-lg hover:opacity-90 disabled:opacity-50 transition-opacity">
+              Find Match in &quot;{countryCode}&quot;
             </button>
-            <p className="text-xs text-center text-brand-purple/45">Sign in required. Parent can disable in dashboard.</p>
+            <p className="text-xs text-center text-brand-purple/45 dark:text-brand-cream/45">Sign in required. Parent can disable in dashboard.</p>
           </div>
         )}
 
