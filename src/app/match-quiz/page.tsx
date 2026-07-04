@@ -263,7 +263,6 @@ function MatchQuizContent() {
                 </div>
               )}
             </div>
-            </div>
           </div>
         )}
 

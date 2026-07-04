@@ -70,11 +70,11 @@ export function TeacherDashboardClient({ userEmail, userName, countryName, count
     setSavingCurriculum(true);
     try {
       const res = await saveTeacherCurriculumAction(nextDisabled);
-      if (res.success) {
-        toast.success(isCurrentlyEnabled ? "Chapter locked successfully!" : "Chapter unlocked successfully!");
-      } else if (res && 'error' in res && res.error) {
+      if (res && 'error' in res && res.error) {
         toast.error(res.error as string);
         setDisabledTopics(disabledTopics); // Revert
+      } else {
+        toast.success(isCurrentlyEnabled ? "Chapter locked successfully!" : "Chapter unlocked successfully!");
       }
     } catch (e) {
       toast.error("Failed to update curriculum");
