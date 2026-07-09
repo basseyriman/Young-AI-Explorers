@@ -25,6 +25,21 @@ const montserrat = Montserrat({
 export const metadata: Metadata = {
   title: "Young AI Explorers",
   description: "Exploring the Future, One Idea at a Time. The ultimate educational ecosystem for the next generation of innovators.",
+  openGraph: {
+    title: "Young AI Explorers",
+    description: "Educational AI platform helping children learn Artificial Intelligence through interactive lessons, quizzes and storytelling.",
+    url: "https://youngaiexplorers.net",
+    siteName: "Young AI Explorers",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Young AI Explorers Platform Preview",
+      }
+    ],
+    type: "website",
+  }
 };
 
 export default async function RootLayout({
