@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
 import { useState, useEffect, useSyncExternalStore } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "@/components/ThemeProvider";
@@ -13,6 +13,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 export function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [hubOpen, setHubOpen] = useState(false);
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
@@ -28,15 +29,23 @@ export function NavBar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: t("nav.explore"), href: "#topics" },
-    { name: t("nav.starter_paths"), href: "#topics" },
-    { name: t("nav.vision_vee"), href: "#assistant" },
-    { name: t("nav.book"), href: "#book" },
-    { name: t("nav.schools"), href: "#schools" },
-    { name: t("nav.community"), href: "#community" },
-    { name: t("nav.trust"), href: "#trust" },
-    { name: t("nav.parents"), href: "#parents" },
+  const hubLinks = [
+    { name: "Home", href: "/", emoji: "🏠", desc: "Start explorer map" },
+    { name: "Read the book", href: "/#book", emoji: "📖", desc: "Available on Amazon" },
+    { name: "Learn AI", href: "/signup", emoji: "🤖", desc: "Interactive lessons" },
+    { name: "Games", href: "/match-quiz", emoji: "🎮", desc: "Classroom Arena" },
+    { name: "Quizzes", href: "/signup", emoji: "🧩", desc: "Earn certificates" },
+    { name: "Teachers", href: "/dashboard/teacher", emoji: "👩‍🏫", desc: "Curriculum control" },
+    { name: "Schools", href: "/school/pilot", emoji: "🏫", desc: "Register school pilots" },
+    { name: "Free resources", href: "/free-resources", emoji: "📥", desc: "Classroom PDFs" },
+    { name: "Blog", href: "/blog", emoji: "📰", desc: "Educational articles" },
+    { name: "Community", href: "/community", emoji: "🌐", desc: "Explorer network" },
+  ];
+
+  const mainLinks = [
+    { name: t("nav.book"), href: "/#book" },
+    { name: t("nav.schools"), href: "/#schools" },
+    { name: t("nav.community"), href: "/community" },
   ];
 
   return (
@@ -56,11 +65,53 @@ export function NavBar() {
         </Link>
 
         <div className="hidden lg:flex items-center gap-1">
-          {navLinks.map((link) => (
+          {/* Explorer Hub Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setHubOpen(!hubOpen)}
+              onMouseEnter={() => setHubOpen(true)}
+              className="flex items-center gap-1 px-4 py-2 text-sm font-semibold text-brand-purple/70 dark:text-brand-cream/70 hover:text-brand-purple dark:hover:text-brand-cream transition-all rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5"
+            >
+              Explorer Hub <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${hubOpen ? "rotate-180" : ""}`} />
+            </button>
+            
+            {/* Dropdown Menu Panel */}
+            <AnimatePresence>
+              {hubOpen && (
+                <>
+                  <div className="fixed inset-0 z-10" onClick={() => setHubOpen(false)} />
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 10 }}
+                    className="absolute left-0 mt-2 w-[480px] bg-brand-cream dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 rounded-2xl shadow-xl z-20 p-4 grid grid-cols-2 gap-2"
+                    onMouseLeave={() => setHubOpen(false)}
+                  >
+                    {hubLinks.map((link) => (
+                      <SiteLink
+                        key={link.name}
+                        href={link.href}
+                        onClick={() => setHubOpen(false)}
+                        className="flex items-start gap-3 p-3 rounded-xl hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-all group text-left"
+                      >
+                        <span className="text-2xl shrink-0">{link.emoji}</span>
+                        <div>
+                          <div className="text-sm font-bold text-brand-purple dark:text-brand-cream group-hover:text-brand-gold transition-colors">{link.name}</div>
+                          <div className="text-[11px] text-brand-purple/50 dark:text-brand-cream/55 mt-0.5 leading-snug">{link.desc}</div>
+                        </div>
+                      </SiteLink>
+                    ))}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {mainLinks.map((link) => (
             <SiteLink
               key={link.name}
               href={link.href}
-              className="px-4 py-2 text-sm font-medium text-brand-purple/70 dark:text-brand-cream/70 hover:text-brand-purple dark:hover:text-brand-cream transition-colors rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5"
+              className="px-4 py-2 text-sm font-semibold text-brand-purple/70 dark:text-brand-cream/70 hover:text-brand-purple dark:hover:text-brand-cream transition-colors rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5"
             >
               {link.name}
             </SiteLink>
@@ -110,17 +161,21 @@ export function NavBar() {
             exit={{ opacity: 0, height: 0 }}
             className="lg:hidden bg-brand-cream/98 dark:bg-brand-purple-dark/98 backdrop-blur-2xl border-b border-brand-purple/10 dark:border-brand-gold/10 overflow-hidden"
           >
-            <div className="flex flex-col px-6 py-6 gap-1">
-              {navLinks.map((link) => (
-                <SiteLink
-                  key={link.name}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 hover:text-brand-purple dark:hover:text-brand-cream py-3 px-2 rounded-lg hover:bg-brand-purple/5 dark:hover:bg-brand-gold/5 transition-colors"
-                >
-                  {link.name}
-                </SiteLink>
-              ))}
+            <div className="flex flex-col px-6 py-6 gap-1 max-h-[80vh] overflow-y-auto">
+              <span className="text-[10px] font-extrabold uppercase tracking-wider text-brand-gold px-2 mb-2">Explorer Hub</span>
+              <div className="grid grid-cols-2 gap-2 mb-4">
+                {hubLinks.map((link) => (
+                  <SiteLink
+                    key={link.name}
+                    href={link.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 p-3 rounded-xl border border-brand-purple/5 bg-brand-purple/5 dark:bg-brand-gold/5 text-sm font-bold text-brand-purple dark:text-brand-cream"
+                  >
+                    <span className="text-xl shrink-0">{link.emoji}</span>
+                    <span>{link.name}</span>
+                  </SiteLink>
+                ))}
+              </div>
               <hr className="border-brand-purple/10 dark:border-brand-gold/10 my-3" />
               
               <div className="flex items-center justify-between py-2 px-2">
@@ -133,7 +188,7 @@ export function NavBar() {
                   setTheme(isDark ? "light" : "dark");
                   setMobileMenuOpen(false);
                 }}
-                className="flex items-center gap-2 text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 py-3 px-2"
+                className="flex items-center gap-2 text-base font-medium text-brand-purple/80 dark:text-brand-cream/80 py-3 px-2 text-left"
               >
                 {mounted && isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 {mounted && isDark ? "Light Mode" : "Dark Mode"}

@@ -495,20 +495,23 @@ export default function Home() {
             <div className="flex flex-wrap gap-10 text-sm text-brand-purple/60 dark:text-brand-cream/60">
               {[
                 {
-                  title: "Platform",
+                  title: "Explorer Map",
                   links: [
-                    { label: "Starter Paths", href: "#topics" },
-                    { label: "Vision Vee", href: "#assistant" },
-                    { label: "The Book", href: "#book" },
+                    { label: "🏠 Home", href: "/" },
+                    { label: "📖 Read the Book", href: "/#book" },
+                    { label: "🤖 Learn AI", href: "/signup" },
+                    { label: "🎮 Games Arena", href: "/match-quiz" },
+                    { label: "🧩 Quizzes & Badges", href: "/signup" },
                   ],
                 },
                 {
-                  title: "Community",
+                  title: "Portals & Resources",
                   links: [
-                    { label: "UK Explorers", href: "/community" },
-                    { label: "Nigeria", href: "/community" },
-                    { label: "Ghana", href: "/community" },
-                    { label: "Global Network", href: "/community" },
+                    { label: "👩‍🏫 Teachers Portal", href: "/dashboard/teacher" },
+                    { label: "🏫 School Pilots", href: "/school/pilot" },
+                    { label: "📥 Free Resources", href: "/free-resources" },
+                    { label: "📰 Blog Articles", href: "/blog" },
+                    { label: "🌐 Global Communities", href: "/community" },
                   ],
                 },
                 {
