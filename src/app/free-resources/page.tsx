@@ -29,7 +29,7 @@ export default function FreeResourcesPage() {
       description: "Fun offline activities including matching puzzles, crossword searches, and badge cutouts designed to complement the book chapters.",
       fileType: "PDF Document",
       fileSize: "4.2 MB",
-      downloadUrl: "/school/curriculum",
+      downloadUrl: "https://lvdygbetmlqjnhrmvwjq.supabase.co/storage/v1/object/public/free-resources/ai-explorer-activity-pack.pdf",
       icon: Sparkles,
     },
     {
@@ -39,7 +39,7 @@ export default function FreeResourcesPage() {
       description: "Ready-to-use lesson slides explaining machine learning, neurons, and classification with kid-friendly diagrams and simple analogies.",
       fileType: "PowerPoint Presentation",
       fileSize: "8.5 MB",
-      downloadUrl: "/school/curriculum",
+      downloadUrl: "https://lvdygbetmlqjnhrmvwjq.supabase.co/storage/v1/object/public/free-resources/ml-classroom-slides.pptx",
       icon: BookOpen,
     },
     {
@@ -49,7 +49,7 @@ export default function FreeResourcesPage() {
       description: "Printable review workbook containing quiz sheets, code-along tasks, and project sheets for classroom groups.",
       fileType: "PDF Document",
       fileSize: "6.1 MB",
-      downloadUrl: "/school/curriculum",
+      downloadUrl: "https://lvdygbetmlqjnhrmvwjq.supabase.co/storage/v1/object/public/free-resources/vision-vee-classroom-workbook.pdf",
       icon: FileText,
     },
     {
@@ -59,7 +59,7 @@ export default function FreeResourcesPage() {
       description: "A printable physical passport book where students can draw or stick badge cutouts as they complete digital platform milestones.",
       fileType: "PDF Document",
       fileSize: "2.8 MB",
-      downloadUrl: "/school/curriculum",
+      downloadUrl: "https://lvdygbetmlqjnhrmvwjq.supabase.co/storage/v1/object/public/free-resources/printable-explorer-passport.pdf",
       icon: Globe,
     },
     {
@@ -69,7 +69,7 @@ export default function FreeResourcesPage() {
       description: "Comprehensive guide outlining AI literacy standards, learning objectives, and age-appropriate guidelines from ages 8 to 15.",
       fileType: "PDF Document",
       fileSize: "1.9 MB",
-      downloadUrl: "/school/curriculum",
+      downloadUrl: "https://lvdygbetmlqjnhrmvwjq.supabase.co/storage/v1/object/public/free-resources/young-ai-explorers-curriculum-framework.pdf",
       icon: FileText,
     },
   ];

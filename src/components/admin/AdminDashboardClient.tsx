@@ -121,13 +121,21 @@ export function AdminDashboardClient({ userEmail, userName, stats, countries, in
       </header>
 
       <main className="container mx-auto px-6 py-12 max-w-6xl space-y-10">
-        <div>
-          <h1 className="text-4xl font-heading font-bold mb-2">
-            Admin Console — <span className="text-gradient">{userName}</span>
-          </h1>
-          <p className="text-brand-purple/60 dark:text-brand-cream/60">
-            Platform overview · Supabase live data
-          </p>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div>
+            <h1 className="text-4xl font-heading font-bold mb-2">
+              Admin Console — <span className="text-gradient">{userName}</span>
+            </h1>
+            <p className="text-brand-purple/60 dark:text-brand-cream/60">
+              Platform overview · Supabase live data
+            </p>
+          </div>
+          <Link
+            href="/dashboard/admin/blog"
+            className="inline-flex items-center gap-2 px-5 py-3 rounded-full bg-brand-purple dark:bg-brand-gold text-brand-cream dark:text-brand-purple-dark font-bold text-sm hover:opacity-90 transition-all shadow-md shrink-0"
+          >
+            📰 Manage Blog CMS
+          </Link>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4">

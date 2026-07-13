@@ -7,7 +7,7 @@ import { CustomTopicsList } from '@/components/student/CustomTopicsList'
 import { Logo } from '@/components/Logo'
 import { SignOutButton } from '@/components/SignOutButton'
 import { BOOK_LESSONS, getTotalTopicCount, isTopicEnabled, TOPIC_MARKETING, EXPLORER_MAP_LABEL } from '@/data/curriculum'
-import { getCurriculumFromDb, getUserBadges, getCountries, mergeCurriculumWithFallback, getProfile } from '@/lib/db/platform'
+import { getCurriculumFromDb, getUserBadges, getCountries, mergeCurriculumWithFallback, getProfile, getClassroomLeaderboard } from '@/lib/db/platform'
 import { requireRole } from '@/lib/auth/dashboard-access'
 import { getLocale, getTranslations, getLocalizedLesson } from '@/lib/i18n/i18n'
 import { LanguageSelector } from '@/components/LanguageSelector'
@@ -46,6 +46,13 @@ export default async function StudentDashboard() {
     }
   } catch (e) {
     console.error('Failed to load linked classrooms:', e)
+  }
+
+  let leaderboard: any[] = []
+  try {
+    leaderboard = await getClassroomLeaderboard(user.id)
+  } catch (e) {
+    console.error('Failed to load leaderboard:', e)
   }
 
   const profile = await getProfile(user.id)
@@ -188,6 +195,43 @@ export default async function StudentDashboard() {
                 }))}
               />
             </div>
+
+            {earnedBadges.length > 0 && (
+              <div className="space-y-4 pt-6">
+                <h3 className="font-heading font-bold text-xl text-brand-purple dark:text-brand-cream flex items-center gap-2">
+                  <Award className="h-6 w-6 text-emerald-500" strokeWidth={1.5} /> Earned Certificates
+                </h3>
+                <p className="text-sm text-brand-purple/55 dark:text-brand-cream/55 -mt-2">
+                  Click any certificate below to view, print, or download your official credentials!
+                </p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {earnedBadges.map((badgeId) => {
+                    const lesson = BOOK_LESSONS.find(l => String(l.id) === String(badgeId));
+                    const title = lesson?.title ?? `Custom Topic (${badgeId})`;
+                    return (
+                      <Link 
+                        key={badgeId} 
+                        href={`/certificate/${badgeId}`}
+                        className="flex items-center justify-between p-4 rounded-xl border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-surface dark:bg-brand-purple-dark/40 hover:border-brand-gold/45 hover:shadow-sm transition-all group"
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center">
+                            <Award className="h-5 w-5 text-emerald-500" />
+                          </div>
+                          <div>
+                            <div className="text-sm font-bold truncate max-w-[200px] text-brand-purple dark:text-brand-cream group-hover:text-brand-gold transition-colors">{title}</div>
+                            <div className="text-[10px] text-brand-purple/50 dark:text-brand-cream/50">Completed & Verified</div>
+                          </div>
+                        </div>
+                        <span className="text-xs font-bold text-brand-purple/60 dark:text-brand-gold group-hover:text-brand-purple dark:group-hover:text-brand-cream transition-colors">
+                          View Cert ➜
+                        </span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="w-full md:w-80 shrink-0 space-y-4">
@@ -214,6 +258,43 @@ export default async function StudentDashboard() {
                 </div>
               </div>
             ))}
+            {leaderboard.length > 0 && (
+              <div className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 shadow-sm space-y-4 animate-in fade-in duration-300">
+                <div className="flex items-center gap-2 text-brand-purple dark:text-brand-cream">
+                  <Medal className="h-5 w-5 text-brand-gold" />
+                  <h4 className="font-heading font-bold text-sm">Classroom Leaderboard</h4>
+                </div>
+                <div className="space-y-2.5">
+                  {leaderboard.map((item, index) => {
+                    const isTop3 = index < 3;
+                    const rankEmoji = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}`;
+                    return (
+                      <div 
+                        key={item.id} 
+                        className={`flex items-center justify-between p-2.5 rounded-xl border transition-all ${
+                          item.isSelf 
+                            ? "bg-brand-purple/5 dark:bg-brand-gold/10 border-brand-gold/45 shadow-[0_2px_8px_rgba(201,160,78,0.08)] scale-[1.02]" 
+                            : "bg-brand-warm/20 dark:bg-brand-purple-dark/30 border-brand-purple/5"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className={`text-sm font-bold w-5 shrink-0 ${isTop3 ? "text-lg" : "text-brand-purple/40 dark:text-brand-cream/40"}`}>
+                            {rankEmoji}
+                          </span>
+                          <span className={`text-xs font-bold truncate ${item.isSelf ? "text-brand-purple dark:text-brand-gold" : "text-brand-purple/80 dark:text-brand-cream/80"}`}>
+                            {item.nickname}
+                          </span>
+                        </div>
+                        <span className="text-[10px] font-extrabold text-brand-gold bg-brand-gold/5 border border-brand-gold/10 px-2 py-0.5 rounded-full shrink-0 ml-2">
+                          {item.xp} XP
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
             {studentClassrooms.length > 0 && (
               <div className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 shadow-sm space-y-3">
                 <div className="flex items-center gap-2 text-brand-purple dark:text-brand-cream">

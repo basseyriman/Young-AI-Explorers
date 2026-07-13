@@ -943,3 +943,72 @@ export async function getMatchSession(userId: string, sessionId: string) {
 
   return { success: true, session, myScore, theirScore }
 }
+
+export async function getClassroomLeaderboard(studentId: string) {
+  const supabase = await createClient()
+
+  // 1. Fetch classrooms for this student
+  const { data: classrooms } = await supabase
+    .from('classroom_students')
+    .select('classroom_id')
+    .eq('student_id', studentId)
+
+  if (!classrooms || classrooms.length === 0) {
+    return []
+  }
+
+  const classroomIds = classrooms.map((c) => c.classroom_id)
+
+  // 2. Fetch all student IDs in these classrooms
+  const { data: students } = await supabase
+    .from('classroom_students')
+    .select('student_id')
+    .in('classroom_id', classroomIds)
+
+  if (!students || students.length === 0) {
+    return []
+  }
+
+  const studentIds = Array.from(new Set(students.map((s) => s.student_id)))
+
+  // 3. Fetch profiles of these students
+  const { data: profiles } = await supabase
+    .from('profiles')
+    .select('id, nickname, role')
+    .in('id', studentIds)
+
+  if (!profiles) {
+    return []
+  }
+
+  // Filter out admin/teachers from student leaderboard
+  const studentProfiles = profiles.filter((p) => p.role === 'student' || p.id === studentId)
+
+  // 4. Fetch badge counts for points
+  const { data: badges } = await supabase
+    .from('user_badges')
+    .select('user_id')
+    .in('user_id', studentProfiles.map((p) => p.id))
+
+  const badgeCounts: Record<string, number> = {}
+  if (badges) {
+    badges.forEach((b) => {
+      badgeCounts[b.user_id] = (badgeCounts[b.user_id] || 0) + 1
+    })
+  }
+
+  // 5. Build leaderboard list
+  const leaderboard = studentProfiles.map((p) => {
+    const badgesCount = badgeCounts[p.id] || 0
+    return {
+      id: p.id,
+      nickname: p.nickname ?? 'Anonymous Explorer',
+      xp: badgesCount * 120,
+      badges: badgesCount,
+      isSelf: p.id === studentId
+    }
+  })
+
+  // Sort by XP descending
+  return leaderboard.sort((a, b) => b.xp - a.xp)
+}
