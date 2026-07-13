@@ -23,6 +23,7 @@ export async function createBlogPost(data: {
   content: string;
   readTime: string;
   authorName?: string;
+  imageUrl?: string;
 }) {
   try {
     // 1. Enforce Admin Access
@@ -41,6 +42,7 @@ export async function createBlogPost(data: {
         content: data.content,
         read_time: data.readTime,
         author_name: data.authorName || "Bassey Riman",
+        image_url: data.imageUrl || null,
         published_at: new Date().toISOString(),
       })
       .select()

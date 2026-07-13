@@ -13,6 +13,7 @@ interface Article {
   readTime: string;
   summary: string;
   content?: string;
+  image_url?: string;
   featured?: boolean;
 }
 
@@ -32,6 +33,7 @@ export function BlogClient({ dbPosts }: Props) {
       date: "July 8, 2026",
       readTime: "5 min read",
       summary: "Teaching complex AI concepts doesn't require calculus. Discover play-based physical classroom activities to explain weights, neurons, and inputs through simple human-nodes connections.",
+      image_url: "/assets/hero-robot-kids.png", // Use fallback assets
       featured: true,
     },
     {
@@ -69,6 +71,7 @@ export function BlogClient({ dbPosts }: Props) {
     readTime: post.read_time,
     summary: post.summary,
     content: post.content,
+    image_url: post.image_url,
     featured: false, // Custom posts added later aren't featured banner posts by default
   }));
 
@@ -183,6 +186,25 @@ export function BlogClient({ dbPosts }: Props) {
                 className="group p-6 rounded-2xl border border-brand-purple/10 dark:border-brand-gold/10 bg-brand-surface dark:bg-brand-purple-dark/40 flex flex-col justify-between hover:border-brand-gold/45 hover:shadow-[0_12px_40px_rgba(74,45,110,0.05)] transition-all duration-300"
               >
                 <div>
+                  {/* Article Card Image Cover */}
+                  <div className="w-full h-44 rounded-xl overflow-hidden mb-5 relative bg-brand-purple/5 dark:bg-brand-gold/5 border border-brand-purple/10 dark:border-brand-gold/10">
+                    {art.image_url ? (
+                      <img 
+                        src={art.image_url} 
+                        alt={art.title} 
+                        className="w-full h-full object-cover group-hover:scale-103 transition-transform duration-500" 
+                      />
+                    ) : (
+                      // Sleek gradient fallback representing category
+                      <div className="w-full h-full bg-gradient-to-br from-brand-purple/10 to-brand-gold/20 flex items-center justify-center relative">
+                        <BookOpen className="h-10 w-10 text-brand-gold/30 group-hover:scale-110 transition-transform duration-500" strokeWidth={1} />
+                        <div className="absolute bottom-2.5 right-3 text-[9px] font-extrabold uppercase tracking-widest text-brand-gold/30">
+                          {art.category} Exploration
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-center justify-between gap-4 mb-4 text-xs text-brand-purple/55 dark:text-brand-cream/55">
                     <span className="font-semibold text-brand-gold uppercase tracking-wider">{art.category}</span>
                     <div className="flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> {art.readTime}</div>

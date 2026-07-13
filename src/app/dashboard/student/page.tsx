@@ -197,7 +197,7 @@ export default async function StudentDashboard() {
             </div>
 
             {earnedBadges.length > 0 && (
-              <div className="space-y-4 pt-6">
+              <div id="certificates" className="space-y-4 pt-6 scroll-mt-28">
                 <h3 className="font-heading font-bold text-xl text-brand-purple dark:text-brand-cream flex items-center gap-2">
                   <Award className="h-6 w-6 text-emerald-500" strokeWidth={1.5} /> Earned Certificates
                 </h3>
@@ -242,22 +242,42 @@ export default async function StudentDashboard() {
                 {completedCount} {t('dashboard.of')} {totalTopics} {t('dashboard.enabled')} · {t('dashboard.unlimited_custom')}
               </div>
             </div>
-            {[
-              { icon: Flame, label: t('dashboard.streak'), value: '—', color: 'text-orange-500' },
-              { icon: Medal, label: t('dashboard.badges'), value: `${completedCount}/${totalTopics}+`, color: 'text-brand-gold' },
-              { icon: Star, label: t('dashboard.xp'), value: String(completedCount * 120), color: 'text-brand-purple dark:text-brand-gold' },
-              { icon: Award, label: t('dashboard.certificates'), value: String(Math.floor(completedCount / 6)), color: 'text-emerald-600 dark:text-emerald-400' },
-            ].map(({ icon: Icon, label, value, color }) => (
-              <div key={label} className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 flex items-center gap-4">
-                <div className="w-12 h-12 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/10 flex items-center justify-center">
-                  <Icon className={`h-6 w-6 ${color}`} strokeWidth={1.5} />
+             {[
+              { icon: Flame, label: t('dashboard.streak'), value: '—', color: 'text-orange-500', href: undefined },
+              { icon: Medal, label: t('dashboard.badges'), value: `${completedCount}/${totalTopics}+`, color: 'text-brand-gold', href: undefined },
+              { icon: Star, label: t('dashboard.xp'), value: String(completedCount * 120), color: 'text-brand-purple dark:text-brand-gold', href: undefined },
+              { icon: Award, label: t('dashboard.certificates'), value: String(Math.floor(completedCount / 6)), color: 'text-emerald-600 dark:text-emerald-400', href: earnedBadges.length > 0 ? '#certificates' : undefined },
+            ].map(({ icon: Icon, label, value, color, href }) => {
+              const cardContent = (
+                <>
+                  <div className="w-12 h-12 rounded-xl bg-brand-purple/5 dark:bg-brand-gold/10 flex items-center justify-center">
+                    <Icon className={`h-6 w-6 ${color}`} strokeWidth={1.5} />
+                  </div>
+                  <div>
+                    <div className="text-xs font-medium text-brand-purple/50 dark:text-brand-cream/65">{label}</div>
+                    <div className="text-xl font-bold text-brand-purple dark:text-brand-cream">{value}</div>
+                  </div>
+                </>
+              );
+
+              const cardClass = `p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 flex items-center gap-4 text-left w-full ${
+                href ? 'hover:border-brand-gold/55 hover:shadow-sm cursor-pointer transition-all hover:scale-[1.01]' : ''
+              }`;
+
+              if (href) {
+                return (
+                  <Link key={label} href={href} className={cardClass}>
+                    {cardContent}
+                  </Link>
+                );
+              }
+
+              return (
+                <div key={label} className={cardClass}>
+                  {cardContent}
                 </div>
-                <div>
-                  <div className="text-xs font-medium text-brand-purple/50 dark:text-brand-cream/65">{label}</div>
-                  <div className="text-xl font-bold text-brand-purple dark:text-brand-cream">{value}</div>
-                </div>
-              </div>
-            ))}
+              );
+            })}
             {leaderboard.length > 0 && (
               <div className="p-5 rounded-2xl bg-brand-surface dark:bg-brand-purple-dark border border-brand-purple/10 dark:border-brand-gold/15 shadow-sm space-y-4 animate-in fade-in duration-300">
                 <div className="flex items-center gap-2 text-brand-purple dark:text-brand-cream">

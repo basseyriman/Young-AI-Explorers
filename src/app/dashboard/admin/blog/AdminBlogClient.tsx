@@ -31,6 +31,7 @@ export function AdminBlogClient({ initialPosts }: Props) {
   const [content, setContent] = useState("");
   const [readTime, setReadTime] = useState("5 min read");
   const [authorName, setAuthorName] = useState("Bassey Riman");
+  const [imageUrl, setImageUrl] = useState("");
 
   // Status feedback
   const [error, setError] = useState("");
@@ -54,6 +55,7 @@ export function AdminBlogClient({ initialPosts }: Props) {
         content,
         readTime,
         authorName,
+        imageUrl,
       });
 
       if (res.success && res.post) {
@@ -66,6 +68,7 @@ export function AdminBlogClient({ initialPosts }: Props) {
         setContent("");
         setReadTime("5 min read");
         setAuthorName("Bassey Riman");
+        setImageUrl("");
         
         // Switch to manage list
         setTimeout(() => setActiveTab("manage"), 1500);
@@ -185,6 +188,17 @@ export function AdminBlogClient({ initialPosts }: Props) {
                 className="w-full px-4 py-3 rounded-xl border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-warm/20 dark:bg-brand-purple-dark/50 text-sm focus:outline-none focus:border-brand-gold text-brand-purple dark:text-brand-cream font-medium"
               />
             </div>
+          </div>
+
+          <div className="space-y-2">
+            <label className="text-xs font-extrabold uppercase tracking-wider text-brand-purple/50 dark:text-brand-cream/50">Featured Image URL (Optional)</label>
+            <input
+              type="text"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              placeholder="e.g. https://images.unsplash.com/... or /assets/hero-robot-kids.png"
+              className="w-full px-4 py-3 rounded-xl border border-brand-purple/10 dark:border-brand-gold/15 bg-brand-warm/20 dark:bg-brand-purple-dark/50 text-sm focus:outline-none focus:border-brand-gold text-brand-purple dark:text-brand-cream font-medium"
+            />
           </div>
 
           <div className="space-y-2">
