@@ -35,6 +35,7 @@ export function NavBar() {
     { name: "Learn AI", href: "/signup", emoji: "🤖", desc: "Interactive lessons" },
     { name: "Games", href: "/match-quiz", emoji: "🎮", desc: "Classroom Arena" },
     { name: "Quizzes", href: "/signup", emoji: "🧩", desc: "Earn certificates" },
+    { name: "Activity Pack", href: "/activity-pack", emoji: "✏️", desc: "Book 1 Workbook" },
     { name: "Teachers", href: "/dashboard/teacher", emoji: "👩‍🏫", desc: "Curriculum control" },
     { name: "Schools", href: "/school/pilot", emoji: "🏫", desc: "Register school pilots" },
     { name: "Free resources", href: "/free-resources", emoji: "📥", desc: "Classroom PDFs" },
