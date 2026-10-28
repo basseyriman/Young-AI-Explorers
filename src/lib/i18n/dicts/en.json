@@ -93,6 +93,11 @@
     "badges_desc": "Unlock special achievements as you complete chapters and custom topics.",
     "leaderboard_title": "Leaderboard",
     "leaderboard_desc": "Compete with other explorers globally or in your region.",
+    "stat_topics": "Topics to Explore",
+    "stat_lessons": "Book Lessons",
+    "stat_fun_facts": "Fun Facts",
+    "stat_quizzes": "Quizzes to Attempt",
+    "vee_title": "Vision Vee",
     "vee_subtitle": "Your AI learning companion"
   },
   "worlds": {
